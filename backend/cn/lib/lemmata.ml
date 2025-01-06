@@ -976,15 +976,18 @@ let rec it_to_coq_ir comp_bool it =
           else 
                 CI.Coq_binop (CI.Coq_impl, x , y))
     | _ -> CI.Coq_unsupported)
-  | IT.Match (x, cases) ->
-    let comp = Some (it, "case-discriminant") in
+  | IT.Match (x, cases) -> CI.Coq_unsupported
+    (*let comp = Some (it, "case-discriminant") in
     let br (pat, rhs) = build [ rets "|"; pat_to_coq pat; rets "=>"; aux rhs ] in
-    parensM (build ([ rets "match"; f comp x; rets "with" ] @ List.map br cases @ [ rets "end" ]))
+    parensM (build ([ rets "match"; f comp x; rets "with" ] @ List.map br cases @ [ rets "end" ]))*)
+  | IT.ITE (sw, x, y) ->
+    let comp = Some (it, "if-condition") in
+    CI.Coq_ite (it_to_coq_ir comp sw, it_to_coq_ir comp_bool x, it_to_coq_ir comp_bool y)
   | _ -> CI.Coq_unsupported
 
 
 
-(* end new *)
+(* end new *) 
 
 
 let it_to_coq loc global list_mono it =
