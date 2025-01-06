@@ -907,6 +907,14 @@ let norm_bv_op bt doc_f =
 
 (* new!! *)
 
+let rec pat_to_coq_ir pat = 
+  match pat with
+  | Terms.Pat (Terms.PSym sym, _, _) -> CI.Coq_pSym (CI.Coq_sym sym)
+  | Terms.Pat (Terms.PWild, _, _) -> CI.Coq_pWild
+  | Terms.Pat (Terms.PConstructor (c_nm, id_ps), _, _) ->
+      CI.Coq_pConstructor (CI.Coq_sym c_nm, List.map (fun x -> pat_to_coq_ir (snd x)) id_ps)
+    (* assuming here that the id's are in canonical order *)
+
 let rec it_to_coq_ir comp_bool it =
   let enc_prop = Option.is_none comp_bool in
   match IT.term it with

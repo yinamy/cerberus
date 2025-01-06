@@ -1,14 +1,16 @@
 module BT = BaseTypes
 
+type coq_sym = 
+  | Coq_sym of Sym.t
+
 (* Patterns in Coq *)
 
 type coq_pat = 
-  | Coq_pat
+  | Coq_pSym of coq_sym
+  | Coq_pWild
+  | Coq_pConstructor of coq_sym * (coq_pat list)
 
 (* IndexTerm in Coq*)
-
-type coq_sym = 
-  | Coq_sym
 
 type coq_const = 
   | Coq_bool of bool
