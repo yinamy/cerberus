@@ -11,6 +11,7 @@ module LC = LogicalConstraints
 module IdSet = Set.Make (Id)
 module StringSet = Set.Make (String)
 module StringMap = Map.Make (String)
+module CI = Coq_ir
 
 module StringList = struct
   type t = string list
@@ -903,6 +904,87 @@ let norm_bv_op bt doc_f =
     let minInt, maxInt = BT.bits_range (sign, sz) in
     f_appM "CN_Lib.wrapI" [ enc_z minInt; enc_z maxInt; doc_f ]
   | _ -> doc_f
+
+(* new!! *)
+
+let rec it_to_coq_ir comp_bool it =
+  let enc_prop = Option.is_none comp_bool in
+  match IT.term it with
+  | IT.Const l ->
+    (match l with
+     | IT.Bool b -> CI.Coq_const (CI.Coq_bool b)
+     | IT.Z z -> CI.Coq_const (CI.Coq_Z z)
+     | IT.Bits (info, z) -> CI.Coq_const (CI.Coq_bits (info, z))
+     | _ -> CI.Coq_unsupported)
+  | IT.Unop (op, a) ->
+    let x = it_to_coq_ir comp_bool a in
+    (match op with
+    | IT.Not -> (if enc_prop then
+        CI.Coq_unop (CI.Coq_neg_prop , x)
+          else 
+        CI.Coq_unop (CI.Coq_neg , x))
+    | IT.BW_FFS_NoSMT -> CI.Coq_unop (CI.Coq_BW_FFS_NoSMT , x)
+    | IT.BW_CTZ_NoSMT -> CI.Coq_unop (CI.Coq_BW_CTZ_NoSMT , x)
+    | _ -> CI.Coq_unsupported)
+  | IT.Binop (op, a, b) ->
+    let x = it_to_coq_ir comp_bool a in
+    let y = it_to_coq_ir comp_bool b in
+    (match op with
+    | Add -> CI.Coq_binop (CI.Coq_add, x , y)
+    | Sub -> CI.Coq_binop (CI.Coq_sub, x , y)
+    | Mul -> CI.Coq_binop (CI.Coq_mul, x , y)
+    | MulNoSMT -> CI.Coq_binop (CI.Coq_mul, x , y)
+    | Div -> CI.Coq_binop (CI.Coq_div, x , y)
+    | DivNoSMT -> CI.Coq_binop (CI.Coq_div, x , y)
+    | Mod -> CI.Coq_binop (CI.Coq_mod, x , y)
+    | ModNoSMT -> CI.Coq_binop (CI.Coq_mod, x , y)
+    (* TODO: this can't be right: mod and rem aren't the same
+      - maybe they have the same semantics as Coq Z.modulo/Z.rem *)
+    | Rem -> CI.Coq_binop (CI.Coq_rem, x , y)
+    | RemNoSMT -> CI.Coq_binop (CI.Coq_mod, x , y)
+    | LT -> (if enc_prop then
+                CI.Coq_binop (CI.Coq_lt_prop, x , y) 
+              else 
+                CI.Coq_binop (CI.Coq_lt, x , y))
+    | LE -> (if enc_prop then
+                CI.Coq_binop (CI.Coq_le_prop, x , y) 
+              else 
+                CI.Coq_binop (CI.Coq_le, x , y))
+    | Exp -> CI.Coq_binop (CI.Coq_exp, x , y)
+    | ExpNoSMT -> CI.Coq_binop (CI.Coq_exp, x , y)
+    | BW_Xor -> CI.Coq_binop (CI.Coq_lxor, x , y)
+    | BW_And -> CI.Coq_binop (CI.Coq_land, x , y)
+    | BW_Or -> CI.Coq_binop (CI.Coq_lor, x , y)
+    | EQ ->
+      let comp = Some (it, "argument of equality") in
+      (if enc_prop then
+        CI.Coq_binop (CI.Coq_eq_prop, it_to_coq_ir comp a , it_to_coq_ir comp b) 
+      else 
+        CI.Coq_binop (CI.Coq_eq, it_to_coq_ir comp a , it_to_coq_ir comp b))
+    | LEPointer -> (if enc_prop then
+                CI.Coq_binop (CI.Coq_le_prop, x , y) 
+              else 
+                CI.Coq_binop (CI.Coq_le, x , y))
+    | LTPointer -> (if enc_prop then
+                CI.Coq_binop (CI.Coq_lt_prop, x , y) 
+            else 
+              CI.Coq_binop (CI.Coq_lt, x , y))
+    | And -> CI.Coq_binop (CI.Coq_and, x , y)
+    | Or -> CI.Coq_binop (CI.Coq_or, x , y)
+    | Implies -> (if enc_prop then
+                CI.Coq_binop (CI.Coq_impl_prop, x , y) 
+          else 
+                CI.Coq_binop (CI.Coq_impl, x , y))
+    | _ -> CI.Coq_unsupported)
+  | IT.Match (x, cases) ->
+    let comp = Some (it, "case-discriminant") in
+    let br (pat, rhs) = build [ rets "|"; pat_to_coq pat; rets "=>"; aux rhs ] in
+    parensM (build ([ rets "match"; f comp x; rets "with" ] @ List.map br cases @ [ rets "end" ]))
+  | _ -> CI.Coq_unsupported
+
+
+
+(* end new *)
 
 
 let it_to_coq loc global list_mono it =
