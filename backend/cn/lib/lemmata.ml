@@ -995,11 +995,11 @@ let rec it_to_coq_ir comp_bool it =
 (* TODO: | IT.EachI ((i1, (s, _), i2), x) -> *)
   | IT.MapSet (m, x, y) -> CI.Coq_mapset(aux m, aux x, aux y)
   | IT.MapGet (m, x) -> CI.Coq_mapget(aux m, aux x)
-  | IT.RecordMember (t, m) -> CI.Coq_recordmember(aux t, m)
-  | IT.RecordUpdate ((t, m), x) -> CI.Coq_recordupdate((aux t , m), aux x)
+  | IT.RecordMember (t, m) -> CI.Coq_recordmember(aux t, CI.Coq_id m)
+  | IT.RecordUpdate ((t, m), x) -> CI.Coq_recordupdate((aux t , CI.Coq_id m), aux x)
   | IT.Record mems -> CI.Coq_record (List.map aux (List.map snd mems))
-  | IT.StructMember (t, m) -> CI.Coq_structmember(aux t, m)
-  | IT.StructUpdate ((t, m), x) -> CI.Coq_structupdate((aux t , m), aux x)
+  | IT.StructMember (t, m) -> CI.Coq_structmember(aux t, CI.Coq_id m)
+  | IT.StructUpdate ((t, m), x) -> CI.Coq_structupdate((aux t , CI.Coq_id m), aux x)
   | IT.Cast (cbt, t) -> CI.Coq_cast (cbt, aux t)
   (* TODO: the apply case is probably wrong *)
   | IT.Apply (name, args) -> CI.Coq_apply (CI.Coq_sym name, List.map aux args)
@@ -1016,7 +1016,29 @@ let rec it_to_coq_ir comp_bool it =
   (*| IT.ArrayShift { base; ct; index } -> *)
   | _ -> CI.Coq_unsupported
 
+  (* coq_ir to prettyprint *)
+let rec pat_to_coq_pp = function
+| CI.Coq_pSym (CI.Coq_sym sym) -> return (Sym.pp sym)
+| CI.Coq_pWild -> rets "_"
+| CI.Coq_pConstructor (CI.Coq_sym c_nm, id_ps) ->
+  (* assuming here that the id's are in canonical order *)
+  parensM (build ([ return (Sym.pp c_nm) ] @ List.map pat_to_coq_pp id_ps))
 
+let it_coq_pp t =
+  let enc_prop = Option.is_none comp_bool in
+  let with_is_true x =
+    if enc_prop && BaseTypes.equal (IT.bt t) BaseTypes.Bool then
+      f_appM "Is_true" [ x ]
+    else
+      x
+  in
+  match t with
+  | CI.Coq_const c -> (match c with
+    | CI.Coq_bool b -> with_is_true (rets (if b then "true" else "false"))
+    | IT.Z z -> enc_z z
+    | IT.Bits (info, z) -> enc_z (BT.normalise_to_range info z)
+    | _ -> do_fail "const")
+  
 
 (* end new *) 
 
