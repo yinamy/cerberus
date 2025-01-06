@@ -916,6 +916,7 @@ let rec pat_to_coq_ir pat =
     (* assuming here that the id's are in canonical order *)
 
 let rec it_to_coq_ir comp_bool it =
+  let aux t = it_to_coq_ir comp_bool t in
   let enc_prop = Option.is_none comp_bool in
   match IT.term it with
   | IT.Const l ->
@@ -925,7 +926,7 @@ let rec it_to_coq_ir comp_bool it =
      | IT.Bits (info, z) -> CI.Coq_const (CI.Coq_bits (info, z))
      | _ -> CI.Coq_unsupported)
   | IT.Unop (op, a) ->
-    let x = it_to_coq_ir comp_bool a in
+    let x = aux a in
     (match op with
     | IT.Not -> (if enc_prop then
         CI.Coq_unop (CI.Coq_neg_prop , x)
@@ -935,8 +936,8 @@ let rec it_to_coq_ir comp_bool it =
     | IT.BW_CTZ_NoSMT -> CI.Coq_unop (CI.Coq_BW_CTZ_NoSMT , x)
     | _ -> CI.Coq_unsupported)
   | IT.Binop (op, a, b) ->
-    let x = it_to_coq_ir comp_bool a in
-    let y = it_to_coq_ir comp_bool b in
+    let x = aux a in
+    let y = aux b in
     (match op with
     | Add -> CI.Coq_binop (CI.Coq_add, x , y)
     | Sub -> CI.Coq_binop (CI.Coq_sub, x , y)
@@ -984,13 +985,35 @@ let rec it_to_coq_ir comp_bool it =
           else 
                 CI.Coq_binop (CI.Coq_impl, x , y))
     | _ -> CI.Coq_unsupported)
-  | IT.Match (x, cases) -> CI.Coq_unsupported
-    (*let comp = Some (it, "case-discriminant") in
-    let br (pat, rhs) = build [ rets "|"; pat_to_coq pat; rets "=>"; aux rhs ] in
-    parensM (build ([ rets "match"; f comp x; rets "with" ] @ List.map br cases @ [ rets "end" ]))*)
+  | IT.Match (x, cases) -> 
+    let comp = Some (it, "case-discriminant") in
+    let br (pat, rhs) = (pat_to_coq_ir pat, aux rhs) in
+    CI.Coq_match (it_to_coq_ir comp x, List.map br cases)
   | IT.ITE (sw, x, y) ->
     let comp = Some (it, "if-condition") in
-    CI.Coq_ite (it_to_coq_ir comp sw, it_to_coq_ir comp_bool x, it_to_coq_ir comp_bool y)
+    CI.Coq_ite (it_to_coq_ir comp sw, aux x, aux y)
+(* TODO: | IT.EachI ((i1, (s, _), i2), x) -> *)
+  | IT.MapSet (m, x, y) -> CI.Coq_mapset(aux m, aux x, aux y)
+  | IT.MapGet (m, x) -> CI.Coq_mapget(aux m, aux x)
+  | IT.RecordMember (t, m) -> CI.Coq_recordmember(aux t, m)
+  | IT.RecordUpdate ((t, m), x) -> CI.Coq_recordupdate((aux t , m), aux x)
+  | IT.Record mems -> CI.Coq_record (List.map aux (List.map snd mems))
+  | IT.StructMember (t, m) -> CI.Coq_structmember(aux t, m)
+  | IT.StructUpdate ((t, m), x) -> CI.Coq_structupdate((aux t , m), aux x)
+  | IT.Cast (cbt, t) -> CI.Coq_cast (cbt, aux t)
+  (* TODO: the apply case is probably wrong *)
+  | IT.Apply (name, args) -> CI.Coq_apply (CI.Coq_sym name, List.map aux args)
+  (*| IT.Good (ct, t2) -> 
+    | IT.Representable *)
+  | IT.Constructor (nm, id_args) ->
+    let comp = Some (it, "datatype contents") in
+    (* assuming here that the id's are in canonical order *)
+    CI.Coq_constructor (CI.Coq_sym nm, List.map (fun x -> it_to_coq_ir comp (snd x)) id_args)
+  | IT.NthList (n, xs, d) -> CI.Coq_nthlist (aux n, aux xs, aux d)
+  | IT.ArrayToList (arr, i, len) -> CI.Coq_arraytolist (aux arr, aux i, aux len)
+  (*| IT.WrapI (ity, arg) -> *)
+  | IT.Let ((nm, x), y) -> CI.Coq_let(CI.Coq_sym nm, aux x, aux y)
+  (*| IT.ArrayShift { base; ct; index } -> *)
   | _ -> CI.Coq_unsupported
 
 

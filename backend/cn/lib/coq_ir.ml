@@ -3,6 +3,9 @@ module BT = BaseTypes
 type coq_sym = 
   | Coq_sym of Sym.t
 
+type coq_id =
+  | Coq_id of Id.t
+
 (* Patterns in Coq *)
 
 type coq_pat = 
@@ -54,21 +57,19 @@ type coq_term =
   (*| Coq_eachI *)
   | Coq_mapset of coq_term * coq_term * coq_term
   | Coq_mapget of coq_term * coq_term
-  (*| Coq_recordmember
-    | Coq_recordupdate*)
-  (* todo: where did the fieldnames go in the record? thomas did this *)
+  | Coq_recordmember of coq_term * coq_id
+  | Coq_recordupdate of (coq_term * coq_id) * coq_term
+  (* todo: where did the fieldnames go in the record? idgi but I'm copying thomas *)
   | Coq_record of coq_term list
-  (* | Coq_structmember
-     | Coq_structupdate 
-  *)
-  | Coq_cast of coq_term
+  | Coq_structmember of coq_term * coq_id
+  | Coq_structupdate of (coq_term * coq_id) * coq_term
+  | Coq_cast of BT.t * coq_term
   | Coq_apply of coq_sym * coq_term list
   (* | Coq_good 
-     | Coq_representable
-  *)
+     | Coq_representable *)
   | Coq_constructor of coq_sym * coq_term list
-  | Coq_nthlist of coq_term * coq_term * coq_term * coq_term
-  | Coq_arraytolist of coq_term * coq_term * coq_term * coq_term * coq_term
+  | Coq_nthlist of coq_term * coq_term * coq_term
+  | Coq_arraytolist of coq_term * coq_term * coq_term
   | Coq_let of coq_sym * coq_term * coq_term
   (* | Coq_wrapi*)
   | Coq_arrayshift of coq_term * coq_const * coq_term
