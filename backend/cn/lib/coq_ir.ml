@@ -17,6 +17,7 @@ type coq_pat =
 
 type coq_const = 
   | Coq_bool of bool
+  | Coq_bool_prop of bool
   | Coq_Z of Z.t
   | Coq_bits of (BT.sign * int) * Z.t
 
@@ -49,17 +50,17 @@ type coq_binop =
   | Coq_impl_prop
 
 type coq_term = 
+  | Coq_sym of coq_sym
   | Coq_const of coq_const
   | Coq_unop of coq_unop * coq_term
   | Coq_binop of coq_binop * coq_term * coq_term
   | Coq_match of coq_term * (coq_pat * coq_term) list
   | Coq_ite of coq_term * coq_term * coq_term
-  (*| Coq_eachI *)
+  | Coq_eachI of (int * (coq_sym * BT.t) * int) * coq_term
   | Coq_mapset of coq_term * coq_term * coq_term
   | Coq_mapget of coq_term * coq_term
   | Coq_recordmember of coq_term * coq_id
   | Coq_recordupdate of (coq_term * coq_id) * coq_term
-  (* todo: where did the fieldnames go in the record? idgi but I'm copying thomas *)
   | Coq_record of coq_term list
   | Coq_structmember of coq_term * coq_id
   | Coq_structupdate of (coq_term * coq_id) * coq_term
@@ -71,6 +72,6 @@ type coq_term =
   | Coq_nthlist of coq_term * coq_term * coq_term
   | Coq_arraytolist of coq_term * coq_term * coq_term
   | Coq_let of coq_sym * coq_term * coq_term
-  (* | Coq_wrapi*)
-  | Coq_arrayshift of coq_term * coq_const * coq_term
+  | Coq_wrapI of Z.t * Z.t * coq_term
+  | Coq_arrayshift of coq_term * Z.t * coq_term
   | Coq_unsupported
