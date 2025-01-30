@@ -1,5 +1,7 @@
 module BT = BaseTypes
 
+(* idk where this stuff goes yet *)
+
 type coq_sym = 
   | Coq_sym of Sym.t
 
@@ -13,7 +15,7 @@ type coq_pat =
   | Coq_pWild
   | Coq_pConstructor of coq_sym * (coq_pat list)
 
-(* IndexTerm in Coq*)
+(* IndexTerms in Coq*)
 
 type coq_const = 
   | Coq_bool of bool
@@ -75,3 +77,22 @@ type coq_term =
   | Coq_wrapI of Z.t * Z.t * coq_term
   | Coq_arrayshift of coq_term * Z.t * coq_term
   | Coq_unsupported
+
+(* Logical constraints in Coq *)  
+type coq_LC =
+  | Coq_forall of coq_sym * BT.t
+  | Coq_T of coq_term
+
+(* Logical return types in Coq *)
+type coq_LRT =
+  | Coq_Define of coq_sym * (coq_term list) * (coq_LRT list)
+  | Coq_Resource (* todo: add support *)
+  | Coq_Constraint of (coq_LC list) * (coq_LRT list)
+  | Coq_I
+
+(* Logical argument types in Coq *)  
+type coq_LAT =
+  | Coq_Define of coq_sym * (coq_term list) * (coq_LAT list)
+  | Coq_Resource
+  | Coq_Constraint of (coq_LC list) * (coq_LAT list)
+  | Coq_I of coq_LRT
