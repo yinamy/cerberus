@@ -1,4 +1,5 @@
 module BT = BaseTypes
+module AT = ArgumentTypes
 
 (* idk where this stuff goes yet *)
 
@@ -77,22 +78,54 @@ type coq_term =
   | Coq_wrapI of Z.t * Z.t * coq_term
   | Coq_arrayshift of coq_term * Z.t * coq_term
   | Coq_unsupported
-
+  (* experiment: make everything flat*)
+  (* LC in coq *)
+  | Coq_forall of coq_sym * BT.t * coq_term
+  | Coq_T of coq_term
+  (* LRT/LAT in coq*)
+  | Coq_Define of coq_sym * coq_term * coq_term
+  | Coq_Resource (* todo: add support *)
+  | Coq_Constraint of coq_term * coq_term
+  | Coq_I
+(*
 (* Logical constraints in Coq *)  
 type coq_LC =
-  | Coq_forall of coq_sym * BT.t
+  | Coq_forall of coq_sym * BT.t * coq_LC
   | Coq_T of coq_term
 
 (* Logical return types in Coq *)
 type coq_LRT =
-  | Coq_Define of coq_sym * (coq_term list) * (coq_LRT list)
+  | Coq_Define of coq_sym * coq_term * coq_LRT
   | Coq_Resource (* todo: add support *)
-  | Coq_Constraint of (coq_LC list) * (coq_LRT list)
+  | Coq_Constraint of coq_LC * coq_LRT
   | Coq_I
 
 (* Logical argument types in Coq *)  
 type coq_LAT =
-  | Coq_Define of coq_sym * (coq_term list) * (coq_LAT list)
+  | Coq_Define of coq_sym * coq_term  * coq_LAT
   | Coq_Resource
-  | Coq_Constraint of (coq_LC list) * (coq_LAT list)
-  | Coq_I of coq_LRT
+  | Coq_Constraint of coq_LC * coq_LAT
+  | Coq_I of coq_LAT
+  | Coq_unsupported
+
+(* CN datatypes*)
+type coq_constr =
+  | Coq_constr of (coq_sym * BT.constr_info) list
+
+(* CN datatype info *)
+(* A datatype is a name, its dt_info, and its constructors with all associated info *)
+type coq_dt = 
+  | Coq_dt of (coq_sym * BT.dt_info * coq_constr list)
+
+(* CN logical functions *)
+type coq_logicfun = 
+  | Coq_logicfun of (coq_sym * Definition.Function.t) list
+
+(* CN resource predicates (unimplemented) *)
+type coq_resource_pred = 
+  | Coq_resource_pred
+
+(* CN global typing context *)
+type coq_global_ctx =
+  | Coq_global_ctx of (coq_dt list) * (coq_logicfun list) * (coq_resource_pred list)
+  *)

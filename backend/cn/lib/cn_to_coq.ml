@@ -21,14 +21,14 @@ let rec pat_to_coq_ir pat =
       CI.Coq_pConstructor (CI.Coq_sym c_nm, List.map (fun x -> pat_to_coq_ir (snd x)) id_ps)
     (* assuming here that the id's are in canonical order *)
 
-let rec it_to_coq_ir loc global list_mono it =
+let rec it_to_coq_ir it =
   let rec f comp_bool it =
     let aux t = f comp_bool t in
     let enc_prop = Option.is_none comp_bool in
-  match IT.term it with
+  match IT.get_term it with
   | IT.Const l ->
     (match l with
-      | IT.Bool b -> if enc_prop && BaseTypes.equal (IT.bt it) BaseTypes.Bool then
+      | IT.Bool b -> if enc_prop && BaseTypes.equal (IT.get_bt it) BaseTypes.Bool then
                         CI.Coq_const (CI.Coq_bool_prop b)
                     else
                         CI.Coq_const (CI.Coq_bool b)              
@@ -131,4 +131,50 @@ let rec it_to_coq_ir loc global list_mono it =
     CI.Coq_arrayshift (aux base, size_of_ct, aux index)
   | _ -> CI.Coq_unsupported
   in
-  (f None it, loc, global, list_mono)
+  (f None it)
+
+let lc_to_coq_ir (t: LC.t) =
+  match t with
+  | LC.T t -> it_to_coq_ir t
+  | LC.Forall ((sym, bt), it) -> CI.Coq_forall (CI.Coq_sym sym, bt, it_to_coq_ir it)
+
+let rec lrt_to_coq_ir (t: LRT.t) =
+  match t with
+  | LRT.Constraint (lc, _, t) ->
+    let d = lrt_to_coq_ir t in
+    let c = lc_to_coq_ir lc in
+    CI.Coq_binop(CI.Coq_and, c, d)
+  | LRT.Define ((sym, it), _, t) ->
+    let d = lrt_to_coq_ir t in
+    let l = it_to_coq_ir it in
+    CI.Coq_let(CI.Coq_sym sym, l, d)
+  | LRT.I -> CI.Coq_I
+  | _ -> CI.Coq_unsupported
+
+let rec lat_to_coq_ir (t: LRT.t LAT.t) =
+  match t with
+  | LAT.Define ((sym, it), _, t) ->
+    let d = lat_to_coq_ir t in
+    let l = it_to_coq_ir it in
+    CI.Coq_Define (CI.Coq_sym sym, l, d)
+  | LAT.Constraint (lc, _, t) ->
+    let c = lc_to_coq_ir lc in
+    let d = lat_to_coq_ir t in
+    CI.Coq_Constraint (c,d)
+  | LAT.I t -> lrt_to_coq_ir t
+  | LAT.Resource _ -> CI.Coq_unsupported
+
+let rec lemmat_to_coq_ir (ftyp : AT.lemmat) = 
+  match ftyp with
+  (* todo *)
+  | AT.Computational ((sym, bt), _, t) ->
+    let d = lemmat_to_coq_ir t in
+    CI.Coq_forall (CI.Coq_sym sym, bt, d)
+  | AT.L t -> lat_to_coq_ir t
+
+let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
+  = 
+  (* 1. Translate the datatypes *)
+  (* 2. Translate the logical functions *)
+  (* 3. Translate the resource predicates (todo) *)
+  (* 4. Translate the lemma statement *)
