@@ -307,9 +307,21 @@ let lemma_to_coq global (t : CI.coq_term) =
   | _ -> failwith "unsupported term")
   in f global t
   
+let convert_lemma_defs global (lemmas : (Sym.t * Cerb_location.t * CI.coq_term) list) =
+  let lemma_ty (nm, _, tm) =
+    Pp.progress_simple ("converting lemma type") (Sym.pp_string nm);
+    let rhs = lemma_to_coq global tm in
+    (defn (Sym.pp_string nm ^ "_type") [] (Some (Pp.string "Prop")) rhs)
+  in
+  let tys = List.map lemma_ty lemmas in  
+  tys
 
 (* Main function *)
-let generate directions global (lemmas : (Sym.t * CI.coq_term) list) = 
+let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
+  = 
   let filename, _kinds = parse_directions directions in
   let channel = open_out filename in
   Pp.print channel (header filename);
+  let lemmas = CC.cn_to_coq_ir global lemmata in
+  let translated_lemmas = convert_lemma_defs global lemmas in
+  Pp.print channel (build translated_lemmas);

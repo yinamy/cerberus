@@ -12,6 +12,9 @@ module IdSet = Set.Make (Id)
 module StringSet = Set.Make (String)
 module StringMap = Map.Make (String)
 module CI = Coq_ir
+module CC = Cn_to_coq
+module CP = Coq_pp
+
 
 module StringList = struct
   type t = string list
@@ -1349,8 +1352,10 @@ type scanned =
 
 let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
   =
+  Result.Ok (CP.generate global directions lemmata)
+
   (* let open Mu in *)
-  let filename, _kinds = parse_directions directions in
+  (*let filename, _kinds = parse_directions directions in
   let channel = open_out filename in
   Pp.print channel (header filename);
   Pp.debug
@@ -1387,4 +1392,4 @@ let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemm
   in
   match convert_and_print channel global list_mono conv init_t with
   | Result.Ok _ -> Result.Ok ()
-  | Result.Error e -> Result.Error e
+  | Result.Error e -> Result.Error e*)

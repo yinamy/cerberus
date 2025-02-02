@@ -85,10 +85,7 @@ type coq_term =
   | Coq_wrapI of Z.t * Z.t * coq_term
   | Coq_arrayshift of coq_term * Z.t * coq_term
   | Coq_unsupported
-  (* experiment: make everything flat*)
-  (* LC in coq *)
   | Coq_forall of coq_sym * BT.t * coq_term
-  (* LRT/LAT in coq*)
   | Coq_Define of coq_sym * coq_term * coq_term
   | Coq_Resource (* todo: add support *)
   | Coq_Constraint_LRT of coq_term * coq_term

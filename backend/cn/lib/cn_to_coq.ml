@@ -35,7 +35,7 @@ let fun_prop_ret (global : Global.t) nm =
     BaseTypes.equal BaseTypes.Bool def.return_bt
     && StringSet.mem (Sym.pp_string nm) prop_funs
 
-let rec it_to_coq_ir global it =
+let it_to_coq_ir global it =
   let rec f comp_bool it =
     let aux t = f comp_bool t in
     let enc_prop = Option.is_none comp_bool in
@@ -181,7 +181,7 @@ let rec lrt_to_coq_ir (gl : Global.t) (t: LRT.t) =
   | LRT.Constraint (lc, _, t) ->
     let d = lrt_to_coq_ir gl t in
     let c = lc_to_coq_ir gl lc in
-    CI.Coq_binop(CI.Coq_and, c, d)
+    CI.Coq_Constraint_LRT (c,d)
   | LRT.Define ((sym, it), _, t) ->
     let d = lrt_to_coq_ir gl t in
     let l = it_to_coq_ir gl it in
@@ -198,7 +198,7 @@ let rec lat_to_coq_ir (gl : Global.t) (t: LRT.t LAT.t) =
   | LAT.Constraint (lc, _, t) ->
     let c = lc_to_coq_ir gl lc in
     let d = lat_to_coq_ir gl t in
-    CI.Coq_Constraint (c,d)
+    CI.Coq_Constraint_LAT (c,d)
   | LAT.I t -> lrt_to_coq_ir gl t
   | LAT.Resource _ -> CI.Coq_unsupported
 
@@ -209,7 +209,7 @@ let rec lemmat_to_coq_ir (gl : Global.t) (ftyp : AT.lemmat) =
     CI.Coq_forall (CI.Coq_sym sym, bt, d)
   | AT.L t -> lat_to_coq_ir gl t
 
-let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
+let cn_to_coq_ir (global : Global.t) (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
   = 
   (* 1. Translate the datatypes *)
 
@@ -217,9 +217,9 @@ let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemm
 
   (* 3. Translate the resource predicates (todo) *)
   (* 4. Translate the lemma statement *)
-  let translate_lemmas (gl : Global.t) ((sym : Sym.t), (_, lemmat)) = 
+  let translate_lemmas (gl : Global.t) ((sym : Sym.t), (loc, lemmat)) = 
     let d = lemmat_to_coq_ir gl lemmat in
-    (sym, d)
+    (sym, loc, d)
   in
   (* gives a list of pairs: (lemma name, translated lemma)*)
   List.map (translate_lemmas global) lemmata
