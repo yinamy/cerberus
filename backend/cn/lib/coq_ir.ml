@@ -22,7 +22,7 @@ type coq_const =
   | Coq_bool of bool
   | Coq_bool_prop of bool
   | Coq_Z of Z.t
-  | Coq_bits of (BT.sign * int) * Z.t
+  | Coq_bits of Z.t
 
 type coq_unop = 
   | Coq_neg
@@ -42,13 +42,15 @@ type coq_binop =
   | Coq_le
   | Coq_le_prop
   | Coq_exp
-  | Coq_lxor
-  | Coq_land
-  | Coq_lor
+  | Coq_bwxor
+  | Coq_bwand
+  | Coq_bwor
   | Coq_eq
   | Coq_eq_prop
   | Coq_and
+  | Coq_and_prop
   | Coq_or
+  | Coq_or_prop
   | Coq_impl
   | Coq_impl_prop
 

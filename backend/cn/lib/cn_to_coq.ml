@@ -33,7 +33,7 @@ let rec it_to_coq_ir it =
                     else
                         CI.Coq_const (CI.Coq_bool b)              
       | IT.Z z -> CI.Coq_const (CI.Coq_Z z)
-      | IT.Bits (info, z) -> CI.Coq_const (CI.Coq_bits (info, z))
+      | IT.Bits (info, z) -> CI.Coq_const (CI.Coq_bits (BT.normalise_to_range info z))
       | _ -> CI.Coq_unsupported)
   | IT.Unop (op, a) ->
     let x = aux a in
@@ -71,9 +71,9 @@ let rec it_to_coq_ir it =
                 CI.Coq_binop (CI.Coq_le, x , y))
     | Exp -> CI.Coq_binop (CI.Coq_exp, x , y)
     | ExpNoSMT -> CI.Coq_binop (CI.Coq_exp, x , y)
-    | BW_Xor -> CI.Coq_binop (CI.Coq_lxor, x , y)
-    | BW_And -> CI.Coq_binop (CI.Coq_land, x , y)
-    | BW_Or -> CI.Coq_binop (CI.Coq_lor, x , y)
+    | BW_Xor -> CI.Coq_binop (CI.Coq_bwxor, x , y)
+    | BW_And -> CI.Coq_binop (CI.Coq_bwand, x , y)
+    | BW_Or -> CI.Coq_binop (CI.Coq_bwor, x , y)
     | EQ ->
       let comp = Some (it, "argument of equality") in
       (if enc_prop then
@@ -87,12 +87,18 @@ let rec it_to_coq_ir it =
     | LTPointer -> (if enc_prop then
                 CI.Coq_binop (CI.Coq_lt_prop, x , y) 
             else 
-              CI.Coq_binop (CI.Coq_lt, x , y))
-    | And -> CI.Coq_binop (CI.Coq_and, x , y)
-    | Or -> CI.Coq_binop (CI.Coq_or, x , y)
+                CI.Coq_binop (CI.Coq_lt, x , y))
+    | And -> (if enc_prop then
+                CI.Coq_binop (CI.Coq_and_prop, x , y) 
+            else 
+                CI.Coq_binop (CI.Coq_and, x , y))
+    | Or -> (if enc_prop then
+                CI.Coq_binop (CI.Coq_or_prop, x , y) 
+            else 
+                CI.Coq_binop (CI.Coq_or, x , y))
     | Implies -> (if enc_prop then
                 CI.Coq_binop (CI.Coq_impl_prop, x , y) 
-          else 
+            else 
                 CI.Coq_binop (CI.Coq_impl, x , y))
     | _ -> CI.Coq_unsupported)
   | IT.Match (x, cases) -> 
@@ -175,6 +181,14 @@ let rec lemmat_to_coq_ir (ftyp : AT.lemmat) =
 let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
   = 
   (* 1. Translate the datatypes *)
+
   (* 2. Translate the logical functions *)
+
   (* 3. Translate the resource predicates (todo) *)
   (* 4. Translate the lemma statement *)
+  let translate_lemmas ((sym : Sym.t), (_, lemmat)) = 
+    let d = lemmat_to_coq_ir lemmat in
+    (sym, d)
+  in
+  (* gives a list of pairs: (lemma name, translated lemma)*)
+  List.map translate_lemmas lemmata
