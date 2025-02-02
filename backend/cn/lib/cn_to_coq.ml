@@ -21,7 +21,21 @@ let rec pat_to_coq_ir pat =
       CI.Coq_pConstructor (CI.Coq_sym c_nm, List.map (fun x -> pat_to_coq_ir (snd x)) id_ps)
     (* assuming here that the id's are in canonical order *)
 
-let rec it_to_coq_ir it =
+(* set of functions with boolean return type that we want to use
+   as toplevel propositions, i.e. return Prop rather than bool
+   (computational) in Coq. *)
+   let prop_funs = StringSet.of_list [ "page_group_ok" ]
+
+let fun_prop_ret (global : Global.t) nm =
+  match Sym.Map.find_opt nm global.logical_functions with
+  (* todo: the None case shouldn't be possible since the CN code must be well-formed *)
+  | None -> true
+  | Some def ->
+    let open Definition.Function in
+    BaseTypes.equal BaseTypes.Bool def.return_bt
+    && StringSet.mem (Sym.pp_string nm) prop_funs
+
+let rec it_to_coq_ir global it =
   let rec f comp_bool it =
     let aux t = f comp_bool t in
     let enc_prop = Option.is_none comp_bool in
@@ -117,10 +131,28 @@ let rec it_to_coq_ir it =
   | IT.StructMember (t, m) -> CI.Coq_structmember(aux t, CI.Coq_id m)
   | IT.StructUpdate ((t, m), x) -> CI.Coq_structupdate((aux t , CI.Coq_id m), aux x)
   | IT.Cast (cbt, t) -> CI.Coq_cast (cbt, aux t)
-  (* TODO: the apply case is probably wrong *)
-  | IT.Apply (name, args) -> CI.Coq_apply (CI.Coq_sym name, List.map aux args)
-  (*| IT.Good (ct, t2) -> 
-    | IT.Representable *)
+  | IT.Apply (name, args) -> 
+    let body_aux = f (Some (it, "fun-arg")) in
+    let open Definition.Function in
+    let def = Sym.Map.find name global.Global.logical_functions in
+    let arg_types = List.map (fun (name, bt) -> (CI.Coq_sym (CI.Coq_sym name),bt)) def.args in
+    (match def.body with
+      | Uninterp -> 
+          if fun_prop_ret global name then
+            CI.Coq_app_uninterp (CI.Coq_sym name, arg_types, 
+                                List.map body_aux args, def.return_bt)
+          else
+            CI.Coq_app_uninterp_prop (CI.Coq_sym name, arg_types, List.map body_aux args)
+      | Def body -> CI.Coq_app_def (CI.Coq_sym name, aux body, arg_types, List.map body_aux args)
+      | Rec_Def _ -> CI.Coq_app_recdef)
+  | IT.Good (ct, t2) when Option.is_some (Sctypes.is_struct_ctype ct) -> 
+      (match (Sctypes.is_struct_ctype ct) with
+        | Some s -> CI.Coq_good (s, BaseTypes.Struct s, aux t2)
+        | None -> CI.Coq_unsupported)
+  | IT.Representable (ct, t2) when Option.is_some (Sctypes.is_struct_ctype ct) ->
+      (match (Sctypes.is_struct_ctype ct) with
+      | Some s -> CI.Coq_representable (s, BaseTypes.Struct s, aux t2)
+      | None -> CI.Coq_unsupported)
   | IT.Constructor (nm, id_args) ->
     let comp = Some (it, "datatype contents") in
     (* assuming here that the id's are in canonical order *)
@@ -139,44 +171,43 @@ let rec it_to_coq_ir it =
   in
   (f None it)
 
-let lc_to_coq_ir (t: LC.t) =
+let lc_to_coq_ir (gl : Global.t) (t: LC.t) =
   match t with
-  | LC.T t -> it_to_coq_ir t
-  | LC.Forall ((sym, bt), it) -> CI.Coq_forall (CI.Coq_sym sym, bt, it_to_coq_ir it)
+  | LC.T t -> it_to_coq_ir gl t
+  | LC.Forall ((sym, bt), it) -> CI.Coq_forall (CI.Coq_sym sym, bt, it_to_coq_ir gl it)
 
-let rec lrt_to_coq_ir (t: LRT.t) =
+let rec lrt_to_coq_ir (gl : Global.t) (t: LRT.t) =
   match t with
   | LRT.Constraint (lc, _, t) ->
-    let d = lrt_to_coq_ir t in
-    let c = lc_to_coq_ir lc in
+    let d = lrt_to_coq_ir gl t in
+    let c = lc_to_coq_ir gl lc in
     CI.Coq_binop(CI.Coq_and, c, d)
   | LRT.Define ((sym, it), _, t) ->
-    let d = lrt_to_coq_ir t in
-    let l = it_to_coq_ir it in
+    let d = lrt_to_coq_ir gl t in
+    let l = it_to_coq_ir gl it in
     CI.Coq_let(CI.Coq_sym sym, l, d)
   | LRT.I -> CI.Coq_I
   | _ -> CI.Coq_unsupported
 
-let rec lat_to_coq_ir (t: LRT.t LAT.t) =
+let rec lat_to_coq_ir (gl : Global.t) (t: LRT.t LAT.t) =
   match t with
   | LAT.Define ((sym, it), _, t) ->
-    let d = lat_to_coq_ir t in
-    let l = it_to_coq_ir it in
+    let d = lat_to_coq_ir gl t in
+    let l = it_to_coq_ir gl it in
     CI.Coq_Define (CI.Coq_sym sym, l, d)
   | LAT.Constraint (lc, _, t) ->
-    let c = lc_to_coq_ir lc in
-    let d = lat_to_coq_ir t in
+    let c = lc_to_coq_ir gl lc in
+    let d = lat_to_coq_ir gl t in
     CI.Coq_Constraint (c,d)
-  | LAT.I t -> lrt_to_coq_ir t
+  | LAT.I t -> lrt_to_coq_ir gl t
   | LAT.Resource _ -> CI.Coq_unsupported
 
-let rec lemmat_to_coq_ir (ftyp : AT.lemmat) = 
+let rec lemmat_to_coq_ir (gl : Global.t) (ftyp : AT.lemmat) = 
   match ftyp with
-  (* todo *)
   | AT.Computational ((sym, bt), _, t) ->
-    let d = lemmat_to_coq_ir t in
+    let d = lemmat_to_coq_ir gl t in
     CI.Coq_forall (CI.Coq_sym sym, bt, d)
-  | AT.L t -> lat_to_coq_ir t
+  | AT.L t -> lat_to_coq_ir gl t
 
 let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
   = 
@@ -186,9 +217,9 @@ let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemm
 
   (* 3. Translate the resource predicates (todo) *)
   (* 4. Translate the lemma statement *)
-  let translate_lemmas ((sym : Sym.t), (_, lemmat)) = 
-    let d = lemmat_to_coq_ir lemmat in
+  let translate_lemmas (gl : Global.t) ((sym : Sym.t), (_, lemmat)) = 
+    let d = lemmat_to_coq_ir gl lemmat in
     (sym, d)
   in
   (* gives a list of pairs: (lemma name, translated lemma)*)
-  List.map translate_lemmas lemmata
+  List.map (translate_lemmas global) lemmata

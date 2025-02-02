@@ -70,9 +70,14 @@ type coq_term =
   | Coq_structmember of coq_term * coq_id
   | Coq_structupdate of (coq_term * coq_id) * coq_term
   | Coq_cast of BT.t * coq_term
-  | Coq_apply of coq_sym * coq_term list
-  (* | Coq_good 
-     | Coq_representable *)
+  (* name, list of argument types, list of arguments, return type*)
+  | Coq_app_uninterp of coq_sym * (coq_term * BT.t) list * coq_term list * BT.t
+  | Coq_app_uninterp_prop of coq_sym * (coq_term * BT.t) list * coq_term list
+  | Coq_app_def of coq_sym * coq_term * (coq_term * BT.t) list * coq_term list
+  (* currently unsupported*)
+  | Coq_app_recdef
+  | Coq_good of Sym.t * BT.t * coq_term
+  | Coq_representable of Sym.t * BT.t * coq_term
   | Coq_constructor of coq_sym * coq_term list
   | Coq_nthlist of coq_term * coq_term * coq_term
   | Coq_arraytolist of coq_term * coq_term * coq_term
@@ -83,11 +88,11 @@ type coq_term =
   (* experiment: make everything flat*)
   (* LC in coq *)
   | Coq_forall of coq_sym * BT.t * coq_term
-  | Coq_T of coq_term
   (* LRT/LAT in coq*)
   | Coq_Define of coq_sym * coq_term * coq_term
   | Coq_Resource (* todo: add support *)
-  | Coq_Constraint of coq_term * coq_term
+  | Coq_Constraint_LRT of coq_term * coq_term
+  | Coq_Constraint_LAT of coq_term * coq_term
   | Coq_I
 (*
 (* Logical constraints in Coq *)  
