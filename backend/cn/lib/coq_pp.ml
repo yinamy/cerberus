@@ -1,16 +1,7 @@
-module IT = IndexTerms
 module BT = BaseTypes
-module LRT = LogicalReturnTypes
-module RT = ReturnTypes
 module AT = ArgumentTypes
-module LAT = LogicalArgumentTypes
-module TE = TypeErrors
 module Loc = Locations
-module LF = Definition.Function
-module LC = LogicalConstraints
-module IdSet = Set.Make (Id)
 module StringSet = Set.Make (String)
-module StringMap = Map.Make (String)
 module CI = Coq_ir
 module CC = Cn_to_coq
 
