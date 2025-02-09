@@ -35,11 +35,75 @@ let fun_prop_ret (global : Global.t) nm =
     BaseTypes.equal BaseTypes.Bool def.return_bt
     && StringSet.mem (Sym.pp_string nm) prop_funs
 
+let struct_layout_field_bts xs =
+  let open Memory in
+  let xs2 =
+    List.filter (fun x -> Option.is_some x.member_or_padding) xs
+    |> List.sort (fun (x : struct_piece) y -> Int.compare x.offset y.offset)
+    |> List.filter_map (fun x -> x.member_or_padding)
+  in
+  (List.map fst xs2, List.map (fun x -> Memory.bt_of_sct (snd x)) xs2)    
+
+let get_struct_xs struct_decls tag =
+  match Sym.Map.find_opt tag struct_decls with
+  | Some def -> struct_layout_field_bts def
+  (* the none case should be impossible *)
+  | None -> [], []
+
+let rec bt_to_coq_ir (gl: Global.t) (bt : BT.t) =
+  match bt with
+  | BaseTypes.Bool -> CI.Coq_Bool
+  | BaseTypes.Integer -> CI.Coq_Integer
+  | BaseTypes.Bits _ -> CI.Coq_Bits
+  | BaseTypes.Map (x, y) ->
+    let enc_x = bt_to_coq_ir gl x in
+    let enc_y = bt_to_coq_ir gl y in
+    CI.Coq_Map (enc_x, enc_y)
+  | BaseTypes.Struct tag ->
+    let _, fld_bts = get_struct_xs gl.struct_decls tag in
+    let enc_fld_bts = List.map (bt_to_coq_ir gl) fld_bts in
+    CI.Coq_Record enc_fld_bts
+  | BaseTypes.Record mems ->
+    let enc_mem_bts = List.map (bt_to_coq_ir gl) (List.map snd mems) in
+    CI.Coq_Record enc_mem_bts
+  | BaseTypes.Loc () -> CI.Coq_Loc
+  (* todo: probably not right *)
+  | BaseTypes.Datatype tag -> CI.Coq_Datatype (CI.Coq_sym tag)
+  (* todo: probably not right either*)
+  | BaseTypes.List _bt2 -> CI.Coq_List (bt_to_coq_ir gl bt)
+  | _ -> Coq_BT_unsupported
+
+(* map each mutually recursive list of datatypes to mutually recursive lists of coq_ir *)
+let rec dt_to_coq_ir1 (gl : Global.t) nm = 
+  (* find the info of a datatype *)
+  let dt_info = Sym.Map.find nm gl.datatypes in
+  (* get its params and translate them*)
+  let dt_args = List.map (fun (_, bt) -> bt_to_coq_ir gl bt) dt_info.all_params in
+  (* get its constructor names *)
+  let dt_constrs_nms = dt_info.constrs in
+  (* find the info of a constructor, given its name*)
+  let constr_info constr = Sym.Map.find constr gl.datatype_constrs in
+  (* get the argument types of the constructor *)
+  let constr_argTs constrs_nms = List.map (fun (_, bt) -> (bt_to_coq_ir gl bt)) constrs_nms in
+  let constrs = 
+    List.map (fun c -> CI.Coq_constr (CI.Coq_sym c, constr_argTs (constr_info c).params)) dt_constrs_nms 
+  in
+  CI.Coq_dt(CI.Coq_sym nm, dt_args , constrs)
+
+let rec dtypes_to_coq_ir (gl : Global.t) (dtyps : Sym.t list list) =
+  (* translate one particular clump of mutually recursive definitoins *)
+  let rec dtype_clump_to_coq_ir (gl : Global.t) (nms : Sym.t list) = 
+    List.map (dt_to_coq_ir1 gl) nms
+  in
+  (* wrap them all together into a big list of lists *)
+  List.map (dtype_clump_to_coq_ir gl) dtyps
+
 let it_to_coq_ir global it =
   let rec f comp_bool it =
     let aux t = f comp_bool t in
     let enc_prop = Option.is_none comp_bool in
-  match IT.get_term it with
+  (match IT.get_term it with
+  | IT.Sym s -> CI.Coq_sym (CI.Coq_sym s)
   | IT.Const l ->
     (match l with
       | IT.Bool b -> if enc_prop && BaseTypes.equal (IT.get_bt it) BaseTypes.Bool then
@@ -122,7 +186,7 @@ let it_to_coq_ir global it =
   | IT.ITE (sw, x, y) ->
     let comp = Some (it, "if-condition") in
     CI.Coq_ite (f comp sw, aux x, aux y)
-  | IT.EachI ((i1, (s, t), i2), x) -> CI.Coq_eachI((i1, (CI.Coq_sym s, t), i2), aux x)
+  | IT.EachI ((i1, (s, t), i2), x) -> CI.Coq_eachI((i1, (CI.Coq_sym s, bt_to_coq_ir global t), i2), aux x)
   | IT.MapSet (m, x, y) -> CI.Coq_mapset(aux m, aux x, aux y)
   | IT.MapGet (m, x) -> CI.Coq_mapget(aux m, aux x)
   | IT.RecordMember (t, m) -> CI.Coq_recordmember(aux t, CI.Coq_id m)
@@ -130,28 +194,29 @@ let it_to_coq_ir global it =
   | IT.Record mems -> CI.Coq_record (List.map aux (List.map snd mems))
   | IT.StructMember (t, m) -> CI.Coq_structmember(aux t, CI.Coq_id m)
   | IT.StructUpdate ((t, m), x) -> CI.Coq_structupdate((aux t , CI.Coq_id m), aux x)
-  | IT.Cast (cbt, t) -> CI.Coq_cast (cbt, aux t)
+  | IT.Cast (cbt, t) -> CI.Coq_cast (bt_to_coq_ir global cbt, aux t)
   | IT.Apply (name, args) -> 
     let body_aux = f (Some (it, "fun-arg")) in
     let open Definition.Function in
     let def = Sym.Map.find name global.Global.logical_functions in
-    let arg_types = List.map (fun (name, bt) -> (CI.Coq_sym (CI.Coq_sym name),bt)) def.args in
+    let arg_types = List.map (fun (name, bt) -> 
+      (CI.Coq_sym (CI.Coq_sym name), bt_to_coq_ir global bt)) def.args in
     (match def.body with
       | Uninterp -> 
           if fun_prop_ret global name then
             CI.Coq_app_uninterp (CI.Coq_sym name, arg_types, 
-                                List.map body_aux args, def.return_bt)
+                                List.map body_aux args, bt_to_coq_ir global def.return_bt)
           else
             CI.Coq_app_uninterp_prop (CI.Coq_sym name, arg_types, List.map body_aux args)
       | Def body -> CI.Coq_app_def (CI.Coq_sym name, aux body, arg_types, List.map body_aux args)
       | Rec_Def _ -> CI.Coq_app_recdef)
   | IT.Good (ct, t2) when Option.is_some (Sctypes.is_struct_ctype ct) -> 
       (match (Sctypes.is_struct_ctype ct) with
-        | Some s -> CI.Coq_good (s, BaseTypes.Struct s, aux t2)
+        | Some s -> CI.Coq_good (CI.Coq_sym s, CI.Coq_Struct (CI.Coq_sym s, []), aux t2)
         | None -> CI.Coq_unsupported)
   | IT.Representable (ct, t2) when Option.is_some (Sctypes.is_struct_ctype ct) ->
       (match (Sctypes.is_struct_ctype ct) with
-      | Some s -> CI.Coq_representable (s, BaseTypes.Struct s, aux t2)
+      | Some s -> CI.Coq_representable (CI.Coq_sym s, CI.Coq_Struct (CI.Coq_sym s, []), aux t2)
       | None -> CI.Coq_unsupported)
   | IT.Constructor (nm, id_args) ->
     let comp = Some (it, "datatype contents") in
@@ -167,14 +232,14 @@ let it_to_coq_ir global it =
   | IT.ArrayShift { base; ct; index } ->
     let size_of_ct = Z.of_int @@ Memory.size_of_ctype ct in
     CI.Coq_arrayshift (aux base, size_of_ct, aux index)
-  | _ -> CI.Coq_unsupported
+  | _ -> CI.Coq_unsupported)
   in
   (f None it)
 
 let lc_to_coq_ir (gl : Global.t) (t: LC.t) =
   match t with
   | LC.T t -> it_to_coq_ir gl t
-  | LC.Forall ((sym, bt), it) -> CI.Coq_forall (CI.Coq_sym sym, bt, it_to_coq_ir gl it)
+  | LC.Forall ((sym, bt), it) -> CI.Coq_forall (CI.Coq_sym sym, bt_to_coq_ir gl bt, it_to_coq_ir gl it)
 
 let rec lrt_to_coq_ir (gl : Global.t) (t: LRT.t) =
   match t with
@@ -206,7 +271,7 @@ let rec lemmat_to_coq_ir (gl : Global.t) (ftyp : AT.lemmat) =
   match ftyp with
   | AT.Computational ((sym, bt), _, t) ->
     let d = lemmat_to_coq_ir gl t in
-    CI.Coq_forall (CI.Coq_sym sym, bt, d)
+    CI.Coq_forall (CI.Coq_sym sym, bt_to_coq_ir gl bt, d)
   | AT.L t -> lat_to_coq_ir gl t
 
 let cn_to_coq_ir (global : Global.t) (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
