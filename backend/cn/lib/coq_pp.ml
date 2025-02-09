@@ -124,21 +124,21 @@ let tuple_coq_ty doc fld_tys =
   in
   parens (flow (break 1) (stars fld_tys))  
 
-let rec bt_to_coq (gl: Global.t) (bt : CI.coq_bt) =
+let rec bt_to_coq (bt : CI.coq_bt) =
   let open Pp in
   match bt with
   | CI.Coq_Bool -> !^"bool"
   | CI.Coq_Integer -> !^"Z"
   | CI.Coq_Bits -> !^"Z"
   | CI.Coq_Map (x, y) ->
-    let enc_x = bt_to_coq gl x in
-    let enc_y = bt_to_coq gl y in
+    let enc_x = bt_to_coq x in
+    let enc_y = bt_to_coq y in
     (parens (binop "->" enc_x enc_y))
   | CI.Coq_Struct (CI.Coq_sym tag, fld_bts) ->
-    let enc_fld_bts = List.map (bt_to_coq gl) fld_bts in
+    let enc_fld_bts = List.map bt_to_coq fld_bts in
     (tuple_coq_ty (Sym.pp tag) enc_fld_bts)
   | CI.Coq_Record mems ->
-    let enc_mem_bts = List.map (bt_to_coq gl) mems in
+    let enc_mem_bts = List.map bt_to_coq mems in
     (tuple_coq_ty !^"record" enc_mem_bts)
   | CI.Coq_Loc -> !^"CN_Lib.Loc"
   (* todo: probably not right *)
@@ -147,58 +147,16 @@ let rec bt_to_coq (gl: Global.t) (bt : CI.coq_bt) =
     parensM (build ([ (Sym.pp tag) ] @ [ p ] ))*)
     Sym.pp tag
   (* todo: probably not right either*)
-  | CI.Coq_List _bt2 -> bt_to_coq gl _bt2
+  | CI.Coq_List _bt2 -> bt_to_coq _bt2
   | _ -> Pp.string "unsupported_basetype"
-
-and pp_datatype (global : Global.t) dt_tag =
-  let family = Global.mutual_datatypes global dt_tag in
-  let bt_to_coq2 bt =
-    match BT.is_datatype_bt bt with
-    | Some dt_tag2 ->
-      if List.exists (Sym.equal dt_tag2) family then
-        (Sym.pp dt_tag2)
-      else
-        bt_to_coq global bt
-    | _ -> bt_to_coq global bt
-  in
-  let open Pp in
-       let cons_line dt_tag c_tag =
-         let info = Sym.Map.find c_tag global.datatype_constrs in
-         let argTs = List.map (fun (_, bt) -> bt_to_coq2 bt) info.params in
-           (!^"    | "
-            ^^ Sym.pp c_tag
-            ^^^ colon
-            ^^^ flow !^" -> " (argTs @ [ Sym.pp dt_tag ]))
-       in
-       let dt_eqs =
-         List.map
-           (fun dt_tag ->
-             let info = Sym.Map.find dt_tag global.datatypes in
-             let c_lines = List.map (cons_line dt_tag) info.constrs in
-               (!^"    "
-                ^^ Sym.pp dt_tag
-                ^^^ colon
-                ^^^ !^"Type :="
-                ^^ hardline
-                ^^ flow hardline c_lines))
-           family
-       in
-         (flow
-            hardline
-            (List.mapi
-               (fun i doc ->
-                 !^(if i = 0 then "  Inductive" else "    with") ^^ hardline ^^ doc)
-               dt_eqs)
-          ^^ !^"."
-          ^^ hardline)
 
 let pp_let sym rhs_doc doc =
   let open Pp in
   !^"let" ^^^ Sym.pp sym ^^^ !^":=" ^^^ rhs_doc ^^^ !^"in" ^^^ doc
 
-let pp_forall global sym bt doc =
+let pp_forall sym bt doc =
   let open Pp in
-  let coq_bt = bt_to_coq global bt in
+  let coq_bt = bt_to_coq bt in
   (!^"forall" ^^^ parens (typ (Sym.pp sym) coq_bt) ^^ !^"," ^^ break 1 ^^ doc)
 
 let rec pat_to_coq (pat : CI.coq_pat) = match pat with
@@ -259,7 +217,7 @@ let lemma_to_coq global (t : CI.coq_term) =
   | CI.Coq_ite (sw, x, y) -> 
       parensM (build [ rets "if"; aux sw; rets "then"; aux x; rets "else"; aux y ])
   | CI.Coq_eachI ((i1, (CI.Coq_sym s, _), i2), x) -> 
-      let enc = pp_forall global s CI.Coq_Integer (binop
+      let enc = pp_forall s CI.Coq_Integer (binop
         "->"
         (binop
           "/\\"
@@ -338,7 +296,7 @@ let lemma_to_coq global (t : CI.coq_term) =
   | CI.Coq_let (CI.Coq_sym nm, x, y) -> parensM (pp_let nm (aux x) (aux y))
   | CI.Coq_arrayshift (base, ct, index) -> 
     f_appM "CN_Lib.array_shift" [ aux base; enc_z ct; aux index ]
-  | CI.Coq_forall (CI.Coq_sym sym, bt, t) -> pp_forall global sym bt (aux t)
+  | CI.Coq_forall (CI.Coq_sym sym, bt, t) -> pp_forall sym bt (aux t)
   | CI.Coq_Define (CI.Coq_sym sym, x, y) -> map_split (pp_let sym (aux x)) (aux y)
   | CI.Coq_Constraint_LRT (t1, t2) -> mk_and (aux t1) (aux t2)
   | CI.Coq_Constraint_LAT (t1, t2) -> mk_imp (aux t1) (aux t2)
@@ -347,8 +305,8 @@ let lemma_to_coq global (t : CI.coq_term) =
   | CI.Coq_unsupported -> rets "Unsupported term")
   in f global t
   
-let convert_lemma_defs global (lemmas : (Sym.t * Cerb_location.t * CI.coq_term) list) =
-  let lemma_ty (nm, _, tm) =
+let convert_lemma_defs global (lemmas : CI.coq_lemmata list) =
+  let lemma_ty (CI.Coq_lemmata (CI.Coq_sym nm, tm)) =
     Pp.progress_simple ("converting lemma type") (Sym.pp_string nm);
     let rhs = lemma_to_coq global tm in
     (defn (Sym.pp_string nm ^ "_type") [] (Some (Pp.string "Prop")) rhs)
@@ -358,12 +316,38 @@ let convert_lemma_defs global (lemmas : (Sym.t * Cerb_location.t * CI.coq_term) 
 
 (* print datatypes *)  
 
-
-let translate_datatypes (global : Global.t) =
-  match (global.datatype_order) with
-  | Some s -> let flat_datatypes = List.flatten(s) in
-              List.map (fun tag -> pp_datatype global tag) flat_datatypes
-  | None -> [ Pp.hardline ]
+let translate_datatypes (dtys: CI.coq_dt list list) =
+  let open Pp in
+  let cons_line dt_tag (CI.Coq_constr(CI.Coq_sym(nm),params)) =
+    let argTs = List.map (fun bt -> bt_to_coq bt) params in
+      (!^"    | "
+       ^^ Sym.pp nm
+       ^^^ colon
+       ^^^ flow !^" -> " (argTs @ [ Sym.pp dt_tag ]))
+  in
+  let dt_eqs (CI.Coq_dt(CI.Coq_sym nm, _, constr)) = 
+             let c_lines = List.map (cons_line nm) constr in
+               (!^"    "
+                ^^ Sym.pp nm
+                ^^^ colon
+                ^^^ !^"Type :="
+                ^^ hardline
+                ^^ flow hardline c_lines)
+  in
+  let print_dt dty =  (flow
+      hardline
+      (List.mapi
+          (fun i doc ->
+            !^(if i = 0 then "  Inductive" else "    with") ^^ hardline ^^ doc)
+          (List.map dt_eqs dty))
+    ^^ !^"."
+    ^^ hardline)
+          in
+  let rec f (dtys: CI.coq_dt list list) =
+    (match dtys with
+    | [] -> []
+    | x :: xs -> print_dt x :: f xs) in
+  f dtys
 
 (* Main function *)
 let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
@@ -371,11 +355,13 @@ let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemm
   let filename, _kinds = parse_directions directions in
   let channel = open_out filename in
   Pp.print channel (header filename);
+
+  (* translate everything to coq AST*)
+  let CI.Coq_everything(dtys, _, _, lemmas) = CC.cn_to_coq_ir global lemmata in
   (* print datatypes *)
-  let dtypes = translate_datatypes global in
+  let dtypes = translate_datatypes dtys in
   Pp.print channel (types_spec dtypes);
   (* print lemmas *)
-  let lemmas = CC.cn_to_coq_ir global lemmata in
   let translated_lemmas = convert_lemma_defs global lemmas in
   Pp.print channel (defs_module [] translated_lemmas);
-  Pp.print channel (mod_spec (List.map (fun (nm,_,_) -> nm) lemmas));
+  Pp.print channel (mod_spec (List.map (fun (CI.Coq_lemmata (CI.Coq_sym nm,_)) -> nm) lemmas));

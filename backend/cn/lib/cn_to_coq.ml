@@ -74,7 +74,7 @@ let rec bt_to_coq_ir (gl: Global.t) (bt : BT.t) =
   | _ -> Coq_BT_unsupported
 
 (* map each mutually recursive list of datatypes to mutually recursive lists of coq_ir *)
-let rec dt_to_coq_ir1 (gl : Global.t) nm = 
+let dt_to_coq_ir (gl : Global.t) nm = 
   (* find the info of a datatype *)
   let dt_info = Sym.Map.find nm gl.datatypes in
   (* get its params and translate them*)
@@ -90,10 +90,10 @@ let rec dt_to_coq_ir1 (gl : Global.t) nm =
   in
   CI.Coq_dt(CI.Coq_sym nm, dt_args , constrs)
 
-let rec dtypes_to_coq_ir (gl : Global.t) (dtyps : Sym.t list list) =
+let dtypes_to_coq_ir (gl : Global.t) (dtyps : Sym.t list list) =
   (* translate one particular clump of mutually recursive definitoins *)
-  let rec dtype_clump_to_coq_ir (gl : Global.t) (nms : Sym.t list) = 
-    List.map (dt_to_coq_ir1 gl) nms
+  let dtype_clump_to_coq_ir (gl : Global.t) (nms : Sym.t list) = 
+    List.map (dt_to_coq_ir gl) nms
   in
   (* wrap them all together into a big list of lists *)
   List.map (dtype_clump_to_coq_ir gl) dtyps
@@ -277,14 +277,24 @@ let rec lemmat_to_coq_ir (gl : Global.t) (ftyp : AT.lemmat) =
 let cn_to_coq_ir (global : Global.t) (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
   = 
   (* 1. Translate the datatypes *)
+  let translated_dtypes = 
+    if Option.is_some global.datatype_order 
+      then
+    dtypes_to_coq_ir global (Option.get global.datatype_order)
+      else
+    []
+   in
 
   (* 2. Translate the logical functions *)
 
   (* 3. Translate the resource predicates (todo) *)
   (* 4. Translate the lemma statement *)
-  let translate_lemmas (gl : Global.t) ((sym : Sym.t), (loc, lemmat)) = 
-    let d = lemmat_to_coq_ir gl lemmat in
-    (sym, loc, d)
+  let translate_lemmas ((sym : Sym.t), (_, lemmat)) = 
+    let d = lemmat_to_coq_ir global lemmat in
+    CI.Coq_lemmata (CI.Coq_sym sym, d)
   in
   (* gives a list of pairs: (lemma name, translated lemma)*)
-  List.map (translate_lemmas global) lemmata
+  CI.Coq_everything(translated_dtypes, 
+                    [], 
+                    [], 
+                    List.map translate_lemmas lemmata)

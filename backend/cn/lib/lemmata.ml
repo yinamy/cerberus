@@ -853,7 +853,7 @@ let ensure_struct_mem is_good global list_mono loc ct aux =
     return op_nm
 
 
-let rec unfold_if_possible global it =
+(*let rec unfold_if_possible global it =
   let open IT in
   let open Definition.Function in
   match it with
@@ -863,7 +863,7 @@ let rec unfold_if_possible global it =
      | Rec_Def _ -> it
      | Uninterp -> it
      | Def body -> unfold_if_possible global (open_ def.args body args))
-  | _ -> it
+  | _ -> it*)
 
 
 let mk_forall global list_mono loc sym bt doc =
@@ -1353,7 +1353,6 @@ type scanned =
 let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
   =
   Result.Ok (CP.generate global directions lemmata)
-
   (* let open Mu in *)
   (*let filename, _kinds = parse_directions directions in
   let channel = open_out filename in

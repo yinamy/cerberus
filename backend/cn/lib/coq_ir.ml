@@ -29,16 +29,6 @@ type coq_bt =
   | Coq_List of coq_bt
   | Coq_BT_unsupported
 
-(* A datatype definition is a name, its dt_info, and its constructors with all associated info *)
-(* This is different from Coq_Datatype above, which only includes the datatype's name *)
-type coq_constr = 
-  | Coq_constr of coq_sym * coq_bt list
-
-(* A datatype is a name, its parameters, and its constructors *)
-
-type coq_dt =
-  | Coq_dt of coq_sym * coq_bt list * coq_constr list
-
 (* Terms that can appear in lemmas *)
 
 type coq_const = 
@@ -115,7 +105,7 @@ type coq_term =
   | Coq_Constraint_LAT of coq_term * coq_term
   | Coq_I
 
-(* Logical constraints in Coq *)  
+(* Logical constraints in Coq (todo do I need this?) *)  
 (*type coq_LC =
   | Coq_forall of coq_sym * BT.t * coq_LC
   | Coq_T of coq_term
@@ -133,16 +123,15 @@ type coq_LAT =
   | Coq_Resource
   | Coq_Constraint of coq_LC * coq_LAT
   | Coq_I of coq_LAT
-  | Coq_unsupported
+  | Coq_unsupported*)
 
-(* CN datatypes*)
-type coq_constr =
-  | Coq_constr of (coq_sym * BT.constr_info) list
+(* CN datatypes *)
+(* note: this is different from Coq_Datatype in coq_term *)
+type coq_constr = 
+  | Coq_constr of coq_sym * coq_bt list
 
-(* CN datatype info *)
-(* A datatype is a name, its dt_info, and its constructors with all associated info *)
-type coq_dt = 
-  | Coq_dt of (coq_sym * BT.dt_info * coq_constr list)
+type coq_dt =
+  | Coq_dt of coq_sym * coq_bt list * coq_constr list
 
 (* CN logical functions *)
 type coq_logicfun = 
@@ -150,9 +139,16 @@ type coq_logicfun =
 
 (* CN resource predicates (unimplemented) *)
 type coq_resource_pred = 
-  | Coq_resource_pred*)
+  | Coq_resource_pred
+
+(* CN lemmas *)
+type coq_lemmata = 
+  | Coq_lemmata of coq_sym * coq_term
 
 (* CN global typing context *)
-(*type coq_global_ctx =
-  | Coq_global_ctx of (coq_dt list) * (coq_logicfun list) * (coq_resource_pred list)*)
+type coq_everything =
+  | Coq_everything of (coq_dt list) list
+                    * (coq_logicfun list) 
+                    * (coq_resource_pred list) 
+                    * coq_lemmata list
   
