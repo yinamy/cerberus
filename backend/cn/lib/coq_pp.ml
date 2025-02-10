@@ -71,6 +71,22 @@ let mod_spec lemma_nms =
   ^^ hardline
   ^^ hardline
 
+let param_spec params =
+  let open Pp in
+  !^"Module Type Parameters."
+  ^^ hardline
+  ^^ !^"  Import Types."
+  ^^ hardline
+  ^^ hardline
+  ^^ (if List.length params == 0 then
+        !^"  (* no parameters required *)" ^^ hardline
+      else
+        flow hardline params)
+  ^^ hardline
+  ^^ !^"End Parameters."
+  ^^ hardline
+  ^^ hardline  
+
 let fail msg details =
   let open Pp in
   print stdout (format [ Bold; Red ] msg ^^ colon ^^ space ^^ details);
@@ -329,45 +345,48 @@ let translate_datatypes (dtys: CI.coq_dt list list) =
   f dtys
 
 (* print function definitions *)
-let translate_functions (gl : Global.t) (funs: CI.coq_logical_fun list list) =
+
+let translate_fun (gl : Global.t) (funs: CI.coq_fun list list * CI.coq_fun list list) =
   let open Pp in
-  let translate_fun (CI.Coq_logical_fun(CI.Coq_sym(nm), logical_fun, args, ret_typ)) =
-    (match logical_fun with
-    | CI.Coq_uninterp -> 
-      let coq_arg_typs = List.map (fun (_, bt) -> bt_to_coq bt) args in
-      let coq_rt = bt_to_coq ret_typ in
-      let ty = List.fold_right (fun at rt -> at ^^^ !^"->" ^^^ rt) coq_arg_typs coq_rt in
-      (!^"  Parameter" ^^^ typ (Sym.pp nm) ty ^^ !^"." ^^ hardline)
-    | CI.Coq_uninterp_prop -> 
-      let coq_arg_typs = List.map (fun (_, bt) -> bt_to_coq bt) args in
-      let coq_rt = !^"Prop" in
-      let ty = List.fold_right (fun at rt -> at ^^^ !^"->" ^^^ rt) coq_arg_typs coq_rt in
-      (!^"  Parameter" ^^^ typ (Sym.pp nm) ty ^^ !^"." ^^ hardline)
-    | CI.Coq_def body -> 
-      let coq_body = lemma_to_coq gl body in
-      let coq_args =
-        List.map
-          (fun ((CI.Coq_sym arg), bt) ->
-            let coq_bt = bt_to_coq bt in
-            (Pp.parens (Pp.typ (Sym.pp arg) coq_bt)))
-          args in
-      (defn (Sym.pp_string nm) coq_args None coq_body)
-    | CI.Coq_recdef -> rets "Recdefs are unsupported"
+  let translate_one cf = 
+  (match cf with
+    | CI.Coq_fun_def (CI.Coq_sym nm, logical_fun, args, _) -> 
+      (match logical_fun with
+      | CI.Coq_def body -> 
+        let coq_body = lemma_to_coq gl body in
+        let coq_args =
+          List.map
+            (fun ((CI.Coq_sym arg), bt) ->
+              let coq_bt = bt_to_coq bt in
+              (Pp.parens (Pp.typ (Sym.pp arg) coq_bt)))
+            args in
+        ((defn (Sym.pp_string nm) coq_args None coq_body))
+      | CI.Coq_recdef -> (rets "Recdefs are unsupported")
+      )
+    | CI.Coq_fun_uninterp (CI.Coq_sym nm, logical_fun, args, ret_typ) -> 
+      (match logical_fun with
+      | CI.Coq_uninterp -> 
+        let coq_arg_typs = List.map (fun (_, bt) -> bt_to_coq bt) args in
+        let coq_rt = bt_to_coq ret_typ in
+        let ty = List.fold_right (fun at rt -> at ^^^ !^"->" ^^^ rt) coq_arg_typs coq_rt in
+        ((!^"  Parameter" ^^^ typ (Sym.pp nm) ty ^^ !^"." ^^ hardline))
+      | CI.Coq_uninterp_prop -> 
+        let coq_arg_typs = List.map (fun (_, bt) -> bt_to_coq bt) args in
+        let coq_rt = !^"Prop" in
+        let ty = List.fold_right (fun at rt -> at ^^^ !^"->" ^^^ rt) coq_arg_typs coq_rt in
+        ((!^"  Parameter" ^^^ typ (Sym.pp nm) ty ^^ !^"." ^^ hardline)))
     )
   in
-  let print_fun fun_clump =  (flow
+  let print clump =  (flow
       hardline
       (List.mapi
           (fun i doc ->
-            !^(if i = 0 then "" else "    with") ^^ hardline ^^ doc)
-          (List.map translate_fun fun_clump))
+            !^(if i = 0 then "" else "    with") ^^ doc)
+          (List.map translate_one clump))
     ^^ hardline)
   in
-  let rec f (funs: CI.coq_logical_fun list list) =
-    (match funs with
-    | [] -> []
-    | x :: xs -> print_fun x :: f xs) in
-  f funs
+  (List.map print (fst funs), 
+   List.map print (snd funs))
   
 (* Main function *)
 let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
@@ -381,9 +400,13 @@ let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemm
   (* print datatypes *)
   let dtypes = translate_datatypes dtys in
   Pp.print channel (types_spec dtypes);
-  (* print logical functions *)
-  let funs = translate_functions global funs in
-  (* print lemmas *)
+  (* print uninterpreted logical functions as parameters *)
+  let translated_funs = translate_fun global funs in
+  Pp.print channel (param_spec (fst translated_funs));
+  (*let uninterp_defs = translate_fun_uninterp (fst funs) in
+  Pp.print channel (param_spec uninterp_defs);
+  (* print lemmas and defined logical functions*)
+  let fun_defs = translate_fun_defs global (snd funs) in*)
   let translated_lemmas = convert_lemma_defs global lemmas in
-  Pp.print channel (defs_module funs translated_lemmas);
+  Pp.print channel (defs_module (snd translated_funs) translated_lemmas);
   Pp.print channel (mod_spec (List.map (fun (CI.Coq_lemmata (CI.Coq_sym nm,_)) -> nm) lemmas));

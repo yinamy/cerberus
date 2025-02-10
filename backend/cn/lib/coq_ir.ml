@@ -129,19 +129,23 @@ type coq_constr =
   | Coq_constr of coq_sym * coq_bt list
 
 type coq_dt =
-(* parameteres: name, list of argument types, list of constructors *)
+(* parameters: name, list of argument types, list of constructors *)
   | Coq_dt of coq_sym * coq_bt list * coq_constr list
 
 (* CN logical functions *)
-type coq_fun =
+
+type coq_uninterp = 
   | Coq_uninterp
   | Coq_uninterp_prop
-  | Coq_def of coq_term
-  | Coq_recdef (* unsupported! *)
 
-type coq_logical_fun = 
-  (* parameters: function name, function body, argument typess, return type*)
-  | Coq_logical_fun of coq_sym * coq_fun * (coq_sym * coq_bt) list * coq_bt
+type coq_def = 
+  | Coq_def of coq_term
+  | Coq_recdef
+
+type coq_fun =
+(* parameters: function name, function body, argument typess, return type*)
+  | Coq_fun_uninterp of coq_sym * coq_uninterp * (coq_sym * coq_bt) list * coq_bt
+  | Coq_fun_def of coq_sym * coq_def * (coq_sym * coq_bt) list * coq_bt
 
 (* CN resource predicates (unimplemented) *)
 type coq_resource_pred = 
@@ -155,7 +159,8 @@ type coq_lemmata =
 (* CN global typing context *)
 type coq_everything =
   | Coq_everything of (coq_dt list) list
-                    * (coq_logical_fun list) list
+                    (* uninterpreted functions vs defined functions*)
+                    * ((coq_fun list) list * (coq_fun list) list)
                     * (coq_resource_pred list) 
                     * coq_lemmata list
   

@@ -278,25 +278,25 @@ let fun_to_coq_ir (gl : Global.t) nm =
       (CI.Coq_sym nm , bt_to_coq_ir gl bt)) def.args in
   match def.body with
   | Uninterp -> if fun_prop_ret gl nm then
-    CI.Coq_logical_fun 
+    CI.Coq_fun_uninterp
       (CI.Coq_sym nm, 
       CI.Coq_uninterp_prop, 
       arg_tys, 
       bt_to_coq_ir gl def.return_bt)
     else
-    CI.Coq_logical_fun 
+    CI.Coq_fun_uninterp 
       (CI.Coq_sym nm, 
       CI.Coq_uninterp, 
-      [], 
+      arg_tys, 
       bt_to_coq_ir gl def.return_bt)
   | Def body -> 
-      CI.Coq_logical_fun 
+      CI.Coq_fun_def 
         (CI.Coq_sym nm, 
         CI.Coq_def (it_to_coq_ir gl body), 
-        [], 
+        arg_tys, 
         bt_to_coq_ir gl def.return_bt)
   | Rec_Def _ -> 
-      CI.Coq_logical_fun 
+      CI.Coq_fun_def 
         (CI.Coq_sym nm, 
         CI.Coq_recdef, 
         [], 
@@ -307,8 +307,14 @@ let logical_funs_to_coq_ir (gl : Global.t) (funs : Sym.t list list) =
   let logicalfun_clump_to_coq_ir (gl : Global.t) (nms : Sym.t list) = 
     List.map (fun_to_coq_ir gl) nms
   in
-  (* wrap them all together into a big list of lists *)
-  List.map (logicalfun_clump_to_coq_ir gl) funs
+  let is_uninterp a = 
+    (match a with
+    | CI.Coq_fun_uninterp _ -> true
+    | CI.Coq_fun_def _ -> false)
+  in
+  let translated_funs = List.map (logicalfun_clump_to_coq_ir gl) funs in
+  (List.filter (fun x -> is_uninterp (List.hd x)) translated_funs, 
+   List.filter (fun x -> not (is_uninterp (List.hd x))) translated_funs)
 
 let cn_to_coq_ir (global : Global.t) (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
   = 
@@ -327,7 +333,7 @@ let cn_to_coq_ir (global : Global.t) (lemmata : (Sym.t * (Loc.t * AT.lemmat)) li
       then
         logical_funs_to_coq_ir global (Option.get global.logical_function_order)
       else
-    []
+    [],[]
    in
   (* 3. Translate the resource predicates (todo) *)
   (* 4. Translate the lemma statement *)
