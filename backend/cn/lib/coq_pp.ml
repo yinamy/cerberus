@@ -174,7 +174,7 @@ let lemma_to_coq global (t : CI.coq_term) =
     let mk_and doc doc2 = doc ^^^ !^"/\\" ^^^ doc2 in
     let mk_imp doc doc2 = doc ^^^ !^"->" ^^^ doc2 in
   (match t with
-  | CI.Coq_sym (CI.Coq_sym s) -> Sym.pp s
+  | CI.Coq_sym_term (CI.Coq_sym s) -> Sym.pp s
   | Coq_const c -> (match c with
     | Coq_bool b -> (rets (if b then "true" else "false"))
     | Coq_bool_prop b -> f_appM "Is_true" [ (rets (if b then "true" else "false")) ]
@@ -243,33 +243,13 @@ let lemma_to_coq global (t : CI.coq_term) =
       let op_nm = "upd_" ^ (Id.get_string nm) in
       parensM (build [ rets op_nm; aux t; aux x ])
   | CI.Coq_cast (_, x) -> aux x
-  | CI.Coq_app_uninterp (CI.Coq_sym name, _, args, _) -> 
+  | CI.Coq_app_uninterp (CI.Coq_sym name, args) -> 
+    parensM (build ([ (Sym.pp name) ] @ List.map aux args))
+  | CI.Coq_app_uninterp_prop (CI.Coq_sym name, args) -> 
     let r = parensM (build ([ (Sym.pp name) ] @ List.map aux args)) in
-    (*let coq_arg_typs = List.map (fun (_, bt) -> bt_to_coq global bt) arg_typs in
-    let coq_rt = bt_to_coq global ret_typ in
-    let ty = List.fold_right (fun at rt -> at ^^^ !^"->" ^^^ rt) coq_arg_typs coq_rt in
-    let preamble = (!^"  Parameter" ^^^ typ (Sym.pp name) ty ^^ !^"." ^^ hardline) in
-    build [preamble ; r]*)
     build [r]
-  | CI.Coq_app_uninterp_prop (CI.Coq_sym name, _, args) -> 
-    let r = parensM (build ([ (Sym.pp name) ] @ List.map aux args)) in
-    (*let coq_arg_typs = List.map (fun (_, bt) -> bt_to_coq global bt) arg_typs in
-    let coq_rt = !^"Prop" in
-    let ty = List.fold_right (fun at rt -> at ^^^ !^"->" ^^^ rt) coq_arg_typs coq_rt in
-    let preamble = (!^"  Parameter" ^^^ typ (Sym.pp name) ty ^^ !^"." ^^ hardline) in
-    build [preamble ; r]*)
-    build [r]
-  | CI.Coq_app_def (CI.Coq_sym name, _, _, args) -> 
-    let r = parensM (build ([ (Sym.pp name) ] @ List.map aux args)) in
-    r
-    (*let coq_body = aux body in
-    let coq_args =
-      List.map
-        (fun (arg, bt) ->
-          let coq_bt = bt_to_coq global bt in
-          (Pp.parens (Pp.typ (aux arg) coq_bt)))
-        arg_typs in
-    build [ (defn (Sym.pp_string name) coq_args None coq_body) ; r ]*)
+  | CI.Coq_app_def (CI.Coq_sym name, args) -> 
+    parensM (build ([ (Sym.pp name) ] @ List.map aux args))
   | CI.Coq_app_recdef -> rets "Recdefs are unsupported"
   | CI.Coq_good (CI.Coq_sym s, _, t) -> 
       let op_nm = "good_" ^ (Sym.pp_string s) in
@@ -315,7 +295,6 @@ let convert_lemma_defs global (lemmas : CI.coq_lemmata list) =
   tys
 
 (* print datatypes *)  
-
 let translate_datatypes (dtys: CI.coq_dt list list) =
   let open Pp in
   let cons_line dt_tag (CI.Coq_constr(CI.Coq_sym(nm),params)) =
@@ -334,12 +313,12 @@ let translate_datatypes (dtys: CI.coq_dt list list) =
                 ^^ hardline
                 ^^ flow hardline c_lines)
   in
-  let print_dt dty =  (flow
+  let print_dt dty_clump =  (flow
       hardline
       (List.mapi
           (fun i doc ->
             !^(if i = 0 then "  Inductive" else "    with") ^^ hardline ^^ doc)
-          (List.map dt_eqs dty))
+          (List.map dt_eqs dty_clump))
     ^^ !^"."
     ^^ hardline)
           in
@@ -349,6 +328,47 @@ let translate_datatypes (dtys: CI.coq_dt list list) =
     | x :: xs -> print_dt x :: f xs) in
   f dtys
 
+(* print function definitions *)
+let translate_functions (gl : Global.t) (funs: CI.coq_logical_fun list list) =
+  let open Pp in
+  let translate_fun (CI.Coq_logical_fun(CI.Coq_sym(nm), logical_fun, args, ret_typ)) =
+    (match logical_fun with
+    | CI.Coq_uninterp -> 
+      let coq_arg_typs = List.map (fun (_, bt) -> bt_to_coq bt) args in
+      let coq_rt = bt_to_coq ret_typ in
+      let ty = List.fold_right (fun at rt -> at ^^^ !^"->" ^^^ rt) coq_arg_typs coq_rt in
+      (!^"  Parameter" ^^^ typ (Sym.pp nm) ty ^^ !^"." ^^ hardline)
+    | CI.Coq_uninterp_prop -> 
+      let coq_arg_typs = List.map (fun (_, bt) -> bt_to_coq bt) args in
+      let coq_rt = !^"Prop" in
+      let ty = List.fold_right (fun at rt -> at ^^^ !^"->" ^^^ rt) coq_arg_typs coq_rt in
+      (!^"  Parameter" ^^^ typ (Sym.pp nm) ty ^^ !^"." ^^ hardline)
+    | CI.Coq_def body -> 
+      let coq_body = lemma_to_coq gl body in
+      let coq_args =
+        List.map
+          (fun ((CI.Coq_sym arg), bt) ->
+            let coq_bt = bt_to_coq bt in
+            (Pp.parens (Pp.typ (Sym.pp arg) coq_bt)))
+          args in
+      (defn (Sym.pp_string nm) coq_args None coq_body)
+    | CI.Coq_recdef -> rets "Recdefs are unsupported"
+    )
+  in
+  let print_fun fun_clump =  (flow
+      hardline
+      (List.mapi
+          (fun i doc ->
+            !^(if i = 0 then "" else "    with") ^^ hardline ^^ doc)
+          (List.map translate_fun fun_clump))
+    ^^ hardline)
+  in
+  let rec f (funs: CI.coq_logical_fun list list) =
+    (match funs with
+    | [] -> []
+    | x :: xs -> print_fun x :: f xs) in
+  f funs
+  
 (* Main function *)
 let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
   = 
@@ -357,11 +377,13 @@ let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemm
   Pp.print channel (header filename);
 
   (* translate everything to coq AST*)
-  let CI.Coq_everything(dtys, _, _, lemmas) = CC.cn_to_coq_ir global lemmata in
+  let CI.Coq_everything(dtys, funs, _, lemmas) = CC.cn_to_coq_ir global lemmata in
   (* print datatypes *)
   let dtypes = translate_datatypes dtys in
   Pp.print channel (types_spec dtypes);
+  (* print logical functions *)
+  let funs = translate_functions global funs in
   (* print lemmas *)
   let translated_lemmas = convert_lemma_defs global lemmas in
-  Pp.print channel (defs_module [] translated_lemmas);
+  Pp.print channel (defs_module funs translated_lemmas);
   Pp.print channel (mod_spec (List.map (fun (CI.Coq_lemmata (CI.Coq_sym nm,_)) -> nm) lemmas));

@@ -79,14 +79,12 @@ let dt_to_coq_ir (gl : Global.t) nm =
   let dt_info = Sym.Map.find nm gl.datatypes in
   (* get its params and translate them*)
   let dt_args = List.map (fun (_, bt) -> bt_to_coq_ir gl bt) dt_info.all_params in
-  (* get its constructor names *)
-  let dt_constrs_nms = dt_info.constrs in
   (* find the info of a constructor, given its name*)
   let constr_info constr = Sym.Map.find constr gl.datatype_constrs in
   (* get the argument types of the constructor *)
   let constr_argTs constrs_nms = List.map (fun (_, bt) -> (bt_to_coq_ir gl bt)) constrs_nms in
   let constrs = 
-    List.map (fun c -> CI.Coq_constr (CI.Coq_sym c, constr_argTs (constr_info c).params)) dt_constrs_nms 
+    List.map (fun c -> CI.Coq_constr (CI.Coq_sym c, constr_argTs (constr_info c).params)) dt_info.constrs 
   in
   CI.Coq_dt(CI.Coq_sym nm, dt_args , constrs)
 
@@ -98,12 +96,13 @@ let dtypes_to_coq_ir (gl : Global.t) (dtyps : Sym.t list list) =
   (* wrap them all together into a big list of lists *)
   List.map (dtype_clump_to_coq_ir gl) dtyps
 
+(* index terms to coq_ir *)
 let it_to_coq_ir global it =
   let rec f comp_bool it =
     let aux t = f comp_bool t in
     let enc_prop = Option.is_none comp_bool in
   (match IT.get_term it with
-  | IT.Sym s -> CI.Coq_sym (CI.Coq_sym s)
+  | IT.Sym s -> CI.Coq_sym_term (CI.Coq_sym s)
   | IT.Const l ->
     (match l with
       | IT.Bool b -> if enc_prop && BaseTypes.equal (IT.get_bt it) BaseTypes.Bool then
@@ -199,16 +198,13 @@ let it_to_coq_ir global it =
     let body_aux = f (Some (it, "fun-arg")) in
     let open Definition.Function in
     let def = Sym.Map.find name global.Global.logical_functions in
-    let arg_types = List.map (fun (name, bt) -> 
-      (CI.Coq_sym (CI.Coq_sym name), bt_to_coq_ir global bt)) def.args in
     (match def.body with
       | Uninterp -> 
           if fun_prop_ret global name then
-            CI.Coq_app_uninterp (CI.Coq_sym name, arg_types, 
-                                List.map body_aux args, bt_to_coq_ir global def.return_bt)
+            CI.Coq_app_uninterp (CI.Coq_sym name, List.map body_aux args)
           else
-            CI.Coq_app_uninterp_prop (CI.Coq_sym name, arg_types, List.map body_aux args)
-      | Def body -> CI.Coq_app_def (CI.Coq_sym name, aux body, arg_types, List.map body_aux args)
+            CI.Coq_app_uninterp_prop (CI.Coq_sym name, List.map body_aux args)
+      | Def _ -> CI.Coq_app_def (CI.Coq_sym name, List.map body_aux args)
       | Rec_Def _ -> CI.Coq_app_recdef)
   | IT.Good (ct, t2) when Option.is_some (Sctypes.is_struct_ctype ct) -> 
       (match (Sctypes.is_struct_ctype ct) with
@@ -274,6 +270,46 @@ let rec lemmat_to_coq_ir (gl : Global.t) (ftyp : AT.lemmat) =
     CI.Coq_forall (CI.Coq_sym sym, bt_to_coq_ir gl bt, d)
   | AT.L t -> lat_to_coq_ir gl t
 
+(* Logical functions to coq_ir *)
+let fun_to_coq_ir (gl : Global.t) nm =
+  let open Definition.Function in
+  let def = Sym.Map.find nm gl.logical_functions in
+  let arg_tys = List.map (fun (nm, bt) -> 
+      (CI.Coq_sym nm , bt_to_coq_ir gl bt)) def.args in
+  match def.body with
+  | Uninterp -> if fun_prop_ret gl nm then
+    CI.Coq_logical_fun 
+      (CI.Coq_sym nm, 
+      CI.Coq_uninterp_prop, 
+      arg_tys, 
+      bt_to_coq_ir gl def.return_bt)
+    else
+    CI.Coq_logical_fun 
+      (CI.Coq_sym nm, 
+      CI.Coq_uninterp, 
+      [], 
+      bt_to_coq_ir gl def.return_bt)
+  | Def body -> 
+      CI.Coq_logical_fun 
+        (CI.Coq_sym nm, 
+        CI.Coq_def (it_to_coq_ir gl body), 
+        [], 
+        bt_to_coq_ir gl def.return_bt)
+  | Rec_Def _ -> 
+      CI.Coq_logical_fun 
+        (CI.Coq_sym nm, 
+        CI.Coq_recdef, 
+        [], 
+        bt_to_coq_ir gl def.return_bt)
+        
+
+let logical_funs_to_coq_ir (gl : Global.t) (funs : Sym.t list list) =
+  let logicalfun_clump_to_coq_ir (gl : Global.t) (nms : Sym.t list) = 
+    List.map (fun_to_coq_ir gl) nms
+  in
+  (* wrap them all together into a big list of lists *)
+  List.map (logicalfun_clump_to_coq_ir gl) funs
+
 let cn_to_coq_ir (global : Global.t) (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
   = 
   (* 1. Translate the datatypes *)
@@ -286,7 +322,13 @@ let cn_to_coq_ir (global : Global.t) (lemmata : (Sym.t * (Loc.t * AT.lemmat)) li
    in
 
   (* 2. Translate the logical functions *)
-
+   let translated_logical_funs =
+    if Option.is_some global.logical_function_order 
+      then
+        logical_funs_to_coq_ir global (Option.get global.logical_function_order)
+      else
+    []
+   in
   (* 3. Translate the resource predicates (todo) *)
   (* 4. Translate the lemma statement *)
   let translate_lemmas ((sym : Sym.t), (_, lemmat)) = 
@@ -295,6 +337,6 @@ let cn_to_coq_ir (global : Global.t) (lemmata : (Sym.t * (Loc.t * AT.lemmat)) li
   in
   (* gives a list of pairs: (lemma name, translated lemma)*)
   CI.Coq_everything(translated_dtypes, 
-                    [], 
+                    translated_logical_funs, 
                     [], 
                     List.map translate_lemmas lemmata)

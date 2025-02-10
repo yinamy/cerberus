@@ -9,13 +9,6 @@ type coq_sym =
 type coq_id =
   | Coq_id of Id.t
 
-type coq_pat = 
-  | Coq_pSym of coq_sym
-  | Coq_pWild
-  | Coq_pConstructor of coq_sym * (coq_pat list)
-
- 
-
 (* basically just wrapping BaseTypes with a constructor *)
 type coq_bt = 
   | Coq_Bool
@@ -29,7 +22,12 @@ type coq_bt =
   | Coq_List of coq_bt
   | Coq_BT_unsupported
 
-(* Terms that can appear in lemmas *)
+(* Terms that can appear in function definitions/lemmas *)
+
+type coq_pat = 
+  | Coq_pSym of coq_sym
+  | Coq_pWild
+  | Coq_pConstructor of coq_sym * (coq_pat list)
 
 type coq_const = 
   | Coq_bool of bool
@@ -68,7 +66,7 @@ type coq_binop =
   | Coq_impl_prop
 
 type coq_term = 
-  | Coq_sym of coq_sym
+  | Coq_sym_term of coq_sym
   | Coq_const of coq_const
   | Coq_unop of coq_unop * coq_term
   | Coq_binop of coq_binop * coq_term * coq_term
@@ -84,9 +82,9 @@ type coq_term =
   | Coq_structupdate of (coq_term * coq_id) * coq_term
   | Coq_cast of coq_bt * coq_term
   (* name, list of argument types, list of arguments, return type*)
-  | Coq_app_uninterp of coq_sym * (coq_term * coq_bt) list * coq_term list * coq_bt
-  | Coq_app_uninterp_prop of coq_sym * (coq_term * coq_bt) list * coq_term list
-  | Coq_app_def of coq_sym * coq_term * (coq_term * coq_bt) list * coq_term list
+  | Coq_app_uninterp of coq_sym * coq_term list
+  | Coq_app_uninterp_prop of coq_sym * coq_term list
+  | Coq_app_def of coq_sym * coq_term list
   (* currently unsupported*)
   | Coq_app_recdef
   | Coq_good of coq_sym * coq_bt * coq_term
@@ -131,11 +129,19 @@ type coq_constr =
   | Coq_constr of coq_sym * coq_bt list
 
 type coq_dt =
+(* parameteres: name, list of argument types, list of constructors *)
   | Coq_dt of coq_sym * coq_bt list * coq_constr list
 
 (* CN logical functions *)
-type coq_logicfun = 
-  | Coq_logicfun of (coq_sym * Definition.Function.t) list
+type coq_fun =
+  | Coq_uninterp
+  | Coq_uninterp_prop
+  | Coq_def of coq_term
+  | Coq_recdef (* unsupported! *)
+
+type coq_logical_fun = 
+  (* parameters: function name, function body, argument typess, return type*)
+  | Coq_logical_fun of coq_sym * coq_fun * (coq_sym * coq_bt) list * coq_bt
 
 (* CN resource predicates (unimplemented) *)
 type coq_resource_pred = 
@@ -143,12 +149,13 @@ type coq_resource_pred =
 
 (* CN lemmas *)
 type coq_lemmata = 
+(* parameters: lemma name, lemma body *)
   | Coq_lemmata of coq_sym * coq_term
 
 (* CN global typing context *)
 type coq_everything =
   | Coq_everything of (coq_dt list) list
-                    * (coq_logicfun list) 
+                    * (coq_logical_fun list) list
                     * (coq_resource_pred list) 
                     * coq_lemmata list
   
