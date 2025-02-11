@@ -120,13 +120,6 @@ let defn nm args opt_ty rhs =
   ^^ !^"."
   ^^ hardline
 
-let norm_bv_op bt doc_f =
-  match bt with
-  | BT.Bits (sign, sz) ->
-    let minInt, maxInt = BT.bits_range (sign, sz) in
-    f_appM "CN_Lib.wrapI" [ enc_z minInt; enc_z maxInt; doc_f ]
-  | _ -> doc_f
-
 let binop s x y =
   let open Pp in
   parens (flow (break 1) [ x; !^s; y ])
@@ -140,12 +133,24 @@ let tuple_coq_ty doc fld_tys =
   in
   parens (flow (break 1) (stars fld_tys))  
 
+let gen_get_upd ((i, list_len) : int * int) (tm : PPrint.document) =
+  let open Pp in
+  let pp_fst a = parens (build [ rets "fst"; a ]) in
+  let pp_snd a = parens (build [ rets "snd"; a]) in
+  let rec foldi i f acc =
+    if i <= 0 then acc else foldi (pred i) f (f acc)
+  in
+  if i < list_len - 1 then
+    pp_fst (foldi i pp_snd tm)
+  else
+    foldi i pp_snd tm
+
 let rec bt_to_coq (bt : CI.coq_bt) =
   let open Pp in
   match bt with
   | CI.Coq_Bool -> !^"bool"
   | CI.Coq_Integer -> !^"Z"
-  | CI.Coq_Bits -> !^"Z"
+  | CI.Coq_Bits _ -> !^"Z"
   | CI.Coq_Map (x, y) ->
     let enc_x = bt_to_coq x in
     let enc_y = bt_to_coq y in
@@ -157,12 +162,7 @@ let rec bt_to_coq (bt : CI.coq_bt) =
     let enc_mem_bts = List.map bt_to_coq mems in
     (tuple_coq_ty !^"record" enc_mem_bts)
   | CI.Coq_Loc -> !^"CN_Lib.Loc"
-  (* todo: probably not right *)
-  | CI.Coq_Datatype (CI.Coq_sym tag) ->
-    (*let p = pp_datatype gl tag in
-    parensM (build ([ (Sym.pp tag) ] @ [ p ] ))*)
-    Sym.pp tag
-  (* todo: probably not right either*)
+  | CI.Coq_Datatype (CI.Coq_sym tag) -> Sym.pp tag
   | CI.Coq_List _bt2 -> bt_to_coq _bt2
   | _ -> Pp.string "unsupported_basetype"
 
@@ -174,6 +174,18 @@ let pp_forall sym bt doc =
   let open Pp in
   let coq_bt = bt_to_coq bt in
   (!^"forall" ^^^ parens (typ (Sym.pp sym) coq_bt) ^^ !^"," ^^ break 1 ^^ doc)
+
+let norm_bv_op bt doc_f =
+    match bt with
+    | CI.Coq_Bits (sign, sz) ->
+      (match sign with
+      | CI.Coq_Unsigned -> 
+        let minInt, maxInt = BT.bits_range (Unsigned, sz) in
+        f_appM "CN_Lib.wrapI" [ enc_z minInt; enc_z maxInt; doc_f ]
+      | CI.Coq_Signed -> 
+        let minInt, maxInt = BT.bits_range (Signed, sz) in
+        f_appM "CN_Lib.wrapI" [ enc_z minInt; enc_z maxInt; doc_f ])
+  | _ -> doc_f
 
 let rec pat_to_coq (pat : CI.coq_pat) = match pat with
   | Coq_pSym (Coq_sym sym) -> (Sym.pp sym)
@@ -194,14 +206,14 @@ let lemma_to_coq global (t : CI.coq_term) =
   | Coq_const c -> (match c with
     | Coq_bool b -> (rets (if b then "true" else "false"))
     | Coq_bool_prop b -> f_appM "Is_true" [ (rets (if b then "true" else "false")) ]
-    | Coq_Z z -> parensM (rets (Z.to_string z))
+    | Coq_Z z -> enc_z z
     | Coq_bits z -> parensM (rets (Z.to_string z)))
-  | Coq_unop (op, x) -> (match op with
+  | Coq_unop (op, x, bt) -> norm_bv_op bt (match op with
     | CI.Coq_neg -> f_appM "negb" [ aux x ]
     | CI.Coq_neg_prop -> f_appM "~" [ aux x ]
     | CI.Coq_BW_FFS_NoSMT -> f_appM "CN_Lib.find_first_set_z" [ aux x ]
     | CI.Coq_BW_CTZ_NoSMT -> f_appM "CN_Lib.count_trailing_zeroes_z" [ aux x ])
-  | CI.Coq_binop (op, x, y) -> (match op with
+  | CI.Coq_binop (op, x, y, bt) -> norm_bv_op bt (match op with
     | CI.Coq_add -> abinop "+" x y
     | CI.Coq_sub -> abinop "-" x y
     | CI.Coq_mul -> abinop "*" x y
@@ -243,21 +255,27 @@ let lemma_to_coq global (t : CI.coq_term) =
       (parens enc)
   | CI.Coq_mapset (m,x,y) -> f_appM "fun_upd" [ rets "Z.eqb"; aux m; aux x; aux y ]
   | CI.Coq_mapget (m, x) -> parensM (build [ aux m; aux x ])
-  | CI.Coq_recordmember (t, CI.Coq_id nm) -> 
-      let op_nm = "get_" ^ (Id.get_string nm) in
-      parensM (build [ rets op_nm; aux t ])
-  | CI.Coq_recordupdate ((t, CI.Coq_id nm), x) -> 
-      let op_nm = "upd_" ^ (Id.get_string nm) in
-      parensM (build [ rets op_nm; aux t; aux x ])
+  | CI.Coq_recordmember (t, _, ix) -> 
+      (*let op_nm = "get_" ^ (Id.get_string nm) in
+      parensM (build [ rets op_nm; aux t ])*)
+      gen_get_upd ix (aux t)
+  | CI.Coq_recordupdate ((t, _), x, ix) -> 
+      (*let op_nm = "upd_" ^ (Id.get_string nm) in
+      parensM (build [ rets op_nm; aux t; aux x ])*)
+      let op_nm = gen_get_upd ix (aux t) in
+      parensM (build [ op_nm; aux x ])
   | CI.Coq_record l -> 
       let xs = List.map aux l in
       parensM ((flow (comma ^^ break 1) xs))
-  | CI.Coq_structmember (t, CI.Coq_id nm) ->
-      let op_nm = "get_" ^ (Id.get_string nm) in
-      parensM (build [ rets op_nm; aux t ])
-  | CI.Coq_structupdate ((t, CI.Coq_id nm), x) -> 
-      let op_nm = "upd_" ^ (Id.get_string nm) in
-      parensM (build [ rets op_nm; aux t; aux x ])
+  | CI.Coq_structmember (t, _, ix) ->
+      (*let op_nm = "get_" ^ (Id.get_string nm) in
+      parensM (build [ rets op_nm; aux t ])*)
+      gen_get_upd ix (aux t)
+  | CI.Coq_structupdate ((t, _), x, ix) -> 
+      (*let op_nm = "upd_" ^ (Id.get_string nm) in
+      parensM (build [ rets op_nm; aux t; aux x ])*)
+      let op_nm = gen_get_upd ix (aux t) in
+      parensM (build [ op_nm; aux x ])
   | CI.Coq_cast (_, x) -> aux x
   | CI.Coq_app_uninterp (CI.Coq_sym name, args) -> 
     parensM (build ([ (Sym.pp name) ] @ List.map aux args))
@@ -274,12 +292,8 @@ let lemma_to_coq global (t : CI.coq_term) =
       let op_nm = "representable_" ^ (Sym.pp_string s) in
       parensM (build [ rets op_nm; aux t ])
   | CI.Coq_constructor (CI.Coq_sym name, args) -> 
-    (*let preamble = pp_datatype global name in
-    parensM (build ( [ preamble ] @ [ (Sym.pp name) ] @ List.map aux args))*)
     parensM (build ([ (Sym.pp name) ] @ List.map aux args))
-  (* todo: this should somehow include the name of the list according to lemmata.ml*)
   | CI.Coq_nthlist (n, xs, d) -> 
-  (* todo: this too should somehow have names for the nils/cons*)
     parensM (build [ rets "CN_Lib.nth_list_z"; aux n; aux xs; aux d ])
   | CI.Coq_arraytolist (arr, i, len) -> parensM
     (build
@@ -382,8 +396,7 @@ let translate_fun (gl : Global.t) (funs: CI.coq_fun list list * CI.coq_fun list 
       (List.mapi
           (fun i doc ->
             !^(if i = 0 then "" else "    with") ^^ doc)
-          (List.map translate_one clump))
-    ^^ hardline)
+          (List.map translate_one clump)))
   in
   (List.map print (fst funs), 
    List.map print (snd funs))

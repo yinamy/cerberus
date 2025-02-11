@@ -54,7 +54,10 @@ let rec bt_to_coq_ir (gl: Global.t) (bt : BT.t) =
   match bt with
   | BaseTypes.Bool -> CI.Coq_Bool
   | BaseTypes.Integer -> CI.Coq_Integer
-  | BaseTypes.Bits _ -> CI.Coq_Bits
+  | BaseTypes.Bits (sign, i) -> 
+      (match sign with
+      | BT.Signed -> CI.Coq_Bits (CI.Coq_Signed, i)
+      | BT.Unsigned -> CI.Coq_Bits (CI.Coq_Unsigned, i))
   | BaseTypes.Map (x, y) ->
     let enc_x = bt_to_coq_ir gl x in
     let enc_y = bt_to_coq_ir gl y in
@@ -96,11 +99,22 @@ let dtypes_to_coq_ir (gl : Global.t) (dtyps : Sym.t list list) =
   (* wrap them all together into a big list of lists *)
   List.map (dtype_clump_to_coq_ir gl) dtyps
 
+let find_tuple_element
+  (eq : 'a -> 'a -> bool)
+  (x : 'a)
+  (ys : 'a list)
+  =
+  let n_ys = List.mapi (fun i y -> (i, y)) ys in
+  match List.find_opt (fun (_i, y) -> eq x y) n_ys with
+  | None -> (0,0)
+  | Some (i, _) -> (i, List.length ys)
+
 (* index terms to coq_ir *)
 let it_to_coq_ir global it =
   let rec f comp_bool it =
     let aux t = f comp_bool t in
     let enc_prop = Option.is_none comp_bool in
+    let bt = bt_to_coq_ir global (IT.get_bt it) in
   (match IT.get_term it with
   | IT.Sym s -> CI.Coq_sym_term (CI.Coq_sym s)
   | IT.Const l ->
@@ -116,67 +130,67 @@ let it_to_coq_ir global it =
     let x = aux a in
     (match op with
     | IT.Not -> (if enc_prop then
-        CI.Coq_unop (CI.Coq_neg_prop , x)
+        CI.Coq_unop (CI.Coq_neg_prop , x, bt)
           else 
-        CI.Coq_unop (CI.Coq_neg , x))
-    | IT.BW_FFS_NoSMT -> CI.Coq_unop (CI.Coq_BW_FFS_NoSMT , x)
-    | IT.BW_CTZ_NoSMT -> CI.Coq_unop (CI.Coq_BW_CTZ_NoSMT , x)
+        CI.Coq_unop (CI.Coq_neg , x, bt))
+    | IT.BW_FFS_NoSMT -> CI.Coq_unop (CI.Coq_BW_FFS_NoSMT , x, bt)
+    | IT.BW_CTZ_NoSMT -> CI.Coq_unop (CI.Coq_BW_CTZ_NoSMT , x, bt)
     | _ -> CI.Coq_unsupported)
   | IT.Binop (op, a, b) ->
     let x = aux a in
     let y = aux b in
     (match op with
-    | Add -> CI.Coq_binop (CI.Coq_add, x , y)
-    | Sub -> CI.Coq_binop (CI.Coq_sub, x , y)
-    | Mul -> CI.Coq_binop (CI.Coq_mul, x , y)
-    | MulNoSMT -> CI.Coq_binop (CI.Coq_mul, x , y)
-    | Div -> CI.Coq_binop (CI.Coq_div, x , y)
-    | DivNoSMT -> CI.Coq_binop (CI.Coq_div, x , y)
-    | Mod -> CI.Coq_binop (CI.Coq_mod, x , y)
-    | ModNoSMT -> CI.Coq_binop (CI.Coq_mod, x , y)
+    | Add -> CI.Coq_binop (CI.Coq_add, x , y, bt)
+    | Sub -> CI.Coq_binop (CI.Coq_sub, x , y, bt)
+    | Mul -> CI.Coq_binop (CI.Coq_mul, x , y, bt)
+    | MulNoSMT -> CI.Coq_binop (CI.Coq_mul, x , y, bt)
+    | Div -> CI.Coq_binop (CI.Coq_div, x , y, bt)
+    | DivNoSMT -> CI.Coq_binop (CI.Coq_div, x , y, bt)
+    | Mod -> CI.Coq_binop (CI.Coq_mod, x , y, bt)
+    | ModNoSMT -> CI.Coq_binop (CI.Coq_mod, x , y, bt)
     (* TODO: this can't be right: mod and rem aren't the same
       - maybe they have the same semantics as Coq Z.modulo/Z.rem *)
-    | Rem -> CI.Coq_binop (CI.Coq_rem, x , y)
-    | RemNoSMT -> CI.Coq_binop (CI.Coq_mod, x , y)
+    | Rem -> CI.Coq_binop (CI.Coq_rem, x , y, bt)
+    | RemNoSMT -> CI.Coq_binop (CI.Coq_mod, x , y, bt)
     | LT -> (if enc_prop then
-                CI.Coq_binop (CI.Coq_lt_prop, x , y) 
+                CI.Coq_binop (CI.Coq_lt_prop, x , y, bt) 
               else 
-                CI.Coq_binop (CI.Coq_lt, x , y))
+                CI.Coq_binop (CI.Coq_lt, x , y, bt))
     | LE -> (if enc_prop then
-                CI.Coq_binop (CI.Coq_le_prop, x , y) 
+                CI.Coq_binop (CI.Coq_le_prop, x , y, bt) 
               else 
-                CI.Coq_binop (CI.Coq_le, x , y))
-    | Exp -> CI.Coq_binop (CI.Coq_exp, x , y)
-    | ExpNoSMT -> CI.Coq_binop (CI.Coq_exp, x , y)
-    | BW_Xor -> CI.Coq_binop (CI.Coq_bwxor, x , y)
-    | BW_And -> CI.Coq_binop (CI.Coq_bwand, x , y)
-    | BW_Or -> CI.Coq_binop (CI.Coq_bwor, x , y)
+                CI.Coq_binop (CI.Coq_le, x , y, bt))
+    | Exp -> CI.Coq_binop (CI.Coq_exp, x , y, bt)
+    | ExpNoSMT -> CI.Coq_binop (CI.Coq_exp, x , y, bt)
+    | BW_Xor -> CI.Coq_binop (CI.Coq_bwxor, x , y, bt)
+    | BW_And -> CI.Coq_binop (CI.Coq_bwand, x , y, bt)
+    | BW_Or -> CI.Coq_binop (CI.Coq_bwor, x , y, bt)
     | EQ ->
       let comp = Some (it, "argument of equality") in
       (if enc_prop then
-        CI.Coq_binop (CI.Coq_eq_prop, f comp a , f comp b) 
+        CI.Coq_binop (CI.Coq_eq_prop, f comp a , f comp b, bt) 
       else 
-        CI.Coq_binop (CI.Coq_eq, f comp a , f comp b))
+        CI.Coq_binop (CI.Coq_eq, f comp a , f comp b, bt))
     | LEPointer -> (if enc_prop then
-                CI.Coq_binop (CI.Coq_le_prop, x , y) 
+                CI.Coq_binop (CI.Coq_le_prop, x , y, bt) 
               else 
-                CI.Coq_binop (CI.Coq_le, x , y))
+                CI.Coq_binop (CI.Coq_le, x , y, bt))
     | LTPointer -> (if enc_prop then
-                CI.Coq_binop (CI.Coq_lt_prop, x , y) 
+                CI.Coq_binop (CI.Coq_lt_prop, x , y, bt) 
             else 
-                CI.Coq_binop (CI.Coq_lt, x , y))
+                CI.Coq_binop (CI.Coq_lt, x , y, bt))
     | And -> (if enc_prop then
-                CI.Coq_binop (CI.Coq_and_prop, x , y) 
+                CI.Coq_binop (CI.Coq_and_prop, x , y, bt) 
             else 
-                CI.Coq_binop (CI.Coq_and, x , y))
+                CI.Coq_binop (CI.Coq_and, x , y, bt))
     | Or -> (if enc_prop then
-                CI.Coq_binop (CI.Coq_or_prop, x , y) 
+                CI.Coq_binop (CI.Coq_or_prop, x , y, bt) 
             else 
-                CI.Coq_binop (CI.Coq_or, x , y))
+                CI.Coq_binop (CI.Coq_or, x , y, bt))
     | Implies -> (if enc_prop then
-                CI.Coq_binop (CI.Coq_impl_prop, x , y) 
+                CI.Coq_binop (CI.Coq_impl_prop, x , y, bt) 
             else 
-                CI.Coq_binop (CI.Coq_impl, x , y))
+                CI.Coq_binop (CI.Coq_impl, x , y, bt))
     | _ -> CI.Coq_unsupported)
   | IT.Match (x, cases) -> 
     let comp = Some (it, "case-discriminant") in
@@ -188,11 +202,26 @@ let it_to_coq_ir global it =
   | IT.EachI ((i1, (s, t), i2), x) -> CI.Coq_eachI((i1, (CI.Coq_sym s, bt_to_coq_ir global t), i2), aux x)
   | IT.MapSet (m, x, y) -> CI.Coq_mapset(aux m, aux x, aux y)
   | IT.MapGet (m, x) -> CI.Coq_mapget(aux m, aux x)
-  | IT.RecordMember (t, m) -> CI.Coq_recordmember(aux t, CI.Coq_id m)
-  | IT.RecordUpdate ((t, m), x) -> CI.Coq_recordupdate((aux t , CI.Coq_id m), aux x)
-  | IT.Record mems -> CI.Coq_record (List.map aux (List.map snd mems))
-  | IT.StructMember (t, m) -> CI.Coq_structmember(aux t, CI.Coq_id m)
-  | IT.StructUpdate ((t, m), x) -> CI.Coq_structupdate((aux t , CI.Coq_id m), aux x)
+  | IT.RecordMember (t, m) -> 
+    let flds = BT.record_bt (IT.get_bt t) in
+    let ix = find_tuple_element Id.equal m (List.map fst flds) in
+    CI.Coq_recordmember(aux t, CI.Coq_id m, ix)
+  | IT.RecordUpdate ((t, m), x) -> 
+    let flds = BT.record_bt (IT.get_bt t) in
+    let ix = find_tuple_element Id.equal m (List.map fst flds) in
+    CI.Coq_recordupdate((aux t , CI.Coq_id m), aux x, ix)
+  | IT.Record mems -> 
+    CI.Coq_record (List.map aux (List.map snd mems))
+  | IT.StructMember (t, m) -> 
+    let tag = BaseTypes.struct_bt (IT.get_bt t) in
+    let mems, _bts = get_struct_xs global.struct_decls tag in
+    let ix = find_tuple_element Id.equal m mems in
+    CI.Coq_structmember(aux t, CI.Coq_id m, ix)
+  | IT.StructUpdate ((t, m), x) -> 
+    let tag = BaseTypes.struct_bt (IT.get_bt t) in
+    let mems, _bts = get_struct_xs global.struct_decls tag in
+    let ix = find_tuple_element Id.equal m mems in
+    CI.Coq_structupdate((aux t , CI.Coq_id m), aux x, ix)
   | IT.Cast (cbt, t) -> CI.Coq_cast (bt_to_coq_ir global cbt, aux t)
   | IT.Apply (name, args) -> 
     let body_aux = f (Some (it, "fun-arg")) in

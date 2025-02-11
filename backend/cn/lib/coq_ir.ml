@@ -10,10 +10,14 @@ type coq_id =
   | Coq_id of Id.t
 
 (* basically just wrapping BaseTypes with a constructor *)
+type coq_sign =
+  | Coq_Signed
+  | Coq_Unsigned
+
 type coq_bt = 
   | Coq_Bool
   | Coq_Integer
-  | Coq_Bits
+  | Coq_Bits of coq_sign * int
   | Coq_Map of coq_bt * coq_bt
   | Coq_Struct of coq_sym * coq_bt list
   | Coq_Record of coq_bt list
@@ -68,18 +72,19 @@ type coq_binop =
 type coq_term = 
   | Coq_sym_term of coq_sym
   | Coq_const of coq_const
-  | Coq_unop of coq_unop * coq_term
-  | Coq_binop of coq_binop * coq_term * coq_term
+  | Coq_unop of coq_unop * coq_term * coq_bt
+  | Coq_binop of coq_binop * coq_term * coq_term * coq_bt
   | Coq_match of coq_term * (coq_pat * coq_term) list
   | Coq_ite of coq_term * coq_term * coq_term
   | Coq_eachI of (int * (coq_sym * coq_bt) * int) * coq_term
   | Coq_mapset of coq_term * coq_term * coq_term
   | Coq_mapget of coq_term * coq_term
-  | Coq_recordmember of coq_term * coq_id
-  | Coq_recordupdate of (coq_term * coq_id) * coq_term
+  (* the (int * int) gives the position of an element *)
+  | Coq_recordmember of coq_term * coq_id * (int * int)
+  | Coq_recordupdate of (coq_term * coq_id) * coq_term * (int * int)
   | Coq_record of coq_term list
-  | Coq_structmember of coq_term * coq_id
-  | Coq_structupdate of (coq_term * coq_id) * coq_term
+  | Coq_structmember of coq_term * coq_id * (int * int)
+  | Coq_structupdate of (coq_term * coq_id) * coq_term * (int * int)
   | Coq_cast of coq_bt * coq_term
   (* name, list of argument types, list of arguments, return type*)
   | Coq_app_uninterp of coq_sym * coq_term list
