@@ -25,6 +25,7 @@ type coq_bt =
   | Coq_Datatype of coq_sym
   | Coq_List of coq_bt
   | Coq_BT_unsupported
+  
 
 (* Terms that can appear in function definitions/lemmas *)
 
@@ -87,9 +88,8 @@ type coq_term =
   | Coq_structupdate of (coq_term * coq_id) * coq_term * (int * int)
   | Coq_cast of coq_bt * coq_term
   (* name, list of argument types, list of arguments, return type*)
-  | Coq_app_uninterp of coq_sym * coq_term list
-  | Coq_app_uninterp_prop of coq_sym * coq_term list
-  | Coq_app_def of coq_sym * coq_term list
+  | Coq_apply of coq_sym * coq_term list
+  | Coq_apply_prop of coq_sym * coq_term list
   (* currently unsupported*)
   | Coq_app_recdef
   | Coq_good of coq_sym * coq_bt * coq_term

@@ -109,20 +109,23 @@ let find_tuple_element
   | None -> (0,0)
   | Some (i, _) -> (i, List.length ys)
 
-(* index terms to coq_ir *)
-let it_to_coq_ir global it =
+(* translate index terms to coq_ir *)
+let it_to_coq_ir global it b =
   let rec f comp_bool it =
     let aux t = f comp_bool t in
     let enc_prop = Option.is_none comp_bool in
+    let with_is_true =
+      enc_prop && BaseTypes.equal (IT.get_bt it) BaseTypes.Bool
+    in
     let bt = bt_to_coq_ir global (IT.get_bt it) in
   (match IT.get_term it with
   | IT.Sym s -> CI.Coq_sym_term (CI.Coq_sym s)
   | IT.Const l ->
     (match l with
-      | IT.Bool b -> if enc_prop && BaseTypes.equal (IT.get_bt it) BaseTypes.Bool then
-                        CI.Coq_const (CI.Coq_bool_prop b)
-                    else
-                        CI.Coq_const (CI.Coq_bool b)              
+      | IT.Bool b -> if with_is_true then
+                        CI.Coq_const (CI.Coq_bool_prop b)  
+                    else     
+                        CI.Coq_const (CI.Coq_bool b)      
       | IT.Z z -> CI.Coq_const (CI.Coq_Z z)
       | IT.Bits (info, z) -> CI.Coq_const (CI.Coq_bits (BT.normalise_to_range info z))
       | _ -> CI.Coq_unsupported)
@@ -224,17 +227,12 @@ let it_to_coq_ir global it =
     CI.Coq_structupdate((aux t , CI.Coq_id m), aux x, ix)
   | IT.Cast (cbt, t) -> CI.Coq_cast (bt_to_coq_ir global cbt, aux t)
   | IT.Apply (name, args) -> 
-    let body_aux = f (Some (it, "fun-arg")) in
-    let open Definition.Function in
-    let def = Sym.Map.find name global.Global.logical_functions in
-    (match def.body with
-      | Uninterp -> 
-          if fun_prop_ret global name then
-            CI.Coq_app_uninterp (CI.Coq_sym name, List.map body_aux args)
-          else
-            CI.Coq_app_uninterp_prop (CI.Coq_sym name, List.map body_aux args)
-      | Def _ -> CI.Coq_app_def (CI.Coq_sym name, List.map body_aux args)
-      | Rec_Def _ -> CI.Coq_app_recdef)
+    let prop_ret = fun_prop_ret global name in
+      let body_aux = f (if prop_ret then None else Some (it, "fun-arg")) in
+    if prop_ret then 
+      CI.Coq_apply_prop (CI.Coq_sym name, List.map body_aux args)
+    else
+      CI.Coq_apply (CI.Coq_sym name, List.map body_aux args)
   | IT.Good (ct, t2) when Option.is_some (Sctypes.is_struct_ctype ct) -> 
       (match (Sctypes.is_struct_ctype ct) with
         | Some s -> CI.Coq_good (CI.Coq_sym s, CI.Coq_Struct (CI.Coq_sym s, []), aux t2)
@@ -259,12 +257,12 @@ let it_to_coq_ir global it =
     CI.Coq_arrayshift (aux base, size_of_ct, aux index)
   | _ -> CI.Coq_unsupported)
   in
-  (f None it)
+  (f b it)
 
 let lc_to_coq_ir (gl : Global.t) (t: LC.t) =
   match t with
-  | LC.T t -> it_to_coq_ir gl t
-  | LC.Forall ((sym, bt), it) -> CI.Coq_forall (CI.Coq_sym sym, bt_to_coq_ir gl bt, it_to_coq_ir gl it)
+  | LC.T t -> it_to_coq_ir gl t None
+  | LC.Forall ((sym, bt), it) -> CI.Coq_forall (CI.Coq_sym sym, bt_to_coq_ir gl bt, it_to_coq_ir gl it None)
 
 let rec lrt_to_coq_ir (gl : Global.t) (t: LRT.t) =
   match t with
@@ -274,7 +272,7 @@ let rec lrt_to_coq_ir (gl : Global.t) (t: LRT.t) =
     CI.Coq_Constraint_LRT (c,d)
   | LRT.Define ((sym, it), _, t) ->
     let d = lrt_to_coq_ir gl t in
-    let l = it_to_coq_ir gl it in
+    let l = it_to_coq_ir gl it None in
     CI.Coq_let(CI.Coq_sym sym, l, d)
   | LRT.I -> CI.Coq_I
   | _ -> CI.Coq_unsupported
@@ -283,7 +281,7 @@ let rec lat_to_coq_ir (gl : Global.t) (t: LRT.t LAT.t) =
   match t with
   | LAT.Define ((sym, it), _, t) ->
     let d = lat_to_coq_ir gl t in
-    let l = it_to_coq_ir gl it in
+    let l = it_to_coq_ir gl it None in
     CI.Coq_Define (CI.Coq_sym sym, l, d)
   | LAT.Constraint (lc, _, t) ->
     let c = lc_to_coq_ir gl lc in
@@ -321,7 +319,10 @@ let fun_to_coq_ir (gl : Global.t) nm =
   | Def body -> 
       CI.Coq_fun_def 
         (CI.Coq_sym nm, 
-        CI.Coq_def (it_to_coq_ir gl body), 
+        (* disclaimer: no idea if this is right but it
+          stops the example from breaking because of
+          prop vs bool problems  *)
+        CI.Coq_def (it_to_coq_ir gl body (Some (body, "logical fun def"))), 
         arg_tys, 
         bt_to_coq_ir gl def.return_bt)
   | Rec_Def _ -> 

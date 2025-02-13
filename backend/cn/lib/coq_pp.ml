@@ -140,10 +140,10 @@ let gen_get_upd ((i, list_len) : int * int) (tm : PPrint.document) =
   let rec foldi i f acc =
     if i <= 0 then acc else foldi (pred i) f (f acc)
   in
-  if i < list_len - 1 then
-    pp_fst (foldi i pp_snd tm)
+  if i = 0 then
+    foldi (list_len - 1) pp_fst tm
   else
-    foldi i pp_snd tm
+    pp_snd (foldi (list_len - 1 - i) pp_fst tm)
 
 let rec bt_to_coq (bt : CI.coq_bt) =
   let open Pp in
@@ -237,12 +237,13 @@ let lemma_to_coq global (t : CI.coq_term) =
     | CI.Coq_or_prop -> abinop "\\/" x y
     | CI.Coq_impl -> abinop "implb" x y
     | CI.Coq_impl_prop -> abinop "->" x y)
-  | CI.Coq_match (x, cases) -> let br (pat, rhs) = 
+  | CI.Coq_match (x, cases) -> 
+    let br (pat, rhs) =
       build [ rets "|"; pat_to_coq pat; rets "=>"; aux rhs ] in
-        parensM
-          (build
-            ([ rets "match"; aux x; rets "with" ] @ List.map br cases @ [ rets "end" ]))
-  | CI.Coq_ite (sw, x, y) -> 
+    parensM
+      (build
+        ([ rets "match"; aux x; rets "with"; hardline ] @ List.map br cases @ [ rets "end" ]))
+  | CI.Coq_ite (sw, x, y) ->  
       parensM (build [ rets "if"; aux sw; rets "then"; aux x; rets "else"; aux y ])
   | CI.Coq_eachI ((i1, (CI.Coq_sym s, _), i2), x) -> 
       let enc = pp_forall s CI.Coq_Integer (binop
@@ -277,13 +278,11 @@ let lemma_to_coq global (t : CI.coq_term) =
       let op_nm = gen_get_upd ix (aux t) in
       parensM (build [ op_nm; aux x ])
   | CI.Coq_cast (_, x) -> aux x
-  | CI.Coq_app_uninterp (CI.Coq_sym name, args) -> 
+  | CI.Coq_apply (CI.Coq_sym name, args) -> 
     parensM (build ([ (Sym.pp name) ] @ List.map aux args))
-  | CI.Coq_app_uninterp_prop (CI.Coq_sym name, args) -> 
+  | CI.Coq_apply_prop (CI.Coq_sym name, args) -> 
     let r = parensM (build ([ (Sym.pp name) ] @ List.map aux args)) in
-    build [r]
-  | CI.Coq_app_def (CI.Coq_sym name, args) -> 
-    parensM (build ([ (Sym.pp name) ] @ List.map aux args))
+    f_appM "Is_true" [r]
   | CI.Coq_app_recdef -> rets "Recdefs are unsupported"
   | CI.Coq_good (CI.Coq_sym s, _, t) -> 
       let op_nm = "good_" ^ (Sym.pp_string s) in
