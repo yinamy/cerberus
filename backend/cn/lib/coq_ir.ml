@@ -90,8 +90,6 @@ type coq_term =
   (* name, list of argument types, list of arguments, return type*)
   | Coq_apply of coq_sym * coq_term list
   | Coq_apply_prop of coq_sym * coq_term list
-  (* currently unsupported*)
-  | Coq_app_recdef
   | Coq_good of coq_sym * coq_bt * coq_term
   | Coq_representable of coq_sym * coq_bt * coq_term
   | Coq_constructor of coq_sym * coq_term list
@@ -145,7 +143,7 @@ type coq_uninterp =
 
 type coq_def = 
   | Coq_def of coq_term
-  | Coq_recdef
+  | Coq_recdef of coq_term
 
 type coq_fun =
 (* parameters: function name, function body, argument typess, return type*)

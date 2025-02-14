@@ -325,11 +325,11 @@ let fun_to_coq_ir (gl : Global.t) nm =
         CI.Coq_def (it_to_coq_ir gl body (Some (body, "logical fun def"))), 
         arg_tys, 
         bt_to_coq_ir gl def.return_bt)
-  | Rec_Def _ -> 
+  | Rec_Def body -> 
       CI.Coq_fun_def 
         (CI.Coq_sym nm, 
-        CI.Coq_recdef, 
-        [], 
+        CI.Coq_recdef (it_to_coq_ir gl body (Some (body, "logical fun recdef"))),
+        arg_tys, 
         bt_to_coq_ir gl def.return_bt)
         
 

@@ -110,10 +110,11 @@ let enc_z z =
 
 let f_appM nm xs = parensM (build (rets nm :: xs))
 
-let defn nm args opt_ty rhs =
+let defn nm args opt_ty rhs fix =
   let open Pp in
+  let if_fix = if fix then !^"  Fixpoint" else !^"  Definition" in
   let tyeq = match opt_ty with None -> [] | Some ty -> [ colon; ty ] in
-  flow (break 1) ([ !^"  Definition"; !^nm ] @ args @ tyeq @ [ !^":=" ])
+  flow (break 1) ([ if_fix; !^nm ] @ args @ tyeq @ [ !^":=" ])
   ^^ hardline
   ^^ !^"    "
   ^^ rhs
@@ -283,7 +284,6 @@ let lemma_to_coq global (t : CI.coq_term) =
   | CI.Coq_apply_prop (CI.Coq_sym name, args) -> 
     let r = parensM (build ([ (Sym.pp name) ] @ List.map aux args)) in
     f_appM "Is_true" [r]
-  | CI.Coq_app_recdef -> rets "Recdefs are unsupported"
   | CI.Coq_good (CI.Coq_sym s, _, t) -> 
       let op_nm = "good_" ^ (Sym.pp_string s) in
       parensM (build [ rets op_nm; aux t ])
@@ -318,7 +318,7 @@ let convert_lemma_defs global (lemmas : CI.coq_lemmata list) =
   let lemma_ty (CI.Coq_lemmata (CI.Coq_sym nm, tm)) =
     Pp.progress_simple ("converting lemma type") (Sym.pp_string nm);
     let rhs = lemma_to_coq global tm in
-    (defn (Sym.pp_string nm ^ "_type") [] (Some (Pp.string "Prop")) rhs)
+    (defn (Sym.pp_string nm ^ "_type") [] (Some (Pp.string "Prop")) rhs false)
   in
   let tys = List.map lemma_ty lemmas in  
   tys
@@ -373,8 +373,16 @@ let translate_fun (gl : Global.t) (funs: CI.coq_fun list list * CI.coq_fun list 
               let coq_bt = bt_to_coq bt in
               (Pp.parens (Pp.typ (Sym.pp arg) coq_bt)))
             args in
-        ((defn (Sym.pp_string nm) coq_args None coq_body))
-      | CI.Coq_recdef -> (rets "Recdefs are unsupported")
+        defn (Sym.pp_string nm) coq_args None coq_body false
+      | CI.Coq_recdef body -> 
+        let coq_body = lemma_to_coq gl body in
+        let coq_args =
+          List.map
+            (fun ((CI.Coq_sym arg), bt) ->
+              let coq_bt = bt_to_coq bt in
+              (Pp.parens (Pp.typ (Sym.pp arg) coq_bt)))
+            args in
+        defn (Sym.pp_string nm) coq_args None coq_body true
       )
     | CI.Coq_fun_uninterp (CI.Coq_sym nm, logical_fun, args, ret_typ) -> 
       (match logical_fun with
