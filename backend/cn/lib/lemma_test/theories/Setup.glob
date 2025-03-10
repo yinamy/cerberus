@@ -1,0 +1,166 @@
+DIGEST 04e6f751ce9f551308896ef7a28ab0a1
+FCN_Lemmas.Setup
+R60:65 Coq.ZArith.ZArith <> <> lib
+R67:70 Coq.Bool.Bool <> <> lib
+R81:98 CN_Lemmas.Gen_Spec <> <> lib
+R108:131 CN_Lemmas.Gen_Spec Types <> mod
+R149:152 Coq.Lists.List <> <> lib
+R162:174 Coq.Lists.List ListNotations <> mod
+R206:208 Coq.micromega.Lia <> <> lib
+def 221:227 <> to_list
+R235:243 CN_Lemmas.Gen_Spec Types tree_list ind
+binder 230:231 <> xs:1
+R248:251 Coq.Init.Datatypes <> list ind
+R253:256 CN_Lemmas.Gen_Spec Types tree ind
+R269:270 CN_Lemmas.Setup <> xs:1 var
+R281:290 CN_Lemmas.Gen_Spec Types Empty_List constr
+R295:296 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R302:310 CN_Lemmas.Gen_Spec Types Cons_List constr
+R321:324 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R325:331 CN_Lemmas.Setup <> to_list:2 def
+def 353:359 <> of_list
+R367:370 Coq.Init.Datatypes <> list ind
+R372:375 CN_Lemmas.Gen_Spec Types tree ind
+binder 362:363 <> xs:4
+R380:388 CN_Lemmas.Gen_Spec Types tree_list ind
+R401:402 CN_Lemmas.Setup <> xs:4 var
+R413:414 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R419:428 CN_Lemmas.Gen_Spec Types Empty_List constr
+R435:438 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R445:453 CN_Lemmas.Gen_Spec Types Cons_List constr
+R458:464 CN_Lemmas.Setup <> of_list:5 def
+prf 484:498 <> to_list_of_list
+binder 510:511 <> xs:7
+R534:536 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R514:520 CN_Lemmas.Setup <> to_list def
+R523:529 CN_Lemmas.Setup <> of_list def
+R531:532 CN_Lemmas.Setup <> xs:7 var
+R537:538 CN_Lemmas.Setup <> xs:7 var
+def 637:650 <> get_array_elts
+binder 653:653 <> A:8
+R671:674 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R670:670 Coq.Numbers.BinNums <> Z ind
+R675:675 CN_Lemmas.Setup <> A:8 var
+binder 664:666 <> arr:9
+R683:683 Coq.Numbers.BinNums <> Z ind
+binder 679:679 <> i:10
+R691:693 Coq.Init.Datatypes <> nat ind
+binder 687:687 <> n:11
+R698:701 Coq.Init.Datatypes <> list ind
+R703:703 CN_Lemmas.Setup <> A:8 var
+R716:716 CN_Lemmas.Setup <> n:11 var
+R736:737 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R743:743 Coq.Init.Datatypes <> S constr
+R756:759 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R751:753 CN_Lemmas.Setup <> arr:9 var
+R755:755 CN_Lemmas.Setup <> i:10 var
+R760:773 CN_Lemmas.Setup <> get_array_elts:12 def
+R781:783 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R780:780 CN_Lemmas.Setup <> i:10 var
+R775:777 CN_Lemmas.Setup <> arr:9 var
+prf 804:821 <> nth_get_array_elts
+binder 834:834 <> A:14
+R845:848 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R844:844 Coq.Numbers.BinNums <> Z ind
+R849:849 CN_Lemmas.Setup <> A:14 var
+binder 838:840 <> arr:15
+binder 852:852 <> i:16
+binder 854:854 <> n:17
+binder 856:857 <> ix:18
+binder 859:859 <> d:19
+R874:879 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R865:867 Coq.Init.Peano <> ::nat_scope:x_'<'_x not
+R863:864 CN_Lemmas.Setup <> ix:18 var
+R868:868 CN_Lemmas.Setup <> n:17 var
+R913:915 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R880:882 Coq.Lists.List <> nth def
+R912:912 CN_Lemmas.Setup <> d:19 var
+R888:901 CN_Lemmas.Setup <> get_array_elts def
+R909:909 CN_Lemmas.Setup <> n:17 var
+R907:907 CN_Lemmas.Setup <> i:16 var
+R903:905 CN_Lemmas.Setup <> arr:15 var
+R884:885 CN_Lemmas.Setup <> ix:18 var
+R916:918 CN_Lemmas.Setup <> arr:15 var
+R922:924 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R921:921 CN_Lemmas.Setup <> i:16 var
+R925:932 Coq.ZArith.BinInt Z of_nat def
+R934:935 CN_Lemmas.Setup <> ix:18 var
+def 1164:1175 <> arc_in_array
+R1200:1202 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R1188:1188 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R1195:1198 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R1190:1193 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1189:1189 Coq.Numbers.BinNums <> Z ind
+R1194:1194 Coq.Numbers.BinNums <> Z ind
+R1199:1199 Coq.Numbers.BinNums <> Z ind
+R1203:1203 Coq.Numbers.BinNums <> Z ind
+def 1219:1232 <> arc_from_array
+R1241:1252 CN_Lemmas.Setup <> arc_in_array def
+binder 1235:1237 <> arc:20
+R1266:1268 CN_Lemmas.Setup <> arc:20 var
+R1279:1279 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1283:1284 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1286:1287 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1289:1289 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1294:1307 CN_Lemmas.Setup <> get_array_elts def
+R1316:1323 Coq.ZArith.BinInt Z to_nat def
+R1327:1329 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+def 1353:1365 <> array_to_list
+R1375:1378 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1374:1374 Coq.Numbers.BinNums <> Z ind
+R1379:1382 CN_Lemmas.Gen_Spec Types tree ind
+binder 1368:1370 <> arr:22
+R1390:1390 Coq.Numbers.BinNums <> Z ind
+binder 1386:1386 <> n:23
+R1398:1404 CN_Lemmas.Setup <> of_list def
+R1407:1420 CN_Lemmas.Setup <> get_array_elts def
+R1429:1436 Coq.ZArith.BinInt Z to_nat def
+R1438:1438 CN_Lemmas.Setup <> n:23 var
+R1422:1424 CN_Lemmas.Setup <> arr:22 var
+def 1453:1463 <> lookup_tree
+R1470:1473 CN_Lemmas.Gen_Spec Types tree ind
+binder 1466:1466 <> t:24
+R1483:1486 Coq.Init.Datatypes <> list ind
+R1488:1488 Coq.Numbers.BinNums <> Z ind
+binder 1477:1479 <> arc:25
+R1493:1498 Coq.Init.Datatypes <> option ind
+R1500:1500 Coq.Numbers.BinNums <> Z ind
+R1513:1513 CN_Lemmas.Setup <> t:24 var
+R1524:1533 CN_Lemmas.Gen_Spec Types Empty_Tree constr
+R1538:1541 Coq.Init.Datatypes <> None constr
+R1547:1550 CN_Lemmas.Gen_Spec Types Node constr
+R1566:1568 CN_Lemmas.Setup <> arc:25 var
+R1581:1582 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R1587:1590 Coq.Init.Datatypes <> Some constr
+R1602:1605 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1613:1623 CN_Lemmas.Setup <> lookup_tree:26 def
+R1626:1633 Coq.Lists.List <> nth def
+R1662:1671 CN_Lemmas.Gen_Spec Types Empty_Tree constr
+R1650:1656 CN_Lemmas.Setup <> to_list def
+R1636:1643 Coq.ZArith.BinInt Z to_nat def
+def 1705:1711 <> in_tree
+R1718:1721 CN_Lemmas.Gen_Spec Types tree ind
+binder 1714:1714 <> t:29
+R1731:1742 CN_Lemmas.Setup <> arc_in_array def
+binder 1725:1727 <> arc:30
+R1747:1750 Coq.Init.Datatypes <> bool ind
+R1763:1773 CN_Lemmas.Setup <> lookup_tree def
+R1775:1775 CN_Lemmas.Setup <> t:29 var
+R1778:1791 CN_Lemmas.Setup <> arc_from_array def
+R1793:1795 CN_Lemmas.Setup <> arc:30 var
+R1807:1810 Coq.Init.Datatypes <> Some constr
+R1817:1820 Coq.Init.Datatypes <> true constr
+R1826:1829 Coq.Init.Datatypes <> None constr
+R1834:1838 Coq.Init.Datatypes <> false constr
+def 1859:1864 <> tree_v
+R1871:1874 CN_Lemmas.Gen_Spec Types tree ind
+binder 1867:1867 <> t:31
+R1884:1895 CN_Lemmas.Setup <> arc_in_array def
+binder 1878:1880 <> arc:32
+R1900:1900 Coq.Numbers.BinNums <> Z ind
+R1913:1923 CN_Lemmas.Setup <> lookup_tree def
+R1925:1925 CN_Lemmas.Setup <> t:31 var
+R1928:1941 CN_Lemmas.Setup <> arc_from_array def
+R1943:1945 CN_Lemmas.Setup <> arc:32 var
+R1957:1960 Coq.Init.Datatypes <> Some constr
+R1973:1976 Coq.Init.Datatypes <> None constr

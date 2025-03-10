@@ -1,0 +1,132 @@
+DIGEST 719d53731a98cfc065996dd818e36e76
+FCN_Lemmas.Gen_Spec
+R82:87 Coq.ZArith.ZArith <> <> lib
+R89:92 Coq.Bool.Bool <> <> lib
+R103:118 CN_Lemmas.CN_Lib <> <> lib
+mod 130:134 <> Types
+ind 154:157 Types List
+constr 175:177 Types Nil
+constr 192:195 Types Cons
+R181:184 CN_Lemmas.Gen_Spec <> List:1 ind
+R200:203 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R199:199 Coq.Numbers.BinNums <> Z ind
+R208:211 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R204:207 CN_Lemmas.Gen_Spec <> List:1 ind
+R212:215 CN_Lemmas.Gen_Spec <> List:1 ind
+scheme 154:157 Types List_rect
+scheme 154:157 Types List_ind
+scheme 154:157 Types List_rec
+scheme 154:157 Types List_sind
+R223:227 CN_Lemmas.Gen_Spec Types <> mod
+modtype 244:253 <> Parameters
+R265:269 CN_Lemmas.Gen_Spec Types <> mod
+R309:318 CN_Lemmas.Gen_Spec Parameters <> modtype
+R340:349 CN_Lemmas.Gen_Spec Parameters <> mod
+mod 330:333 <> Defs
+R363:367 CN_Lemmas.Gen_Spec Types <> mod
+R369:369 CN_Lemmas.Gen_Spec P <> mod
+def 402:403 Defs Hd
+R410:413 CN_Lemmas.Gen_Spec Types List ind
+binder 406:406 <> L:3
+R430:430 CN_Lemmas.Gen_Spec <> L:3 var
+R442:444 CN_Lemmas.Gen_Spec Types Nil constr
+R457:460 CN_Lemmas.Gen_Spec Types Cons constr
+def 492:493 Defs Tl
+R500:503 CN_Lemmas.Gen_Spec Types List ind
+binder 496:496 <> L:5
+R520:520 CN_Lemmas.Gen_Spec <> L:5 var
+R532:534 CN_Lemmas.Gen_Spec Types Nil constr
+R541:543 CN_Lemmas.Gen_Spec Types Nil constr
+R549:552 CN_Lemmas.Gen_Spec Types Cons constr
+def 582:587 Defs Append
+R595:598 CN_Lemmas.Gen_Spec Types List ind
+binder 590:591 <> L1:7
+R607:610 CN_Lemmas.Gen_Spec Types List ind
+binder 602:603 <> L2:8
+R627:628 CN_Lemmas.Gen_Spec <> L1:7 var
+R640:642 CN_Lemmas.Gen_Spec Types Nil constr
+R648:649 CN_Lemmas.Gen_Spec <> L2:8 var
+R654:657 CN_Lemmas.Gen_Spec Types Cons constr
+R668:671 CN_Lemmas.Gen_Spec Types Cons constr
+R676:681 CN_Lemmas.Gen_Spec <> Append:9 def
+R685:686 CN_Lemmas.Gen_Spec <> L2:8 var
+def 708:711 Defs Snoc
+R719:722 CN_Lemmas.Gen_Spec Types List ind
+binder 714:715 <> Xs:11
+R730:730 Coq.Numbers.BinNums <> Z ind
+binder 726:726 <> Y:12
+R747:748 CN_Lemmas.Gen_Spec <> Xs:11 var
+R760:762 CN_Lemmas.Gen_Spec Types Nil constr
+R769:772 CN_Lemmas.Gen_Spec Types Cons constr
+R774:774 CN_Lemmas.Gen_Spec <> Y:12 var
+R777:779 CN_Lemmas.Gen_Spec Types Nil constr
+R786:789 CN_Lemmas.Gen_Spec Types Cons constr
+R801:804 CN_Lemmas.Gen_Spec Types Cons constr
+R809:812 CN_Lemmas.Gen_Spec <> Snoc:13 def
+R817:817 CN_Lemmas.Gen_Spec <> Y:12 var
+def 839:845 Defs RevList
+R852:855 CN_Lemmas.Gen_Spec Types List ind
+binder 848:848 <> L:15
+R872:872 CN_Lemmas.Gen_Spec <> L:15 var
+R884:886 CN_Lemmas.Gen_Spec Types Nil constr
+R893:895 CN_Lemmas.Gen_Spec Types Nil constr
+R901:904 CN_Lemmas.Gen_Spec Types Cons constr
+R915:918 CN_Lemmas.Gen_Spec Defs Snoc def
+R921:927 CN_Lemmas.Gen_Spec <> RevList:16 def
+def 955:975 Defs Append_Nil_RList_type
+R1004:1007 CN_Lemmas.Gen_Spec Types List ind
+binder 999:1000 <> L1:18
+R1011:1011 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1024:1028 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1012:1018 Coq.Bool.Bool <> Is_true def
+R1020:1023 Coq.Init.Datatypes <> true constr
+R1029:1029 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R1052:1056 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R1030:1030 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1046:1049 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1031:1036 CN_Lemmas.Gen_Spec Defs Append def
+R1038:1039 CN_Lemmas.Gen_Spec <> L1:18 var
+R1042:1044 CN_Lemmas.Gen_Spec Types Nil constr
+R1050:1051 CN_Lemmas.Gen_Spec <> L1:18 var
+R1057:1063 Coq.Bool.Bool <> Is_true def
+R1065:1068 Coq.Init.Datatypes <> true constr
+def 1085:1106 Defs Append_Cons_RList_type
+R1135:1138 CN_Lemmas.Gen_Spec Types List ind
+binder 1130:1131 <> L1:19
+R1154:1154 Coq.Numbers.BinNums <> Z ind
+binder 1150:1150 <> X:20
+R1171:1174 CN_Lemmas.Gen_Spec Types List ind
+binder 1166:1167 <> L2:21
+R1178:1178 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1191:1195 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1179:1185 Coq.Bool.Bool <> Is_true def
+R1187:1190 Coq.Init.Datatypes <> true constr
+R1196:1196 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R1246:1250 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R1197:1197 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1219:1223 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1245:1245 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1198:1203 CN_Lemmas.Gen_Spec Defs Append def
+R1205:1206 CN_Lemmas.Gen_Spec <> L1:19 var
+R1209:1212 CN_Lemmas.Gen_Spec Types Cons constr
+R1214:1214 CN_Lemmas.Gen_Spec <> X:20 var
+R1216:1217 CN_Lemmas.Gen_Spec <> L2:21 var
+R1224:1229 CN_Lemmas.Gen_Spec Defs Append def
+R1232:1235 CN_Lemmas.Gen_Spec Defs Snoc def
+R1237:1238 CN_Lemmas.Gen_Spec <> L1:19 var
+R1240:1240 CN_Lemmas.Gen_Spec <> X:20 var
+R1243:1244 CN_Lemmas.Gen_Spec <> L2:21 var
+R1251:1257 Coq.Bool.Bool <> Is_true def
+R1259:1262 Coq.Init.Datatypes <> true constr
+R1270:1273 CN_Lemmas.Gen_Spec Defs <> mod
+R1306:1315 CN_Lemmas.Gen_Spec Parameters <> mod
+modtype 1290:1299 <> Lemma_Spec
+R1334:1337 CN_Lemmas.Gen_Spec Defs <> modtype
+R1339:1339 CN_Lemmas.Gen_Spec P <> modtype
+mod 1329:1329 <> Lemma_Spec.D
+R1352:1352 CN_Lemmas.Gen_Spec Lemma_Spec.D <> mod
+ax 1368:1383 Lemma_Spec Append_Nil_RList
+R1387:1407 CN_Lemmas.Gen_Spec Lemma_Spec Append_Nil_RList_type def
+ax 1423:1439 Lemma_Spec Append_Cons_RList
+R1443:1464 CN_Lemmas.Gen_Spec Lemma_Spec Append_Cons_RList_type def
+R1472:1481 CN_Lemmas.Gen_Spec Lemma_Spec <> modtype
