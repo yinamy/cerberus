@@ -18,6 +18,8 @@ let header filename =
   ^^ hardline
   ^^ !^"Require CN_Lemmas.CN_Lib."
   ^^ hardline
+  ^^ !^"Require Import CN_Lemmas.CN_Lib_Iris."
+  ^^ hardline
   ^^ hardline
 
 let types_spec types =
@@ -46,7 +48,14 @@ let defs_module aux_defs lemma_tys =
   ^^ hardline
   ^^ flow hardline aux_defs
   ^^ hardline
+  ^^ hardline
+  ^^ !^"  Section Lemma_Defs."
+  ^^ hardline
+  ^^ !^"  Context `{!heapGS_gen Σ}."
+  ^^ hardline
   ^^ flow hardline lemma_tys
+  ^^ hardline
+  ^^ !^"  End Lemma_Defs."
   ^^ hardline
   ^^ !^"End Defs."
   ^^ hardline
@@ -64,8 +73,14 @@ let mod_spec lemma_nms =
   ^^ hardline
   ^^ !^"  Import D."
   ^^ hardline
+  ^^ !^"  Section Lemmas."
+  ^^ hardline
+  ^^ !^"  Context `{!heapGS_gen Σ}."
+  ^^ hardline
   ^^ hardline
   ^^ flow hardline (List.map lemma lemma_nms)
+  ^^ hardline
+  ^^ !^"  End Lemmas."
   ^^ hardline
   ^^ !^"End Lemma_Spec."
   ^^ hardline
@@ -434,4 +449,4 @@ let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemm
     Pp.print channel (defs_module (snd translated_funs) translated_lemmas);
     Pp.print channel (mod_spec (List.map (fun (CI.Coq_lemmata (CI.Coq_sym nm,_)) -> nm) lemmas));
   in
-  (Result.Ok (f global directions lemmata))
+  (Result.Ok f)
