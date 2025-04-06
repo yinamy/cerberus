@@ -410,22 +410,28 @@ let translate_fun (gl : Global.t) (funs: CI.coq_fun list list * CI.coq_fun list 
 
 let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
   = 
-  let filename, _kinds = parse_directions directions in
-  let channel = open_out filename in
-  Pp.print channel (header filename);
+  let f =
+    let filename, _kinds = parse_directions directions in
+    let channel = open_out filename in
+    Pp.print channel (header filename);
 
-  (* translate everything to coq AST*)
-  let CI.Coq_everything(dtys, funs, _, lemmas) = CC.cn_to_coq_ir global lemmata in
-  (* print datatypes *)
-  let dtypes = translate_datatypes dtys in
-  Pp.print channel (types_spec dtypes);
-  (* print uninterpreted logical functions as parameters *)
-  let translated_funs = translate_fun global funs in
-  Pp.print channel (param_spec (fst translated_funs));
-  (*let uninterp_defs = translate_fun_uninterp (fst funs) in
-  Pp.print channel (param_spec uninterp_defs);
-  (* print lemmas and defined logical functions*)
-  let fun_defs = translate_fun_defs global (snd funs) in*)
-  let translated_lemmas = convert_lemma_defs global lemmas in
-  Pp.print channel (defs_module (snd translated_funs) translated_lemmas);
-  Pp.print channel (mod_spec (List.map (fun (CI.Coq_lemmata (CI.Coq_sym nm,_)) -> nm) lemmas));
+    (* translate everything to coq AST*)
+    let CI.Coq_everything(dtys, funs, _, lemmas) = CC.cn_to_coq_ir global lemmata in
+
+    (* print datatypes *)
+    let dtypes = translate_datatypes dtys in
+    Pp.print channel (types_spec dtypes);
+
+    (* print uninterpreted logical functions as parameters *)
+    let translated_funs = translate_fun global funs in
+    Pp.print channel (param_spec (fst translated_funs));
+    (*let uninterp_defs = translate_fun_uninterp (fst funs) in
+    Pp.print channel (param_spec uninterp_defs);
+    
+    (* print lemmas and defined logical functions*)
+    let fun_defs = translate_fun_defs global (snd funs) in*)
+    let translated_lemmas = convert_lemma_defs global lemmas in
+    Pp.print channel (defs_module (snd translated_funs) translated_lemmas);
+    Pp.print channel (mod_spec (List.map (fun (CI.Coq_lemmata (CI.Coq_sym nm,_)) -> nm) lemmas));
+  in
+  (Result.Ok (f global directions lemmata))

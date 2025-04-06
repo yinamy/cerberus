@@ -1,7 +1,7 @@
 (* theories/Gen_Spec.v: generated lemma specifications from CN *)
 
 Require Import ZArith Bool.
-Require List_Rev.CN_Lib.
+Require CN_Lemmas.CN_Lib.
 
 
 Module Types.

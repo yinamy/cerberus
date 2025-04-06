@@ -278,6 +278,7 @@ let lemma_to_coq global (t : CI.coq_term) =
       parensM (build [ rets op_nm; aux t; aux x ])*)
       let op_nm = gen_get_upd ix (aux t) in
       parensM (build [ op_nm; aux x ])
+  (* todo: this can't be right*)
   | CI.Coq_cast (_, x) -> aux x
   | CI.Coq_apply (CI.Coq_sym name, args) -> 
     parensM (build ([ (Sym.pp name) ] @ List.map aux args))

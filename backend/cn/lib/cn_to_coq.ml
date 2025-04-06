@@ -253,7 +253,7 @@ let it_to_coq_ir global it b =
     CI.Coq_wrapI (maxInt, minInt, aux arg)
   | IT.Let ((nm, x), y) -> CI.Coq_let(CI.Coq_sym nm, aux x, aux y)
   | IT.ArrayShift { base; ct; index } ->
-    let size_of_ct = Z.of_int @@ Memory.size_of_ctype ct in
+    let size_of_ct = Z.of_int @@ Memory.size_of_ctype ct in (* do a + b * c*)
     CI.Coq_arrayshift (aux base, size_of_ct, aux index)
   | _ -> CI.Coq_unsupported)
   in
