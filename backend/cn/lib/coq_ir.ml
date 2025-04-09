@@ -24,8 +24,13 @@ type coq_bt =
   | Coq_Loc
   | Coq_Datatype of coq_sym
   | Coq_List of coq_bt
-  | Coq_BT_unsupported
-  
+  | Coq_Unit
+  | Coq_Membyte
+  | Coq_Real
+  | Coq_Alloc_id
+  | Coq_CType
+  | Coq_Tuple of coq_bt list
+  | Coq_Set of coq_bt  
 
 (* Terms that can appear in function definitions/lemmas *)
 
@@ -91,6 +96,8 @@ type coq_term =
   | Coq_apply of coq_sym * coq_term list
   | Coq_apply_prop of coq_sym * coq_term list
   | Coq_good of coq_sym * coq_bt * coq_term
+  (* todo: get rid of tis later *)
+  | Coq_good_go_away of coq_term
   | Coq_representable of coq_sym * coq_bt * coq_term
   | Coq_constructor of coq_sym * coq_term list
   | Coq_nthlist of coq_term * coq_term * coq_term
@@ -98,33 +105,44 @@ type coq_term =
   | Coq_let of coq_sym * coq_term * coq_term
   | Coq_wrapI of Z.t * Z.t * coq_term
   | Coq_arrayshift of coq_term * Z.t * coq_term
-  | Coq_unsupported
+  | Coq_unsupported of string
   | Coq_forall of coq_sym * coq_bt * coq_term
   | Coq_Define of coq_sym * coq_term * coq_term
-  | Coq_Resource (* todo: add support *)
   | Coq_Constraint_LRT of coq_term * coq_term
   | Coq_Constraint_LAT of coq_term * coq_term
   | Coq_I
+  | Coq_Owned_LRT of coq_sym * coq_bt * iris_term * coq_term * coq_term list
+  | Coq_Block_LRT of coq_sym * coq_bt * iris_term * coq_term
+  | Coq_Owned_LAT of coq_sym * coq_bt * iris_term * coq_term * coq_term list
+  | Coq_Block_LAT of coq_sym * coq_bt * iris_term * coq_term
+  (* todo: this isnt right *)
+  | Coq_Res_Pred of coq_sym * coq_bt * coq_term
+
+and iris_term = 
+  | Iris_term of coq_term
 
 (* Logical constraints in Coq (todo do I need this?) *)  
 (*type coq_LC =
-  | Coq_forall of coq_sym * BT.t * coq_LC
-  | Coq_T of coq_term
+  | Coq_Forall of coq_sym * coq_bt * coq_LC
+  | Coq_T of coq_IT
 
 (* Logical return types in Coq *)
-type coq_LRT =
-  | Coq_Define of coq_sym * coq_term * coq_LRT
-  | Coq_Resource (* todo: add support *)
+(*type coq_LRT =
+  | Coq_Define of coq_sym * coq_IT * coq_LRT
+  | Coq_Resource of coq_sym * (coq_Req * coq_bt) * coq_LRT
   | Coq_Constraint of coq_LC * coq_LRT
-  | Coq_I
+  | Coq_I*)
 
 (* Logical argument types in Coq *)  
 type coq_LAT =
-  | Coq_Define of coq_sym * coq_term  * coq_LRT
-  | Coq_Resource
+  | Coq_Define of coq_sym * coq_IT  * coq_LAT
+  | Coq_Resource of coq_sym * (coq_Req * coq_bt) * coq_LAT
   | Coq_Constraint of coq_LC * coq_LAT
   | Coq_I of coq_LAT
-  | Coq_unsupported*)
+
+type coq_AT =
+  | Coq_Computational of (coq_sym * coq_bt) * coq_AT
+  | Coq_L of coq_LAT *)
 
 (* CN datatypes *)
 (* note: this is different from Coq_Datatype in coq_term *)
@@ -136,7 +154,6 @@ type coq_dt =
   | Coq_dt of coq_sym * coq_bt list * coq_constr list
 
 (* CN logical functions *)
-
 type coq_uninterp = 
   | Coq_uninterp
   | Coq_uninterp_prop
@@ -158,6 +175,7 @@ type coq_resource_pred =
 type coq_lemmata = 
 (* parameters: lemma name, lemma body *)
   | Coq_lemmata of coq_sym * coq_term
+  (*| Coq_lemmata of coq_LAT*)
 
 (* CN global typing context *)
 type coq_everything =

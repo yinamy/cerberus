@@ -65,17 +65,22 @@ let rec bt_to_coq_ir (gl: Global.t) (bt : BT.t) =
   | BaseTypes.Struct tag ->
     let _, fld_bts = get_struct_xs gl.struct_decls tag in
     let enc_fld_bts = List.map (bt_to_coq_ir gl) fld_bts in
-    CI.Coq_Record enc_fld_bts
+    CI.Coq_Struct (CI.Coq_sym tag, enc_fld_bts)
   | BaseTypes.Record mems ->
     let enc_mem_bts = List.map (bt_to_coq_ir gl) (List.map snd mems) in
     CI.Coq_Record enc_mem_bts
   | BaseTypes.Loc () -> CI.Coq_Loc
   (* todo: probably not right *)
   | BaseTypes.Datatype tag -> CI.Coq_Datatype (CI.Coq_sym tag)
-  (* todo: probably not right either*)
   | BaseTypes.List _bt2 -> CI.Coq_List (bt_to_coq_ir gl bt)
-  | _ -> Coq_BT_unsupported
-
+  | BaseTypes.Unit -> CI.Coq_Unit
+  | BaseTypes.MemByte -> CI.Coq_Membyte
+  | BaseTypes.Real -> CI.Coq_Real
+  | BaseTypes.Alloc_id -> CI.Coq_Alloc_id
+  | BaseTypes.CType -> CI.Coq_CType
+  | BaseTypes.Tuple bts -> CI.Coq_Tuple (List.map (bt_to_coq_ir gl) bts)
+  | BaseTypes.Set _ -> CI.Coq_Set (bt_to_coq_ir gl bt)
+  
 (* map each mutually recursive list of datatypes to mutually recursive lists of coq_ir *)
 let dt_to_coq_ir (gl : Global.t) nm = 
   (* find the info of a datatype *)
@@ -128,7 +133,14 @@ let it_to_coq_ir global it b =
                         CI.Coq_const (CI.Coq_bool b)      
       | IT.Z z -> CI.Coq_const (CI.Coq_Z z)
       | IT.Bits (info, z) -> CI.Coq_const (CI.Coq_bits (BT.normalise_to_range info z))
-      | _ -> CI.Coq_unsupported)
+      | IT.Q _ -> CI.Coq_unsupported "Unsupported const Q"
+      | IT.MemByte _ -> CI.Coq_unsupported "Unsupported const membyte"
+      | IT.Pointer _ -> CI.Coq_unsupported "Unsupported const pointer"
+      | IT.Alloc_id _ -> CI.Coq_unsupported "Unsupported const alloc_id"
+      | IT.Unit -> CI.Coq_unsupported "Unsupported const unit"
+      | IT.Null -> CI.Coq_unsupported "Unsupported const null"
+      | IT.CType_const _ -> CI.Coq_unsupported "Unsupported const ctype"
+      | IT.Default _ -> CI.Coq_unsupported "Unsupported const default")
   | IT.Unop (op, a) ->
     let x = aux a in
     (match op with
@@ -138,7 +150,7 @@ let it_to_coq_ir global it b =
         CI.Coq_unop (CI.Coq_neg , x, bt))
     | IT.BW_FFS_NoSMT -> CI.Coq_unop (CI.Coq_BW_FFS_NoSMT , x, bt)
     | IT.BW_CTZ_NoSMT -> CI.Coq_unop (CI.Coq_BW_CTZ_NoSMT , x, bt)
-    | _ -> CI.Coq_unsupported)
+    | _ -> CI.Coq_unsupported "Unsupported unop")
   | IT.Binop (op, a, b) ->
     let x = aux a in
     let y = aux b in
@@ -194,7 +206,7 @@ let it_to_coq_ir global it b =
                 CI.Coq_binop (CI.Coq_impl_prop, x , y, bt) 
             else 
                 CI.Coq_binop (CI.Coq_impl, x , y, bt))
-    | _ -> CI.Coq_unsupported)
+    | _ -> CI.Coq_unsupported "Unsupported binop")
   | IT.Match (x, cases) -> 
     let comp = Some (it, "case-discriminant") in
     let br (pat, rhs) = (pat_to_coq_ir pat, aux rhs) in
@@ -236,11 +248,11 @@ let it_to_coq_ir global it b =
   | IT.Good (ct, t2) when Option.is_some (Sctypes.is_struct_ctype ct) -> 
       (match (Sctypes.is_struct_ctype ct) with
         | Some s -> CI.Coq_good (CI.Coq_sym s, CI.Coq_Struct (CI.Coq_sym s, []), aux t2)
-        | None -> CI.Coq_unsupported)
+        | None -> CI.Coq_unsupported "Unsupported good (why are we in the None case?)")
   | IT.Representable (ct, t2) when Option.is_some (Sctypes.is_struct_ctype ct) ->
       (match (Sctypes.is_struct_ctype ct) with
       | Some s -> CI.Coq_representable (CI.Coq_sym s, CI.Coq_Struct (CI.Coq_sym s, []), aux t2)
-      | None -> CI.Coq_unsupported)
+      | None -> CI.Coq_unsupported "Unsupported representable (why are we in the None case?)")
   | IT.Constructor (nm, id_args) ->
     let comp = Some (it, "datatype contents") in
     (* assuming here that the id's are in canonical order *)
@@ -255,7 +267,23 @@ let it_to_coq_ir global it b =
   | IT.ArrayShift { base; ct; index } ->
     let size_of_ct = Z.of_int @@ Memory.size_of_ctype ct in (* do a + b * c*)
     CI.Coq_arrayshift (aux base, size_of_ct, aux index)
-  | _ -> CI.Coq_unsupported)
+  | IT.Tuple _ -> CI.Coq_unsupported "Unsupported tuple"
+  | IT.NthTuple (_, _) -> CI.Coq_unsupported "Unsupported nth tuple"
+  | IT.Struct (_, _) -> CI.Coq_unsupported "Unsupported struct"
+  | IT.MemberShift _ -> CI.Coq_unsupported "Unsupported member shift"
+  | IT.CopyAllocId _ -> CI.Coq_unsupported "Unsupported copy alloc id"
+  | IT.HasAllocId _ -> CI.Coq_unsupported "Unsupported has alloc id"
+  | IT.SizeOf _ -> CI.Coq_unsupported "Unsupported size of"
+  | IT.OffsetOf (_, _) -> CI.Coq_unsupported "Unsupported offset of"
+  | IT.Nil _ -> CI.Coq_unsupported "Unsupported nil"
+  | IT.Cons (_, _) -> CI.Coq_unsupported "Unsupported cons"
+  | IT.Head _ -> CI.Coq_unsupported "Unsupported head"
+  | IT.Tail _ -> CI.Coq_unsupported "Unsupported tail"
+  | IT.Representable (_, _) -> CI.Coq_unsupported "Unsupported representable"
+  | IT.Good (_, t) -> CI.Coq_good_go_away(aux t)
+  | IT.Aligned _ -> CI.Coq_unsupported "Unsupported aligned"
+  | IT.MapConst (_, _) -> CI.Coq_unsupported "Unsupported map const"
+  | IT.MapDef (_, _) -> CI.Coq_unsupported "Unsupported map def")
   in
   (f b it)
 
@@ -275,9 +303,24 @@ let rec lrt_to_coq_ir (gl : Global.t) (t: LRT.t) =
     let l = it_to_coq_ir gl it None in
     CI.Coq_let(CI.Coq_sym sym, l, d)
   | LRT.I -> CI.Coq_I
-  | _ -> CI.Coq_unsupported
+  | LRT.Resource ((nm, (req,bt)), _, t) -> (match req with
+    | P p -> 
+      (match p.name with
+        | Owned (_, init) -> (match init with
+          | Init -> Coq_Owned_LRT (CI.Coq_sym nm, 
+                              bt_to_coq_ir gl bt, 
+                              CI.Iris_term (lrt_to_coq_ir gl t), 
+                               (it_to_coq_ir gl p.pointer None),
+                               List.map (fun x -> it_to_coq_ir gl x None) p.iargs)
+          | Uninit -> Coq_Block_LRT (CI.Coq_sym nm, 
+                              bt_to_coq_ir gl bt, 
+                              CI.Iris_term (lrt_to_coq_ir gl t), 
+                              it_to_coq_ir gl p.pointer None))
+        | PName nm -> CI.Coq_unsupported ("unsupported pname" ^ Sym.pp_string nm))
+    | Q _ -> CI.Coq_unsupported "unsupported resource QPredicate")
+        
 
-let rec lat_to_coq_ir (gl : Global.t) (t: LRT.t LAT.t) =
+let rec lat_to_coq_ir (gl : Global.t) t =
   match t with
   | LAT.Define ((sym, it), _, t) ->
     let d = lat_to_coq_ir gl t in
@@ -288,7 +331,23 @@ let rec lat_to_coq_ir (gl : Global.t) (t: LRT.t LAT.t) =
     let d = lat_to_coq_ir gl t in
     CI.Coq_Constraint_LAT (c,d)
   | LAT.I t -> lrt_to_coq_ir gl t
-  | LAT.Resource _ -> CI.Coq_unsupported
+  | LAT.Resource ((nm, (req,bt)), _, t) -> (match req with
+    | P p -> 
+      (match p.name with
+        | Owned (_, init) -> (match init with
+          | Init -> Coq_Owned_LAT (CI.Coq_sym nm, 
+                              bt_to_coq_ir gl bt, 
+                              CI.Iris_term (lat_to_coq_ir gl t), 
+                               (it_to_coq_ir gl p.pointer None),
+                               List.map (fun x -> it_to_coq_ir gl x None) p.iargs)
+          | Uninit -> Coq_Block_LAT (CI.Coq_sym nm, 
+                              bt_to_coq_ir gl bt, 
+                              CI.Iris_term (lat_to_coq_ir gl t), 
+                              it_to_coq_ir gl p.pointer None))
+        | PName nm -> Coq_Res_Pred (CI.Coq_sym nm, 
+                              bt_to_coq_ir gl bt, 
+                              (lat_to_coq_ir gl t)))
+    | Q _ -> CI.Coq_unsupported "unsupported resource QPredicate")
 
 let rec lemmat_to_coq_ir (gl : Global.t) (ftyp : AT.lemmat) = 
   match ftyp with

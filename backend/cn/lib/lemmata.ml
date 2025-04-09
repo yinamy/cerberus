@@ -22,6 +22,22 @@ let header filename =
   ^^ hardline
   ^^ hardline
 
+let open_iris_mode iris_defs section_name = 
+  let open Pp in
+  !^"  (* Opening Iris mode *)"
+  ^^ hardline
+  ^^ !^"  Section " ^^ !^section_name ^^ !^"."
+  ^^ hardline
+  ^^ !^"  Context `{!heapGS_gen Σ}."
+  ^^ hardline
+  ^^ hardline
+  ^^ flow hardline iris_defs
+  ^^ hardline
+  ^^ hardline
+  ^^ !^"  (* Closing Iris mode *)"
+  ^^ hardline
+  ^^ !^"  End " ^^ !^section_name ^^ !^"."
+
 let types_spec types =
   let open Pp in
   !^"Module Types."
@@ -49,22 +65,16 @@ let defs_module aux_defs lemma_tys =
   ^^ flow hardline aux_defs
   ^^ hardline
   ^^ hardline
-  ^^ !^"  Section Lemma_Defs."
-  ^^ hardline
-  ^^ !^"  Context `{!heapGS_gen Σ}."
-  ^^ hardline
-  ^^ flow hardline lemma_tys
-  ^^ hardline
-  ^^ !^"  End Lemma_Defs."
+  ^^ open_iris_mode lemma_tys "Iris_Type_Defs"
   ^^ hardline
   ^^ !^"End Defs."
   ^^ hardline
   ^^ hardline
-
+  
 let mod_spec lemma_nms =
   let open Pp in
   let lemma nm =
-    !^"  Parameter" ^^^ typ (Sym.pp nm) (Sym.pp nm ^^ !^"_type") ^^ !^"." ^^ hardline
+    !^"  Parameter" ^^^ typ (Sym.pp nm) (!^"⊢ " ^^ Sym.pp nm ^^ !^"_type") ^^ !^"." ^^ hardline
   in
   !^"Module Type Lemma_Spec (P : Parameters)."
   ^^ hardline
@@ -73,14 +83,8 @@ let mod_spec lemma_nms =
   ^^ hardline
   ^^ !^"  Import D."
   ^^ hardline
-  ^^ !^"  Section Lemmas."
-  ^^ hardline
-  ^^ !^"  Context `{!heapGS_gen Σ}."
-  ^^ hardline
-  ^^ hardline
-  ^^ flow hardline (List.map lemma lemma_nms)
-  ^^ hardline
-  ^^ !^"  End Lemmas."
+  ^^ open_iris_mode ((!^"  Local Notation \"⊢ P\" := (⊢@{iPropI Σ} P)." 
+  ^^ hardline) :: (List.map lemma lemma_nms)) "Lemma_Defs"
   ^^ hardline
   ^^ !^"End Lemma_Spec."
   ^^ hardline
@@ -116,6 +120,17 @@ let build = function
 let parensM x = (Pp.parens x)
 
 let rets s = Pp.string s
+
+let iris_pure x = build [ rets "⌜"; x; rets "⌝" ]
+
+let print_ctype (ctyp : Sctypes.t) = 
+  match ctyp with
+  | Void -> "unsupported ctype void"
+  | Integer _ -> "Z"
+  | Array _ -> "unsupported ctype array"
+  | Pointer _ -> "Ptr"
+  | Struct s -> Sym.pp_string s
+  | Function _ -> "unsupported ctype function"
 
 let enc_z z =
   if Z.leq Z.zero z then
@@ -171,16 +186,24 @@ let rec bt_to_coq (bt : CI.coq_bt) =
     let enc_x = bt_to_coq x in
     let enc_y = bt_to_coq y in
     (parens (binop "->" enc_x enc_y))
-  | CI.Coq_Struct (CI.Coq_sym tag, fld_bts) ->
-    let enc_fld_bts = List.map bt_to_coq fld_bts in
-    (tuple_coq_ty (Sym.pp tag) enc_fld_bts)
+  | CI.Coq_Struct (CI.Coq_sym tag, _) -> Sym.pp tag
+    (*let enc_fld_bts = List.map bt_to_coq fld_bts in
+    (tuple_coq_ty (Sym.pp tag) enc_fld_bts)*)
   | CI.Coq_Record mems ->
     let enc_mem_bts = List.map bt_to_coq mems in
     (tuple_coq_ty !^"record" enc_mem_bts)
-  | CI.Coq_Loc -> !^"CN_Lib.Loc"
+  | CI.Coq_Loc -> !^"Ptr"
   | CI.Coq_Datatype (CI.Coq_sym tag) -> Sym.pp tag
-  | CI.Coq_List _bt2 -> bt_to_coq _bt2
-  | _ -> Pp.string "unsupported_basetype"
+  | CI.Coq_List _bt2 -> !^"list " ^^ bt_to_coq _bt2
+  | CI.Coq_Unit -> !^"unsupported BT unit"
+  | CI.Coq_Membyte -> !^"unsupported BT membyte"
+  | CI.Coq_Real -> !^"unsupported BT real"
+  | CI.Coq_Alloc_id -> !^"unsupported BT alloc_id"
+  | CI.Coq_CType -> !^"unsupported BT ctype"
+  | CI.Coq_Tuple fld_bts ->
+    let enc_fld_bts = List.map bt_to_coq fld_bts in
+    (tuple_coq_ty !^"" enc_fld_bts)
+  | CI.Coq_Set _bt2 -> rets "unsupported BT set"
 
 let pp_let sym rhs_doc doc =
   let open Pp in
@@ -189,7 +212,12 @@ let pp_let sym rhs_doc doc =
 let pp_forall sym bt doc =
   let open Pp in
   let coq_bt = bt_to_coq bt in
-  (!^"forall" ^^^ parens (typ (Sym.pp sym) coq_bt) ^^ !^"," ^^ break 1 ^^ doc)
+  (!^"∀" ^^^ parens (typ (Sym.pp sym) coq_bt) ^^ !^"," ^^ break 1 ^^ doc)
+
+let pp_iris_exists sym bt doc =
+  let open Pp in
+  let coq_bt = bt_to_coq bt in
+  (!^"∃" ^^^ parens (typ (Sym.pp sym) coq_bt) ^^ !^"," ^^ break 1 ^^ doc)
 
 let norm_bv_op bt doc_f =
     match bt with
@@ -209,14 +237,18 @@ let rec pat_to_coq (pat : CI.coq_pat) = match pat with
   | Coq_pConstructor (Coq_sym s, l) -> 
       parensM (build ([ (Sym.pp s) ] @ List.map pat_to_coq l))
 
-let lemma_to_coq global (t : CI.coq_term) = 
+let term_to_coq (global : Global.t) (t : CI.coq_term) = 
   let open Pp in
-  let rec f global t = 
-    let aux t = f global t in
+  let rec f (global : Global.t) (iris_bool : bool) t  = 
+    let aux t = f global iris_bool t  in
     let abinop s x y = parensM (build [ aux x; rets s; aux y ]) in
     let map_split f = (fun doc -> f (break 1 ^^ doc)) in
     let mk_and doc doc2 = doc ^^^ !^"/\\" ^^^ doc2 in
     let mk_imp doc doc2 = doc ^^^ !^"->" ^^^ doc2 in
+    let mk_wand doc doc2 = doc ^^^ !^"-∗" ^^^ doc2 in
+    let mk_star doc doc2 = doc ^^^ !^"∗" ^^^ doc2 in
+    let mk_iris_imp doc doc2 = doc ^^^ !^"→" ^^^ doc2 in
+    let mk_iris_and doc doc2 = doc ^^^ !^"∧" ^^^ doc2 in
   (match t with
   | CI.Coq_sym_term (CI.Coq_sym s) -> Sym.pp s
   | Coq_const c -> (match c with
@@ -246,7 +278,8 @@ let lemma_to_coq global (t : CI.coq_term) =
     | CI.Coq_bwand -> f_appM "Z.land" [ aux x; aux y ]
     | CI.Coq_bwor -> f_appM "Z.lor" [ aux x; aux y ]
     | CI.Coq_eq -> parensM (build [ aux x; rets "=?"; aux y ])
-    | CI.Coq_eq_prop -> parensM (build [ aux x; rets "="; aux y ])
+    | CI.Coq_eq_prop -> if iris_bool then iris_pure (build [ aux x; rets "="; aux y ])
+                          else parensM (build [ aux x; rets "="; aux y ])
     | CI.Coq_and -> abinop "&&" x y
     | CI.Coq_and_prop -> abinop "/\\" x y
     | CI.Coq_or -> abinop "||" x y
@@ -284,10 +317,10 @@ let lemma_to_coq global (t : CI.coq_term) =
   | CI.Coq_record l -> 
       let xs = List.map aux l in
       parensM ((flow (comma ^^ break 1) xs))
-  | CI.Coq_structmember (t, _, ix) ->
+  | CI.Coq_structmember (t, CI.Coq_id fieldnm, _) ->
       (*let op_nm = "get_" ^ (Id.get_string nm) in
       parensM (build [ rets op_nm; aux t ])*)
-      gen_get_upd ix (aux t)
+      (aux t) ^^ !^"." ^^ parens !^(Id.get_string fieldnm)
   | CI.Coq_structupdate ((t, _), x, ix) -> 
       (*let op_nm = "upd_" ^ (Id.get_string nm) in
       parensM (build [ rets op_nm; aux t; aux x ])*)
@@ -322,18 +355,59 @@ let lemma_to_coq global (t : CI.coq_term) =
     f_appM "CN_Lib.array_shift" [ aux base; enc_z ct; aux index ]
   | CI.Coq_forall (CI.Coq_sym sym, bt, t) -> pp_forall sym bt (aux t)
   | CI.Coq_Define (CI.Coq_sym sym, x, y) -> map_split (pp_let sym (aux x)) (aux y)
-  | CI.Coq_Constraint_LRT (t1, t2) -> mk_and (aux t1) (aux t2)
-  | CI.Coq_Constraint_LAT (t1, t2) -> mk_imp (aux t1) (aux t2)
-  | CI.Coq_Resource -> rets "Resource is unsupported"
-  | CI.Coq_I -> rets "Is_true true"
-  | CI.Coq_unsupported -> rets "Unsupported term")
-  in f global t
+  | CI.Coq_Constraint_LRT (t1, t2) -> (match t1 with
+  (* todo: is this right? *)
+    | CI.Coq_good_go_away _ -> mk_star (aux t1) (aux t2)
+    | _ -> if iris_bool then
+              mk_iris_and (aux t1) (aux t2)
+            else
+              mk_and (aux t1) (aux t2))
+  | CI.Coq_Constraint_LAT (t1, t2) -> (match t1 with
+  (* todo: is this right? *)
+    | CI.Coq_good_go_away _ -> mk_wand (aux t1) (aux t2)
+    | _ -> if iris_bool then
+              mk_iris_imp (aux t1) (aux t2)
+            else
+              iris_pure (mk_imp (aux t1) (aux t2)))
+  | CI.Coq_I -> if iris_bool then
+      rets "emp"
+    else
+      rets "Is_true true"
+  | CI.Coq_Owned_LAT (CI.Coq_sym s, bt, t, pointer, _) -> (match bt with
+    | CI.Coq_Bits (_, _) -> 
+      let op_nm = "Owned_int" in
+      pp_forall s bt (build ([ rets op_nm; aux pointer; rets (Sym.pp_string s); g global t ]))
+    | CI.Coq_Struct (CI.Coq_sym nm, _) -> let op_nm =  "Owned_" ^ (Sym.pp_string nm) in 
+      pp_forall s bt (build ([ rets op_nm; aux pointer; rets (Sym.pp_string s); g global t ]))
+    | _ ->  rets "Coq_Owned_LRT unsupported BT")
+  | CI.Coq_Block_LAT (CI.Coq_sym s, _, t, _) ->
+    let op_nm = "block_" ^ (Sym.pp_string s) in
+    parensM (build [ rets op_nm; g global t ])
+  | CI.Coq_Owned_LRT (CI.Coq_sym s, bt, t, pointer, _) -> (match bt with
+    | CI.Coq_Bits (_, _) -> 
+      let op_nm = "Owned_int" in
+      pp_iris_exists s bt (build ([ rets op_nm; aux pointer; rets (Sym.pp_string s); g global t ]))
+    | _ ->  rets "Coq_Owned_LRT unsupported BT")
+  | CI.Coq_Block_LRT (CI.Coq_sym s, _, t, _) ->
+    let op_nm = "block_" ^ (Sym.pp_string s) in
+    parensM (build [ rets op_nm; g global t ])
+    (* todo: this can't be right *)
+  | CI.Coq_good_go_away _ -> rets ""
+  | CI.Coq_Res_Pred (CI.Coq_sym s, _, t) -> 
+      build ([ Sym.pp s; aux t ])
+  | CI.Coq_unsupported msg -> rets msg)
+
+  (* turn on iris mode! *)
+  and g global (t : CI.iris_term) = match t with
+    | CI.Iris_term t -> (f global true t)
+
+  in f global false t
   
 let convert_lemma_defs global (lemmas : CI.coq_lemmata list) =
   let lemma_ty (CI.Coq_lemmata (CI.Coq_sym nm, tm)) =
     Pp.progress_simple ("converting lemma type") (Sym.pp_string nm);
-    let rhs = lemma_to_coq global tm in
-    (defn (Sym.pp_string nm ^ "_type") [] (Some (Pp.string "Prop")) rhs false)
+    let rhs = term_to_coq global tm in
+    (defn (Sym.pp_string nm ^ "_type") [] (Some (Pp.string "iProp Σ")) rhs false)
   in
   let tys = List.map lemma_ty lemmas in  
   tys
@@ -381,7 +455,7 @@ let translate_fun (gl : Global.t) (funs: CI.coq_fun list list * CI.coq_fun list 
     | CI.Coq_fun_def (CI.Coq_sym nm, logical_fun, args, _) -> 
       (match logical_fun with
       | CI.Coq_def body -> 
-        let coq_body = lemma_to_coq gl body in
+        let coq_body = term_to_coq gl body in
         let coq_args =
           List.map
             (fun ((CI.Coq_sym arg), bt) ->
@@ -390,7 +464,7 @@ let translate_fun (gl : Global.t) (funs: CI.coq_fun list list * CI.coq_fun list 
             args in
         defn (Sym.pp_string nm) coq_args None coq_body false
       | CI.Coq_recdef body -> 
-        let coq_body = lemma_to_coq gl body in
+        let coq_body = term_to_coq gl body in
         let coq_args =
           List.map
             (fun ((CI.Coq_sym arg), bt) ->
@@ -423,6 +497,56 @@ let translate_fun (gl : Global.t) (funs: CI.coq_fun list list * CI.coq_fun list 
   (List.map print (fst funs), 
    List.map print (snd funs))
 
+(* generate records and Owned_Structname predicates for all structs*)
+let translate_structs (struct_decls : Memory.struct_decls) = 
+  let open Pp in
+  let piece_to_owned (piece : Memory.struct_piece) = 
+    let make_owned (nm: string) (id : Id.t) =
+      !^(nm^ " ")
+      ^^ (parens !^("shift l " 
+                  ^ string_of_int piece.offset ^ " " 
+                  ^ string_of_int piece.size))
+      ^^ !^" v." ^^ parens !^(Id.get_string(id)) 
+     in
+    (match piece.member_or_padding with
+      | Some (id,ctyp) -> (match ctyp with
+        | Void -> rets "unsupported ctype void"
+        | Integer _ -> make_owned "Owned_int" id
+        | Array _ -> rets "unsupported ctype array"
+        (* todo: probably not right? *)
+        | Pointer _ -> make_owned "Owned_int" id
+        | Struct s -> make_owned ("Owned_" ^ Sym.pp_string s) id
+        | Function _ -> rets "unsupported ctype function")
+      | None -> !^"padding " 
+                ^^ parens (!^"arrayshift " 
+                ^^ !^"l " ^^ !^(string_of_int piece.offset) ^^ !^" 1")
+                ^^ !^(" " ^ string_of_int piece.size))
+  in
+  let rec decl_to_pieces (pieces : Memory.struct_piece list) = 
+    (match pieces with
+    | [] -> rets ""
+    | x :: [] -> piece_to_owned x ^^ !^"."
+    | x :: xs -> piece_to_owned x ^^ !^" ∗ " ^^ decl_to_pieces xs)
+    in
+  let get_struct_field (piece : Memory.struct_piece) = 
+    (match piece.member_or_padding with
+    | Some (id,ctype) -> !^("  " ^ Id.get_string(id) ^ " : " ^ (print_ctype ctype) ^ "; ") ^^hardline
+    | None -> rets "")
+    in
+  let unpack_decls (decl : Sym.t * Memory.struct_layout) =
+    let nm = !^(Sym.pp_string (fst decl)) in
+    !^"  Record " ^^ nm ^^ !^" : Type := { " 
+    ^^ hardline
+    ^^ build (List.map get_struct_field (snd decl)) ^^ !^" }."
+    ^^ hardline
+    ^^ hardline
+    ^^ !^"  Definition " ^^ !^"Owned_" ^^ nm
+    ^^ !^" (l: Ptr) (v : " ^^ nm ^^ !^") : iProp Σ := "
+    ^^ (decl_to_pieces (snd decl))
+    ^^ hardline
+    in
+  List.map unpack_decls (Sym.Map.bindings struct_decls)
+   
 let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemmat)) list)
   = 
   let f =
@@ -435,7 +559,14 @@ let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemm
 
     (* print datatypes *)
     let dtypes = translate_datatypes dtys in
-    Pp.print channel (types_spec dtypes);
+    let structs = if (global.struct_decls == Sym.Map.empty) then
+     [ Pp.string "(* no struct definitions required *)" ]
+        else
+      translate_structs global.struct_decls
+    in
+
+    (* print datatypes and structs *)
+    Pp.print channel (types_spec (dtypes @ [open_iris_mode structs "Struct_Defs"]));
 
     (* print uninterpreted logical functions as parameters *)
     let translated_funs = translate_fun global funs in
