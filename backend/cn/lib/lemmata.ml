@@ -5,6 +5,8 @@ module StringSet = Set.Make (String)
 module CI = Coq_ir
 module CC = Cn_to_coq
 
+(* Printing headers for each module in the Coq file *)
+
 let parse_directions directions = (directions, StringSet.singleton "all")
 
 let header filename =
@@ -90,6 +92,22 @@ let mod_spec lemma_nms =
   ^^ hardline
   ^^ hardline
 
+let pres_spec preds =
+  let open Pp in
+  !^"Module ResourcePredicates (P : Parameters)."
+  ^^ hardline
+  ^^ !^"  Import Types P."
+  ^^ hardline
+  ^^ hardline
+  ^^ (if List.length preds == 0 then
+        !^"  (* no resource predicates required *)" ^^ hardline
+      else
+        open_iris_mode preds "Iris_Pred_Defs")
+  ^^ hardline
+  ^^ !^"End ResourcePredicates."
+  ^^ hardline
+  ^^ hardline
+
 let param_spec params =
   let open Pp in
   !^"Module Type Parameters."
@@ -105,6 +123,9 @@ let param_spec params =
   ^^ !^"End Parameters."
   ^^ hardline
   ^^ hardline  
+
+
+(* Convenient printing functions *)
 
 let fail msg details =
   let open Pp in
@@ -122,6 +143,13 @@ let parensM x = (Pp.parens x)
 let rets s = Pp.string s
 
 let iris_pure x = build [ rets "⌜"; x; rets "⌝" ]
+
+let rec intersperse (sep : string) (last : string) xs =
+  let open Pp in
+  match xs with
+  | [] -> !^""
+  | x :: [] -> x ^^ !^(last)
+  | x :: xs -> x ^^ !^sep ^^ (intersperse sep last xs)
 
 let print_ctype (ctyp : Sctypes.t) = 
   match ctyp with
@@ -164,6 +192,9 @@ let tuple_coq_ty doc fld_tys =
   in
   parens (flow (break 1) (stars fld_tys))  
 
+
+(* Getter for tuples given an index and its dimensions
+  , useful because we translate records as tuples *)
 let gen_get_upd ((i, list_len) : int * int) (tm : PPrint.document) =
   let open Pp in
   let pp_fst a = parens (build [ rets "fst"; a ]) in
@@ -176,6 +207,7 @@ let gen_get_upd ((i, list_len) : int * int) (tm : PPrint.document) =
   else
     pp_snd (foldi (list_len - 1 - i) pp_fst tm)
 
+(* CN BaseTypes to Coq *)
 let rec bt_to_coq (bt : CI.coq_bt) =
   let open Pp in
   match bt with
@@ -237,7 +269,9 @@ let rec pat_to_coq (pat : CI.coq_pat) = match pat with
   | Coq_pConstructor (Coq_sym s, l) -> 
       parensM (build ([ (Sym.pp s) ] @ List.map pat_to_coq l))
 
-let term_to_coq (global : Global.t) (t : CI.coq_term) = 
+(* is_clause is true when the translated term is a resource predicate clause,
+    this is because resource predicate clauses use different connectives *)      
+let term_to_coq (global : Global.t) (t : CI.coq_term) (is_clause : bool) = 
   let open Pp in
   let rec f (global : Global.t) (iris_bool : bool) t  = 
     let aux t = f global iris_bool t  in
@@ -364,8 +398,13 @@ let term_to_coq (global : Global.t) (t : CI.coq_term) =
               mk_and (aux t1) (aux t2))
   | CI.Coq_Constraint_LAT (t1, t2) -> (match t1 with
   (* todo: is this right? *)
-    | CI.Coq_good_go_away _ -> mk_wand (aux t1) (aux t2)
-    | _ -> if iris_bool then
+    | CI.Coq_good_go_away _ -> if is_clause then 
+              mk_star (aux t1) (aux t2)
+            else
+              mk_wand (aux t1) (aux t2)
+    | _ -> if is_clause then 
+              mk_star (aux t1) (aux t2)
+            else if iris_bool then
               mk_iris_imp (aux t1) (aux t2)
             else
               iris_pure (mk_imp (aux t1) (aux t2)))
@@ -373,13 +412,18 @@ let term_to_coq (global : Global.t) (t : CI.coq_term) =
       rets "emp"
     else
       rets "Is_true true"
-  | CI.Coq_Owned_LAT (CI.Coq_sym s, bt, t, pointer, _) -> (match bt with
+  | CI.Coq_Owned_LAT (CI.Coq_sym s, bt, t, pointer, _) -> 
+    let forall_owned op_nm = 
+      pp_forall s bt (build ([ rets op_nm; aux pointer; rets (Sym.pp_string s); g global t ])) in
+    let exists_owned op_nm = 
+      pp_iris_exists s bt (build ([ rets op_nm; aux pointer; rets (Sym.pp_string s); g global t ])) in
+    (match bt with
     | CI.Coq_Bits (_, _) -> 
       let op_nm = "Owned_int" in
-      pp_forall s bt (build ([ rets op_nm; aux pointer; rets (Sym.pp_string s); g global t ]))
-    | CI.Coq_Struct (CI.Coq_sym nm, _) -> let op_nm =  "Owned_" ^ (Sym.pp_string nm) in 
-      pp_forall s bt (build ([ rets op_nm; aux pointer; rets (Sym.pp_string s); g global t ]))
-    | _ ->  rets "Coq_Owned_LRT unsupported BT")
+      if is_clause then exists_owned op_nm else forall_owned op_nm
+    | CI.Coq_Struct (CI.Coq_sym nm, _) -> let op_nm =  "Owned" ^ (Sym.pp_string nm) in 
+      if is_clause then exists_owned op_nm else forall_owned op_nm
+    | _ ->  rets "Coq_Owned_LAT unsupported BT")
   | CI.Coq_Block_LAT (CI.Coq_sym s, _, t, _) ->
     let op_nm = "block_" ^ (Sym.pp_string s) in
     parensM (build [ rets op_nm; g global t ])
@@ -387,26 +431,33 @@ let term_to_coq (global : Global.t) (t : CI.coq_term) =
     | CI.Coq_Bits (_, _) -> 
       let op_nm = "Owned_int" in
       pp_iris_exists s bt (build ([ rets op_nm; aux pointer; rets (Sym.pp_string s); g global t ]))
+    | CI.Coq_Struct (CI.Coq_sym nm, _) -> 
+      let op_nm = "Owned_"^(Sym.pp_string nm) in
+      pp_iris_exists s bt (build ([ rets op_nm; aux pointer; rets (Sym.pp_string s); g global t ]))
     | _ ->  rets "Coq_Owned_LRT unsupported BT")
   | CI.Coq_Block_LRT (CI.Coq_sym s, _, t, _) ->
-    let op_nm = "block_" ^ (Sym.pp_string s) in
+    let op_nm = "Block_" ^ (Sym.pp_string s) in
     parensM (build [ rets op_nm; g global t ])
     (* todo: this can't be right *)
   | CI.Coq_good_go_away _ -> rets ""
-  | CI.Coq_Res_Pred (CI.Coq_sym s, _, t) -> 
-      build ([ Sym.pp s; aux t ])
+  | CI.Coq_Res_Pred (CI.Coq_sym s, _, t, iargs, _) -> 
+    let args = List.map aux iargs in
+    build (((Sym.pp s) :: args) @ [aux t])
   | CI.Coq_unsupported msg -> rets msg)
 
   (* turn on iris mode! *)
   and g global (t : CI.iris_term) = match t with
     | CI.Iris_term t -> (f global true t)
 
-  in f global false t
+  in (if is_clause then
+    f global true t
+  else
+    f global false t)
   
 let convert_lemma_defs global (lemmas : CI.coq_lemmata list) =
   let lemma_ty (CI.Coq_lemmata (CI.Coq_sym nm, tm)) =
     Pp.progress_simple ("converting lemma type") (Sym.pp_string nm);
-    let rhs = term_to_coq global tm in
+    let rhs = term_to_coq global tm false in
     (defn (Sym.pp_string nm ^ "_type") [] (Some (Pp.string "iProp Σ")) rhs false)
   in
   let tys = List.map lemma_ty lemmas in  
@@ -447,6 +498,40 @@ let translate_datatypes (dtys: CI.coq_dt list list) =
   f dtys
 
 (* print function definitions *)
+let translate_pred (gl: Global.t) (preds: CI.coq_resource_pred list list) = 
+  let open Pp in
+  let unpack_clauses (clauses: CI.coq_clause list option) =
+    match clauses with
+    | None -> rets "unsupported: uninterpreted predicate"
+    | Some cl -> 
+      let clause_to_coq (clause: CI.coq_clause) = 
+        match clause with
+        | CI.Coq_clause (guard, body) -> 
+          let guard_doc = term_to_coq gl guard false in
+          let body_doc = term_to_coq gl body true in
+          parensM (build [ guard_doc; rets " ∧ "; body_doc ])
+      in
+      intersperse " ∨ " " . " (List.map clause_to_coq cl)
+  in
+  let make_args (args : (CI.coq_sym * CI.coq_bt) list) = 
+    let make_one_arg arg = match arg with
+      | (CI.Coq_sym id, bt) -> parens (typ (Sym.pp id) (bt_to_coq bt))
+    in
+    List.map make_one_arg args
+  in
+  let unpack_preds (pred : CI.coq_resource_pred) = match pred with
+  | CI.Coq_rpred (CI.Coq_sym nm, CI.Coq_sym ptr, args, ret_ty, clauses) ->
+    !^"  Fixpoint " ^^ !^(Sym.pp_string nm) 
+    ^^ !^" " ^^ parens (typ !^(Sym.pp_string ptr) !^"Ptr")
+    ^^ !^" " ^^ intersperse " " "" (make_args args)
+    ^^ !^" " ^^ parens (typ !^"ret" (bt_to_coq ret_ty))
+    ^^ !^" {struct ret} "
+    ^^ !^" : iProp Σ := " 
+    ^^ hardline
+    ^^ (unpack_clauses clauses)
+    ^^ hardline
+    in
+  List.map unpack_preds (List.concat preds)
 
 let translate_fun (gl : Global.t) (funs: CI.coq_fun list list * CI.coq_fun list list) =
   let open Pp in
@@ -455,7 +540,7 @@ let translate_fun (gl : Global.t) (funs: CI.coq_fun list list * CI.coq_fun list 
     | CI.Coq_fun_def (CI.Coq_sym nm, logical_fun, args, _) -> 
       (match logical_fun with
       | CI.Coq_def body -> 
-        let coq_body = term_to_coq gl body in
+        let coq_body = term_to_coq gl body false in
         let coq_args =
           List.map
             (fun ((CI.Coq_sym arg), bt) ->
@@ -464,7 +549,7 @@ let translate_fun (gl : Global.t) (funs: CI.coq_fun list list * CI.coq_fun list 
             args in
         defn (Sym.pp_string nm) coq_args None coq_body false
       | CI.Coq_recdef body -> 
-        let coq_body = term_to_coq gl body in
+        let coq_body = term_to_coq gl body false in
         let coq_args =
           List.map
             (fun ((CI.Coq_sym arg), bt) ->
@@ -503,7 +588,7 @@ let translate_structs (struct_decls : Memory.struct_decls) =
   let piece_to_owned (piece : Memory.struct_piece) = 
     let make_owned (nm: string) (id : Id.t) =
       !^(nm^ " ")
-      ^^ (parens !^("shift l " 
+      ^^ (parens !^("CN_Lib_Iris.shift l " 
                   ^ string_of_int piece.offset ^ " " 
                   ^ string_of_int piece.size))
       ^^ !^" v." ^^ parens !^(Id.get_string(id)) 
@@ -555,7 +640,7 @@ let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemm
     Pp.print channel (header filename);
 
     (* translate everything to coq AST*)
-    let CI.Coq_everything(dtys, funs, _, lemmas) = CC.cn_to_coq_ir global lemmata in
+    let CI.Coq_everything(dtys, funs, preds, lemmas) = CC.cn_to_coq_ir global lemmata in
 
     (* print datatypes *)
     let dtypes = translate_datatypes dtys in
@@ -571,11 +656,12 @@ let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemm
     (* print uninterpreted logical functions as parameters *)
     let translated_funs = translate_fun global funs in
     Pp.print channel (param_spec (fst translated_funs));
-    (*let uninterp_defs = translate_fun_uninterp (fst funs) in
-    Pp.print channel (param_spec uninterp_defs);
+
+    (* print resource predicates *)
+    let translated_preds = translate_pred global preds in
+    Pp.print channel (pres_spec translated_preds);
     
-    (* print lemmas and defined logical functions*)
-    let fun_defs = translate_fun_defs global (snd funs) in*)
+    (* print lemmas *)
     let translated_lemmas = convert_lemma_defs global lemmas in
     Pp.print channel (defs_module (snd translated_funs) translated_lemmas);
     Pp.print channel (mod_spec (List.map (fun (CI.Coq_lemmata (CI.Coq_sym nm,_)) -> nm) lemmas));
