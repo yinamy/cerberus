@@ -78,7 +78,7 @@ let mod_spec lemma_nms =
   let lemma nm =
     !^"  Parameter" ^^^ typ (Sym.pp nm) (!^"⊢ " ^^ Sym.pp nm ^^ !^"_type") ^^ !^"." ^^ hardline
   in
-  !^"Module Type Lemma_Spec (P : Parameters)."
+  !^"Module Type Lemma_Spec (P : Parameters) (Q : ResourcePredicates)."
   ^^ hardline
   ^^ hardline
   ^^ !^"  Module D := Defs(P)."
@@ -94,7 +94,7 @@ let mod_spec lemma_nms =
 
 let pres_spec preds =
   let open Pp in
-  !^"Module ResourcePredicates (P : Parameters)."
+  !^"Module Type ResourcePredicates (P : Parameters)."
   ^^ hardline
   ^^ !^"  Import Types P."
   ^^ hardline
@@ -292,7 +292,9 @@ let term_to_coq (global : Global.t) (t : CI.coq_term) (is_clause : bool) =
     | Coq_bits z -> parensM (rets (Z.to_string z)))
   | Coq_unop (op, x, bt) -> norm_bv_op bt (match op with
     | CI.Coq_neg -> f_appM "negb" [ aux x ]
-    | CI.Coq_neg_prop -> f_appM "~" [ aux x ]
+    | CI.Coq_neg_prop -> if iris_bool 
+                          then iris_pure (f_appM "~" [ f global false x ])
+                          else f_appM "~" [ aux x ]
     | CI.Coq_BW_FFS_NoSMT -> f_appM "CN_Lib.find_first_set_z" [ aux x ]
     | CI.Coq_BW_CTZ_NoSMT -> f_appM "CN_Lib.count_trailing_zeroes_z" [ aux x ])
   | CI.Coq_binop (op, x, y, bt) -> norm_bv_op bt (match op with
@@ -497,21 +499,43 @@ let translate_datatypes (dtys: CI.coq_dt list list) =
     | x :: xs -> print_dt x :: f xs) in
   f dtys
 
+(* todo: move this somewhere more reasonable *)
+let rec scanl (f : 'b -> 'a -> 'b) (q : 'b) (ls : 'a list) =
+  q :: (match ls with
+        | []   -> []
+        | x :: xs -> scanl f (f q x) xs)
+
+let scanl1 f ls =
+  match ls with
+  | x :: xs -> scanl f x xs
+  | [] -> []
+
 (* print function definitions *)
 let translate_pred (gl: Global.t) (preds: CI.coq_resource_pred list list) = 
   let open Pp in
-  let unpack_clauses (clauses: CI.coq_clause list option) =
-    match clauses with
-    | None -> rets "unsupported: uninterpreted predicate"
-    | Some cl -> 
+  let unpack_clauses (clauses: CI.coq_clause list) =
       let clause_to_coq (clause: CI.coq_clause) = 
         match clause with
         | CI.Coq_clause (guard, body) -> 
-          let guard_doc = term_to_coq gl guard false in
+          (* assuming all guards are pure *)
+          let guard_doc = match guard with
+            | x :: xs -> iris_pure (term_to_coq gl x false)
+                          ^^ intersperse "" "" 
+                          (List.map 
+                            (fun y -> !^" ∧ " ^^ 
+                              iris_pure (!^ "~" ^^(term_to_coq gl y false))) xs)
+            | [] -> rets "True"
+        in
           let body_doc = term_to_coq gl body true in
           parensM (build [ guard_doc; rets " ∧ "; body_doc ])
-      in
-      intersperse " ∨ " " . " (List.map clause_to_coq cl)
+        in
+    (* add all previous guards to the beginnig of each clause *)
+    let clause_concat (c1: CI.coq_clause) (c2: CI.coq_clause) = match c1 with
+      | CI.Coq_clause (guard, _) -> match c2 with
+        | CI.Coq_clause (guard2, body) -> 
+          CI.Coq_clause(guard2 @ guard, body)
+        in 
+    List.map clause_to_coq (scanl1 clause_concat clauses)
   in
   let make_args (args : (CI.coq_sym * CI.coq_bt) list) = 
     let make_one_arg arg = match arg with
@@ -528,7 +552,13 @@ let translate_pred (gl: Global.t) (preds: CI.coq_resource_pred list list) =
     ^^ !^" {struct ret} "
     ^^ !^" : iProp Σ := " 
     ^^ hardline
-    ^^ (unpack_clauses clauses)
+    ^^ intersperse " ∨ " "." (unpack_clauses clauses)
+    ^^ hardline
+  | CI.Coq_rpred_uninterp (CI.Coq_sym nm, _, args, ret_ty) -> 
+    let coq_arg_typs = List.map (fun (_, bt) -> bt_to_coq bt) args in
+        let coq_rt = bt_to_coq ret_ty in
+        let ty = List.fold_right (fun at rt -> at ^^^ !^"->" ^^^ rt) coq_arg_typs coq_rt in
+        ((!^"  Parameter" ^^^ typ (Sym.pp nm) ty ^^ !^" -> Prop." ^^ hardline))
     ^^ hardline
     in
   List.map unpack_preds (List.concat preds)

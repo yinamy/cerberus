@@ -354,36 +354,36 @@ let rec it_lat_to_coq_ir (gl : Global.t) (t : IT.t LAT.t) =
                               it_to_coq_ir gl p.pointer None))
     | Q _ -> CI.Coq_unsupported "unsupported resource QPredicate")
 
-    let rec lrtlat_to_coq_ir (gl : Global.t) t =
-      match t with
-      | LAT.Define ((sym, it), _, t) ->
-        let d = lrtlat_to_coq_ir gl t in
-        let l = it_to_coq_ir gl it None in
-        CI.Coq_Define (CI.Coq_sym sym, l, d)
-      | LAT.Constraint (lc, _, t) ->
-        let c = lc_to_coq_ir gl lc in
-        let d = lrtlat_to_coq_ir gl t in
-        CI.Coq_Constraint_LAT (c,d)
-      | LAT.I t -> lrt_to_coq_ir gl t
-      | LAT.Resource ((nm, (req,bt)), _, t) -> (match req with
-        | P p -> 
-          (match p.name with
-            | Owned (_, init) -> (match init with
-              | Init -> Coq_Owned_LAT (CI.Coq_sym nm, 
-                                  bt_to_coq_ir gl bt, 
-                                  CI.Iris_term (lrtlat_to_coq_ir gl t), 
-                                   (it_to_coq_ir gl p.pointer None),
-                                   List.map (fun x -> it_to_coq_ir gl x None) p.iargs)
-              | Uninit -> Coq_Block_LAT (CI.Coq_sym nm, 
-                                  bt_to_coq_ir gl bt, 
-                                  CI.Iris_term (lrtlat_to_coq_ir gl t), 
-                                  it_to_coq_ir gl p.pointer None))
-            | PName nm -> Coq_Res_Pred (CI.Coq_sym nm, 
-                                  bt_to_coq_ir gl bt, 
-                                  (lrtlat_to_coq_ir gl t),
-                                  List.map (fun x -> it_to_coq_ir gl x None) p.iargs,
-                                  it_to_coq_ir gl p.pointer None))
-        | Q _ -> CI.Coq_unsupported "unsupported resource QPredicate")
+let rec lrtlat_to_coq_ir (gl : Global.t) t =
+  match t with
+  | LAT.Define ((sym, it), _, t) ->
+    let d = lrtlat_to_coq_ir gl t in
+    let l = it_to_coq_ir gl it None in
+    CI.Coq_Define (CI.Coq_sym sym, l, d)
+  | LAT.Constraint (lc, _, t) ->
+    let c = lc_to_coq_ir gl lc in
+    let d = lrtlat_to_coq_ir gl t in
+    CI.Coq_Constraint_LAT (c,d)
+  | LAT.I t -> lrt_to_coq_ir gl t
+  | LAT.Resource ((nm, (req,bt)), _, t) -> (match req with
+    | P p -> 
+      (match p.name with
+        | Owned (_, init) -> (match init with
+          | Init -> Coq_Owned_LAT (CI.Coq_sym nm, 
+                              bt_to_coq_ir gl bt, 
+                              CI.Iris_term (lrtlat_to_coq_ir gl t), 
+                                (it_to_coq_ir gl p.pointer None),
+                                List.map (fun x -> it_to_coq_ir gl x None) p.iargs)
+          | Uninit -> Coq_Block_LAT (CI.Coq_sym nm, 
+                              bt_to_coq_ir gl bt, 
+                              CI.Iris_term (lrtlat_to_coq_ir gl t), 
+                              it_to_coq_ir gl p.pointer None))
+        | PName nm -> Coq_Res_Pred (CI.Coq_sym nm, 
+                              bt_to_coq_ir gl bt, 
+                              (lrtlat_to_coq_ir gl t),
+                              List.map (fun x -> it_to_coq_ir gl x None) p.iargs,
+                              it_to_coq_ir gl p.pointer None))
+    | Q _ -> CI.Coq_unsupported "unsupported resource QPredicate")
 
 let rec lemmat_to_coq_ir (gl : Global.t) (ftyp : AT.lemmat) = 
   match ftyp with
@@ -447,22 +447,22 @@ let pred_to_coq_ir (gl : Global.t) (nm : Sym.t) =
   let open Definition.Predicate in
   let pred = Sym.Map.find nm gl.resource_predicates in
   let translate_one_clause (clause : Definition.Clause.t) =
-   CI.Coq_clause(it_to_coq_ir gl clause.guard None, 
+   CI.Coq_clause([ it_to_coq_ir gl clause.guard None ], 
     it_lat_to_coq_ir gl clause.packing_ft)
   in
-  let get_clauses =
-    match pred.clauses with
-    | Some clauses -> Some (List.map translate_one_clause clauses)  
-    | None -> None
+  let args = List.map (fun (nm, bt) -> 
+    (CI.Coq_sym nm , bt_to_coq_ir gl bt)) pred.iargs
   in
-  CI.Coq_rpred(
-    CI.Coq_sym(nm),
-    CI.Coq_sym(pred.pointer),
-    List.map (fun (nm, bt) -> 
-          (CI.Coq_sym nm , bt_to_coq_ir gl bt)) pred.iargs,
-    bt_to_coq_ir gl pred.oarg_bt,
-    get_clauses
-    )
+  (* distinguishing between defined and uninterpreted predicates *)
+  match pred.clauses with
+  | Some clauses -> 
+      CI.Coq_rpred(CI.Coq_sym(nm),CI.Coq_sym(pred.pointer),
+        args, bt_to_coq_ir gl pred.oarg_bt,
+        List.map translate_one_clause clauses)
+  | None -> 
+      CI.Coq_rpred_uninterp(CI.Coq_sym(nm),CI.Coq_sym(pred.pointer),
+        args, bt_to_coq_ir gl pred.oarg_bt)
+
 
 let resource_pred_to_coq_ir (gl : Global.t) (preds : Sym.t list list) = 
   let rpred_clump_to_coq_ir (gl : Global.t) (nms : Sym.t list) = 

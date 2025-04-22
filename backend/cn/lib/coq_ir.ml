@@ -116,7 +116,7 @@ type coq_term =
   | Coq_Owned_LAT of coq_sym * coq_bt * iris_term * coq_term * coq_term list
   | Coq_Block_LAT of coq_sym * coq_bt * iris_term * coq_term
   (* todo: this isnt right *)
-  | Coq_Res_Pred of coq_sym * coq_bt * coq_term
+  | Coq_Res_Pred of coq_sym * coq_bt * coq_term * coq_term list * coq_term
 
 and iris_term = 
   | Iris_term of coq_term
@@ -167,9 +167,21 @@ type coq_fun =
   | Coq_fun_uninterp of coq_sym * coq_uninterp * (coq_sym * coq_bt) list * coq_bt
   | Coq_fun_def of coq_sym * coq_def * (coq_sym * coq_bt) list * coq_bt
 
-(* CN resource predicates (unimplemented) *)
+(* CN resource predicates *)
+type coq_clause = 
+(* parameters : guard, clause body *)
+  | Coq_clause of coq_term list * coq_term
+  
 type coq_resource_pred = 
-  | Coq_resource_pred
+(* parameters: pred name, input pointer name, input arguments and types, 
+               output type, clauses (None -> uninterpreted pred) *)
+  | Coq_rpred of coq_sym * coq_sym
+                        * (coq_sym * coq_bt) list 
+                        * coq_bt 
+                        * coq_clause list
+  | Coq_rpred_uninterp of coq_sym * coq_sym
+                        * (coq_sym * coq_bt) list 
+                        * coq_bt 
 
 (* CN lemmas *)
 type coq_lemmata = 
@@ -182,6 +194,6 @@ type coq_everything =
   | Coq_everything of (coq_dt list) list
                     (* uninterpreted functions vs defined functions*)
                     * ((coq_fun list) list * (coq_fun list) list)
-                    * (coq_resource_pred list) 
+                    * (coq_resource_pred list)  list
                     * coq_lemmata list
   
