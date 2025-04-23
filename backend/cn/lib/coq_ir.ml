@@ -110,13 +110,14 @@ type coq_term =
   | Coq_Define of coq_sym * coq_term * coq_term
   | Coq_Constraint_LRT of coq_term * coq_term
   | Coq_Constraint_LAT of coq_term * coq_term
-  | Coq_I
+  | Coq_LAT_I of coq_term
+  | Coq_LRT_I
   | Coq_Owned_LRT of coq_sym * coq_bt * iris_term * coq_term * coq_term list
   | Coq_Block_LRT of coq_sym * coq_bt * iris_term * coq_term
   | Coq_Owned_LAT of coq_sym * coq_bt * iris_term * coq_term * coq_term list
   | Coq_Block_LAT of coq_sym * coq_bt * iris_term * coq_term
-  (* todo: this isnt right *)
-  | Coq_Res_Pred of coq_sym * coq_bt * coq_term * coq_term list * coq_term
+  | Coq_PName of coq_sym * coq_sym * coq_bt * coq_term * coq_term list * coq_term
+  | Coq_pure of coq_term
 
 and iris_term = 
   | Iris_term of coq_term

@@ -138,7 +138,7 @@ let it_to_coq_ir global it b =
       | IT.Pointer _ -> CI.Coq_unsupported "Unsupported const pointer"
       | IT.Alloc_id _ -> CI.Coq_unsupported "Unsupported const alloc_id"
       | IT.Unit -> CI.Coq_unsupported "Unsupported const unit"
-      | IT.Null -> CI.Coq_unsupported "Unsupported const null"
+      | IT.Null -> CI.Coq_const (CI.Coq_Z (Z.zero))
       | IT.CType_const _ -> CI.Coq_unsupported "Unsupported const ctype"
       | IT.Default _ -> CI.Coq_unsupported "Unsupported const default")
   | IT.Unop (op, a) ->
@@ -289,8 +289,10 @@ let it_to_coq_ir global it b =
 
 let lc_to_coq_ir (gl : Global.t) (t: LC.t) =
   match t with
-  | LC.T t -> it_to_coq_ir gl t None
-  | LC.Forall ((sym, bt), it) -> CI.Coq_forall (CI.Coq_sym sym, bt_to_coq_ir gl bt, it_to_coq_ir gl it None)
+  | LC.T t -> CI.Coq_pure (it_to_coq_ir gl t None)
+  | LC.Forall ((sym, bt), it) -> 
+      CI.Coq_forall (CI.Coq_sym sym, bt_to_coq_ir gl bt, 
+                    CI.Coq_pure(it_to_coq_ir gl it None))
 
 let rec lrt_to_coq_ir (gl : Global.t) (t: LRT.t) =
   match t with
@@ -302,7 +304,7 @@ let rec lrt_to_coq_ir (gl : Global.t) (t: LRT.t) =
     let d = lrt_to_coq_ir gl t in
     let l = it_to_coq_ir gl it None in
     CI.Coq_let(CI.Coq_sym sym, l, d)
-  | LRT.I -> CI.Coq_I
+  | LRT.I -> CI.Coq_LRT_I
   | LRT.Resource ((nm, (req,bt)), _, t) -> (match req with
     | P p -> 
       (match p.name with
@@ -316,7 +318,8 @@ let rec lrt_to_coq_ir (gl : Global.t) (t: LRT.t) =
                               bt_to_coq_ir gl bt, 
                               CI.Iris_term (lrt_to_coq_ir gl t), 
                               it_to_coq_ir gl p.pointer None))
-          | PName nm ->  Coq_Res_Pred (CI.Coq_sym nm, 
+          | PName p_nm ->  Coq_PName (CI.Coq_sym nm,
+                              CI.Coq_sym p_nm, 
                               bt_to_coq_ir gl bt, 
                               (lrt_to_coq_ir gl t),
                               List.map (fun x -> it_to_coq_ir gl x None) p.iargs,
@@ -333,7 +336,7 @@ let rec it_lat_to_coq_ir (gl : Global.t) (t : IT.t LAT.t) =
     let c = lc_to_coq_ir gl lc in
     let d = it_lat_to_coq_ir gl t in
     CI.Coq_Constraint_LAT (c,d)
-  | LAT.I t -> it_to_coq_ir gl t None
+  | LAT.I t -> CI.Coq_LAT_I (it_to_coq_ir gl t None)
   | LAT.Resource ((nm, (req,bt)), _, t) -> (match req with
     | P p -> 
       (match p.name with
@@ -347,7 +350,8 @@ let rec it_lat_to_coq_ir (gl : Global.t) (t : IT.t LAT.t) =
                               bt_to_coq_ir gl bt, 
                               CI.Iris_term (it_lat_to_coq_ir gl t), 
                               it_to_coq_ir gl p.pointer None))
-        | PName nm ->  Coq_Res_Pred (CI.Coq_sym nm, 
+        | PName p_nm ->  Coq_PName (CI.Coq_sym nm,
+                              CI.Coq_sym p_nm, 
                               bt_to_coq_ir gl bt, 
                               (it_lat_to_coq_ir gl t),
                               List.map (fun x -> it_to_coq_ir gl x None) p.iargs,
@@ -378,7 +382,8 @@ let rec lrtlat_to_coq_ir (gl : Global.t) t =
                               bt_to_coq_ir gl bt, 
                               CI.Iris_term (lrtlat_to_coq_ir gl t), 
                               it_to_coq_ir gl p.pointer None))
-        | PName nm -> Coq_Res_Pred (CI.Coq_sym nm, 
+        | PName p_nm -> Coq_PName (CI.Coq_sym nm,
+                              CI.Coq_sym p_nm, 
                               bt_to_coq_ir gl bt, 
                               (lrtlat_to_coq_ir gl t),
                               List.map (fun x -> it_to_coq_ir gl x None) p.iargs,

@@ -54,12 +54,29 @@ let types_spec types =
   ^^ hardline
   ^^ hardline
 
+let structs_module structs =
+  let open Pp in
+  !^"Module Struct_Decls."
+  ^^ hardline
+  ^^ hardline
+  ^^ !^"  Import Types."
+  ^^ hardline
+  ^^ !^"  Open Scope Z."
+  ^^ hardline
+  ^^ hardline
+  ^^ open_iris_mode structs "Struct_Defs"
+  ^^ hardline
+  ^^ hardline
+  ^^ !^"End Struct_Decls."
+  ^^ hardline
+  ^^ hardline
+
 let defs_module aux_defs lemma_tys =
   let open Pp in
-  !^"Module Defs (P : Parameters)."
+  !^"Module Defs (P : Parameters) (Q : ResourcePredicates(P))."
   ^^ hardline
   ^^ hardline
-  ^^ !^"  Import Types P."
+  ^^ !^"  Import Types Struct_Decls P Q."
   ^^ hardline
   ^^ !^"  Open Scope Z."
   ^^ hardline
@@ -78,10 +95,10 @@ let mod_spec lemma_nms =
   let lemma nm =
     !^"  Parameter" ^^^ typ (Sym.pp nm) (!^"⊢ " ^^ Sym.pp nm ^^ !^"_type") ^^ !^"." ^^ hardline
   in
-  !^"Module Type Lemma_Spec (P : Parameters) (Q : ResourcePredicates)."
+  !^"Module Type Lemma_Spec (P : Parameters) (Q : ResourcePredicates(P))."
   ^^ hardline
   ^^ hardline
-  ^^ !^"  Module D := Defs(P)."
+  ^^ !^"  Module D := Defs(P)(Q)."
   ^^ hardline
   ^^ !^"  Import D."
   ^^ hardline
@@ -92,17 +109,20 @@ let mod_spec lemma_nms =
   ^^ hardline
   ^^ hardline
 
-let pres_spec preds =
+let pred_spec preds =
   let open Pp in
   !^"Module Type ResourcePredicates (P : Parameters)."
   ^^ hardline
-  ^^ !^"  Import Types P."
+  ^^ !^"  Import Types P Struct_Decls."
   ^^ hardline
+  ^^ !^"  Open Scope Z."
   ^^ hardline
   ^^ (if List.length preds == 0 then
         !^"  (* no resource predicates required *)" ^^ hardline
       else
-        open_iris_mode preds "Iris_Pred_Defs")
+        !^"  Unset Guard Checking."
+        ^^ hardline
+        ^^ open_iris_mode preds "Iris_Pred_Defs")
   ^^ hardline
   ^^ !^"End ResourcePredicates."
   ^^ hardline
@@ -114,6 +134,7 @@ let param_spec params =
   ^^ hardline
   ^^ !^"  Import Types."
   ^^ hardline
+  ^^ !^"  Open Scope Z."
   ^^ hardline
   ^^ (if List.length params == 0 then
         !^"  (* no parameters required *)" ^^ hardline
@@ -278,7 +299,7 @@ let term_to_coq (global : Global.t) (t : CI.coq_term) (is_clause : bool) =
     let abinop s x y = parensM (build [ aux x; rets s; aux y ]) in
     let map_split f = (fun doc -> f (break 1 ^^ doc)) in
     let mk_and doc doc2 = doc ^^^ !^"/\\" ^^^ doc2 in
-    let mk_imp doc doc2 = doc ^^^ !^"->" ^^^ doc2 in
+    (*let mk_imp doc doc2 = doc ^^^ !^"->" ^^^ doc2 in*)
     let mk_wand doc doc2 = doc ^^^ !^"-∗" ^^^ doc2 in
     let mk_star doc doc2 = doc ^^^ !^"∗" ^^^ doc2 in
     let mk_iris_imp doc doc2 = doc ^^^ !^"→" ^^^ doc2 in
@@ -287,14 +308,14 @@ let term_to_coq (global : Global.t) (t : CI.coq_term) (is_clause : bool) =
   | CI.Coq_sym_term (CI.Coq_sym s) -> Sym.pp s
   | Coq_const c -> (match c with
     | Coq_bool b -> (rets (if b then "true" else "false"))
-    | Coq_bool_prop b -> f_appM "Is_true" [ (rets (if b then "true" else "false")) ]
+    | Coq_bool_prop b -> (f_appM "Is_true" [ (rets (if b then "true" else "false")) ])
     | Coq_Z z -> enc_z z
     | Coq_bits z -> parensM (rets (Z.to_string z)))
   | Coq_unop (op, x, bt) -> norm_bv_op bt (match op with
     | CI.Coq_neg -> f_appM "negb" [ aux x ]
-    | CI.Coq_neg_prop -> if iris_bool 
+    | CI.Coq_neg_prop -> f_appM "~" [ aux x ] (*if iris_bool 
                           then iris_pure (f_appM "~" [ f global false x ])
-                          else f_appM "~" [ aux x ]
+                          else f_appM "~" [ aux x ]*)
     | CI.Coq_BW_FFS_NoSMT -> f_appM "CN_Lib.find_first_set_z" [ aux x ]
     | CI.Coq_BW_CTZ_NoSMT -> f_appM "CN_Lib.count_trailing_zeroes_z" [ aux x ])
   | CI.Coq_binop (op, x, y, bt) -> norm_bv_op bt (match op with
@@ -314,14 +335,15 @@ let term_to_coq (global : Global.t) (t : CI.coq_term) (is_clause : bool) =
     | CI.Coq_bwand -> f_appM "Z.land" [ aux x; aux y ]
     | CI.Coq_bwor -> f_appM "Z.lor" [ aux x; aux y ]
     | CI.Coq_eq -> parensM (build [ aux x; rets "=?"; aux y ])
-    | CI.Coq_eq_prop -> if iris_bool then iris_pure (build [ aux x; rets "="; aux y ])
-                          else parensM (build [ aux x; rets "="; aux y ])
+    | CI.Coq_eq_prop -> parensM (build [ aux x; rets "="; aux y ])
+    (*if iris_bool then iris_pure (build [ aux x; rets "="; aux y ])
+                          else parensM (build [ aux x; rets "="; aux y ])*)
     | CI.Coq_and -> abinop "&&" x y
-    | CI.Coq_and_prop -> abinop "/\\" x y
+    | CI.Coq_and_prop -> abinop "∧" x y (*abinop "/\\" x y*)
     | CI.Coq_or -> abinop "||" x y
-    | CI.Coq_or_prop -> abinop "\\/" x y
+    | CI.Coq_or_prop -> abinop "∨" x y (*abinop "\\/" x y*)
     | CI.Coq_impl -> abinop "implb" x y
-    | CI.Coq_impl_prop -> abinop "->" x y)
+    | CI.Coq_impl_prop -> abinop "-∗" x y) (*abinop "->" x y)*)
   | CI.Coq_match (x, cases) -> 
     let br (pat, rhs) =
       build [ rets "|"; pat_to_coq pat; rets "=>"; aux rhs ] in
@@ -406,14 +428,15 @@ let term_to_coq (global : Global.t) (t : CI.coq_term) (is_clause : bool) =
               mk_wand (aux t1) (aux t2)
     | _ -> if is_clause then 
               mk_star (aux t1) (aux t2)
-            else if iris_bool then
-              mk_iris_imp (aux t1) (aux t2)
             else
-              iris_pure (mk_imp (aux t1) (aux t2)))
-  | CI.Coq_I -> if iris_bool then
+              mk_iris_imp (aux t1) (aux t2))
+              (*iris_pure (mk_imp (aux t1) (aux t2)))*)
+  | CI.Coq_LRT_I -> if iris_bool then
       rets "emp"
     else
       rets "Is_true true"
+  (* this is the return value of a resource predicate*)
+  | CI.Coq_LAT_I t -> iris_pure (!^ "ret = " ^^ aux t)
   | CI.Coq_Owned_LAT (CI.Coq_sym s, bt, t, pointer, _) -> 
     let forall_owned op_nm = 
       pp_forall s bt (build ([ rets op_nm; aux pointer; rets (Sym.pp_string s); g global t ])) in
@@ -423,7 +446,7 @@ let term_to_coq (global : Global.t) (t : CI.coq_term) (is_clause : bool) =
     | CI.Coq_Bits (_, _) -> 
       let op_nm = "Owned_int" in
       if is_clause then exists_owned op_nm else forall_owned op_nm
-    | CI.Coq_Struct (CI.Coq_sym nm, _) -> let op_nm =  "Owned" ^ (Sym.pp_string nm) in 
+    | CI.Coq_Struct (CI.Coq_sym nm, _) -> let op_nm =  "Owned_" ^ (Sym.pp_string nm) in 
       if is_clause then exists_owned op_nm else forall_owned op_nm
     | _ ->  rets "Coq_Owned_LAT unsupported BT")
   | CI.Coq_Block_LAT (CI.Coq_sym s, _, t, _) ->
@@ -440,11 +463,15 @@ let term_to_coq (global : Global.t) (t : CI.coq_term) (is_clause : bool) =
   | CI.Coq_Block_LRT (CI.Coq_sym s, _, t, _) ->
     let op_nm = "Block_" ^ (Sym.pp_string s) in
     parensM (build [ rets op_nm; g global t ])
-    (* todo: this can't be right *)
   | CI.Coq_good_go_away _ -> rets ""
-  | CI.Coq_Res_Pred (CI.Coq_sym s, _, t, iargs, _) -> 
+  | CI.Coq_PName (CI.Coq_sym nm, CI.Coq_sym pname, bt, t, iargs, ptr) -> 
     let args = List.map aux iargs in
-    build (((Sym.pp s) :: args) @ [aux t])
+    mk_star 
+      (pp_iris_exists nm bt (build ((Sym.pp pname :: aux ptr :: args) @ [Sym.pp nm])))
+      (aux t)
+  | CI.Coq_pure t -> (match t with
+    | CI.Coq_good_go_away _ -> rets ""
+    | _ -> iris_pure (aux t))
   | CI.Coq_unsupported msg -> rets msg)
 
   (* turn on iris mode! *)
@@ -521,7 +548,7 @@ let translate_pred (gl: Global.t) (preds: CI.coq_resource_pred list list) =
           let guard_doc = match guard with
             | x :: xs -> iris_pure (term_to_coq gl x false)
                           ^^ intersperse "" "" 
-                          (List.map 
+                          (List.map
                             (fun y -> !^" ∧ " ^^ 
                               iris_pure (!^ "~" ^^(term_to_coq gl y false))) xs)
             | [] -> rets "True"
@@ -681,19 +708,21 @@ let generate (global : Global.t) directions (lemmata : (Sym.t * (Loc.t * AT.lemm
     in
 
     (* print datatypes and structs *)
-    Pp.print channel (types_spec (dtypes @ [open_iris_mode structs "Struct_Defs"]));
+    Pp.print channel (types_spec dtypes);
+    Pp.print channel (structs_module structs);
 
     (* print uninterpreted logical functions as parameters *)
     let translated_funs = translate_fun global funs in
-    Pp.print channel (param_spec (fst translated_funs));
+    Pp.print channel (param_spec (fst translated_funs @ snd translated_funs));
 
     (* print resource predicates *)
     let translated_preds = translate_pred global preds in
-    Pp.print channel (pres_spec translated_preds);
+    Pp.print channel (pred_spec translated_preds);
     
     (* print lemmas *)
     let translated_lemmas = convert_lemma_defs global lemmas in
-    Pp.print channel (defs_module (snd translated_funs) translated_lemmas);
+    Pp.print channel (defs_module [] translated_lemmas);
+    (*Pp.print channel (defs_module (snd translated_funs) translated_lemmas);*)
     Pp.print channel (mod_spec (List.map (fun (CI.Coq_lemmata (CI.Coq_sym nm,_)) -> nm) lemmas));
   in
   (Result.Ok f)
