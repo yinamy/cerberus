@@ -1,186 +1,209 @@
-DIGEST 61171a62d3fc4a8a36a20aa5da6d1093
+DIGEST 73726524e02f886f47f48cc7cac09db0
 FCN_Lemmas.Inst_Spec
 R111:116 Coq.ZArith.ZArith <> <> lib
 R118:121 Coq.Bool.Bool <> <> lib
 R123:125 Coq.micromega.Lia <> <> lib
 R143:157 CN_Lemmas.Setup <> <> lib
 R175:192 CN_Lemmas.Gen_Spec <> <> lib
-R202:225 CN_Lemmas.Gen_Spec Types <> mod
-R243:246 Coq.Lists.List <> <> lib
-R256:268 Coq.Lists.List ListNotations <> mod
-mod 278:281 <> Inst
-def 298:310 Inst nth_tree_list
-R318:326 CN_Lemmas.Gen_Spec Types tree_list ind
-binder 313:314 <> xs:1
-R334:334 Coq.Numbers.BinNums <> Z ind
-binder 330:330 <> n:2
-R344:351 Coq.Lists.List <> nth def
-R385:394 CN_Lemmas.Gen_Spec Types Empty_Tree constr
-R367:379 CN_Lemmas.Setup <> to_list def
-R381:382 CN_Lemmas.Inst_Spec <> xs:1 var
-R354:361 Coq.ZArith.BinInt Z to_nat def
-R363:363 CN_Lemmas.Inst_Spec <> n:2 var
-def 474:489 Inst default_children
-R496:496 Coq.Numbers.BinNums <> Z ind
-binder 492:492 <> n:3
-R507:516 CN_Lemmas.Gen_Spec Types Empty_Tree constr
-def 533:550 Inst array_to_tree_list
-R555:573 CN_Lemmas.Setup <> array_to_list def
-def 590:595 Inst tree_v
-R600:611 CN_Lemmas.Setup <> tree_v def
-def 628:634 Inst in_tree
-R639:651 CN_Lemmas.Setup <> in_tree def
-R661:664 CN_Lemmas.Inst_Spec Inst <> mod
-R683:705 CN_Lemmas.Gen_Spec Defs <> modtype
-R708:711 CN_Lemmas.Inst_Spec Inst <> modtype
-mod 675:678 <> Defs
-mod 723:728 <> Proofs
-R762:765 CN_Lemmas.Inst_Spec Defs <> mod
-R767:770 CN_Lemmas.Inst_Spec Inst <> mod
-prf 794:806 Proofs z_to_nat_eq_0
-R823:823 Coq.Numbers.BinNums <> Z ind
-binder 819:819 <> z:4
-R833:836 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R828:831 Coq.ZArith.BinInt <> ::Z_scope:x_'<='_x not
-R827:827 CN_Lemmas.Inst_Spec <> z:4 var
-R847:849 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R837:844 Coq.ZArith.BinInt Z to_nat def
-R846:846 CN_Lemmas.Inst_Spec <> z:4 var
-prf 883:901 Proofs arc_from_array_step
-binder 913:915 <> arr:5
-binder 917:917 <> i:6
-binder 919:921 <> len:7
-R952:956 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R924:937 CN_Lemmas.Setup <> arc_from_array def
-R939:939 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
-R943:944 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
-R946:947 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
-R951:951 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
-R940:942 CN_Lemmas.Inst_Spec <> arr:5 var
-R945:945 CN_Lemmas.Inst_Spec <> i:6 var
-R948:950 CN_Lemmas.Inst_Spec <> len:7 var
-R967:971 Coq.ZArith.BinInt <> ::Z_scope:x_'<=?'_x not
-R964:966 CN_Lemmas.Inst_Spec <> len:7 var
-R972:972 CN_Lemmas.Inst_Spec <> i:6 var
-R984:987 Coq.Init.Datatypes <> true constr
-R992:993 Coq.Lists.List ListNotations ::list_scope:'['_']' not
-R999:1003 Coq.Init.Datatypes <> false constr
-R1013:1016 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
-R1008:1010 CN_Lemmas.Inst_Spec <> arr:5 var
-R1012:1012 CN_Lemmas.Inst_Spec <> i:6 var
-R1017:1030 CN_Lemmas.Setup <> arc_from_array def
-R1032:1032 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
-R1036:1037 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
-R1043:1044 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
-R1048:1048 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
-R1033:1035 CN_Lemmas.Inst_Spec <> arr:5 var
-R1039:1041 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
-R1038:1038 CN_Lemmas.Inst_Spec <> i:6 var
-R1045:1047 CN_Lemmas.Inst_Spec <> len:7 var
-R1089:1093 Coq.ZArith.BinInt <> ::Z_scope:x_'<=?'_x not
-R1089:1093 Coq.ZArith.BinInt <> ::Z_scope:x_'<=?'_x not
-R1147:1149 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R1129:1136 Coq.ZArith.BinInt Z to_nat def
-R1142:1144 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
-R1147:1149 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R1129:1136 Coq.ZArith.BinInt Z to_nat def
-R1142:1144 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
-R1238:1240 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R1220:1227 Coq.ZArith.BinInt Z to_nat def
-R1233:1235 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
-R1241:1241 Coq.Init.Datatypes <> S constr
-R1244:1251 Coq.ZArith.BinInt Z to_nat def
-R1257:1260 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
-R1266:1266 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
-R1262:1264 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
-R1238:1240 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R1220:1227 Coq.ZArith.BinInt Z to_nat def
-R1233:1235 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
-R1241:1241 Coq.Init.Datatypes <> S constr
-R1244:1251 Coq.ZArith.BinInt Z to_nat def
-R1257:1260 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
-R1266:1266 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
-R1262:1264 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
-prf 1323:1331 Proofs if_casesI
-binder 1343:1343 <> b:8
-binder 1346:1346 <> P:9
-binder 1348:1348 <> Q:10
-R1361:1361 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R1375:1381 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R1370:1373 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R1363:1365 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R1362:1362 CN_Lemmas.Inst_Spec <> b:8 var
-R1366:1369 Coq.Init.Datatypes <> true constr
-R1374:1374 CN_Lemmas.Inst_Spec <> P:9 var
-R1382:1382 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R1397:1403 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R1392:1395 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R1384:1386 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R1383:1383 CN_Lemmas.Inst_Spec <> b:8 var
-R1387:1391 Coq.Init.Datatypes <> false constr
-R1396:1396 CN_Lemmas.Inst_Spec <> Q:10 var
-R1407:1407 CN_Lemmas.Inst_Spec <> b:8 var
-R1421:1421 CN_Lemmas.Inst_Spec <> Q:10 var
-R1414:1414 CN_Lemmas.Inst_Spec <> P:9 var
-prf 1535:1554 Proofs in_tree_tree_v_lemma
-R1558:1582 CN_Lemmas.Inst_Spec Defs in_tree_tree_v_lemma_type def
-R1601:1625 CN_Lemmas.Inst_Spec Defs in_tree_tree_v_lemma_type def
-R1732:1735 Coq.Init.Logic <> conj constr
-R1732:1735 Coq.Init.Logic <> conj constr
-R1732:1735 Coq.Init.Logic <> conj constr
-R1732:1735 Coq.Init.Logic <> conj constr
-R1732:1735 Coq.Init.Logic <> conj constr
-R1732:1735 Coq.Init.Logic <> conj constr
-R1732:1735 Coq.Init.Logic <> conj constr
-R1732:1735 Coq.Init.Logic <> conj constr
-R1953:1958 CN_Lemmas.Inst_Spec Inst tree_v def
-R1961:1972 CN_Lemmas.Setup <> tree_v def
-R1975:1985 CN_Lemmas.Inst_Spec Defs tree_v_step def
-R2001:2019 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
-R2001:2019 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
-R2001:2019 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
-R2050:2062 Coq.ZArith.BinInt Z leb_antisym thm
-R2050:2062 Coq.ZArith.BinInt Z leb_antisym thm
-R2050:2062 Coq.ZArith.BinInt Z leb_antisym thm
-R2080:2083 Coq.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
-R2080:2083 Coq.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
-R2118:2134 CN_Lemmas.CN_Lib <> wrapI_idem thm
-R2118:2134 CN_Lemmas.CN_Lib <> wrapI_idem thm
-R2118:2134 CN_Lemmas.CN_Lib <> wrapI_idem thm
-R2203:2209 CN_Lemmas.Inst_Spec Inst in_tree def
-R2212:2224 CN_Lemmas.Setup <> in_tree def
-R2227:2238 CN_Lemmas.Inst_Spec Defs in_tree_step def
-R2254:2272 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
-R2254:2272 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
-R2254:2272 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
-R2303:2315 Coq.ZArith.BinInt Z leb_antisym thm
-R2303:2315 Coq.ZArith.BinInt Z leb_antisym thm
-R2303:2315 Coq.ZArith.BinInt Z leb_antisym thm
-R2333:2336 Coq.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
-R2333:2336 Coq.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
-R2371:2387 CN_Lemmas.CN_Lib <> wrapI_idem thm
-R2371:2387 CN_Lemmas.CN_Lib <> wrapI_idem thm
-R2371:2387 CN_Lemmas.CN_Lib <> wrapI_idem thm
-R2454:2466 CN_Lemmas.Inst_Spec Inst nth_tree_list def
-R2469:2486 CN_Lemmas.Inst_Spec Inst array_to_tree_list def
-R2489:2507 CN_Lemmas.Setup <> array_to_list def
-R2522:2536 CN_Lemmas.Setup <> to_list_of_list thm
-R2522:2536 CN_Lemmas.Setup <> to_list_of_list thm
-R2522:2536 CN_Lemmas.Setup <> to_list_of_list thm
-R2558:2566 CN_Lemmas.Inst_Spec Proofs if_casesI thm
-R2587:2587 Coq.Init.Logic <> I constr
-R2558:2566 CN_Lemmas.Inst_Spec Proofs if_casesI thm
-R2587:2587 Coq.Init.Logic <> I constr
-R2587:2587 Coq.Init.Logic <> I constr
-R2602:2619 CN_Lemmas.Setup <> nth_get_array_elts thm
-R2602:2619 CN_Lemmas.Setup <> nth_get_array_elts thm
-R2602:2619 CN_Lemmas.Setup <> nth_get_array_elts thm
-R2678:2683 CN_Lemmas.Inst_Spec Proofs <> mod
-R2702:2730 CN_Lemmas.Gen_Spec Lemma_Spec <> mod
-R2732:2735 CN_Lemmas.Inst_Spec Inst <> modtype
-mod 2694:2699 <> InstOK
-R2754:2776 CN_Lemmas.Gen_Spec Defs <> modtype
-R2779:2782 CN_Lemmas.Inst_Spec Inst <> modtype
-mod 2749:2749 <> InstOK.D
-R2797:2802 CN_Lemmas.Inst_Spec Proofs <> modtype
-R2810:2815 CN_Lemmas.Inst_Spec InstOK <> mod
+R210:230 CN_Lemmas.CN_Lib_Iris <> <> lib
+R240:263 CN_Lemmas.Gen_Spec Types <> mod
+R281:284 Coq.Lists.List <> <> lib
+R294:306 Coq.Lists.List ListNotations <> mod
+R344:352 iris.proofmode.proofmode <> <> lib
+mod 364:367 <> Inst
+def 384:396 Inst nth_tree_list
+R404:412 CN_Lemmas.Gen_Spec Types tree_list ind
+binder 399:400 <> xs:1
+R420:420 Coq.Numbers.BinNums <> Z ind
+binder 416:416 <> n:2
+R430:437 Coq.Lists.List <> nth def
+R471:480 CN_Lemmas.Gen_Spec Types Empty_Tree constr
+R453:465 CN_Lemmas.Setup <> to_list def
+R467:468 CN_Lemmas.Inst_Spec <> xs:1 var
+R440:447 Coq.ZArith.BinInt Z to_nat def
+R449:449 CN_Lemmas.Inst_Spec <> n:2 var
+def 560:575 Inst default_children
+R582:582 Coq.Numbers.BinNums <> Z ind
+binder 578:578 <> n:3
+R593:602 CN_Lemmas.Gen_Spec Types Empty_Tree constr
+def 619:636 Inst array_to_tree_list
+R641:659 CN_Lemmas.Setup <> array_to_list def
+def 676:681 Inst tree_v
+R686:697 CN_Lemmas.Setup <> tree_v def
+def 714:720 Inst in_tree
+R725:737 CN_Lemmas.Setup <> in_tree def
+def 754:758 Inst Alloc
+R766:768 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R765:765 Coq.Numbers.BinNums <> Z ind
+R769:769 Coq.Numbers.BinNums <> Z ind
+binder 761:761 <> a:4
+R775:778 stdpp.base <> ::type_scope:'True' not
+R788:791 CN_Lemmas.Inst_Spec Inst <> mod
+R816:844 CN_Lemmas.Gen_Spec Lemma_Defs <> modtype
+R847:850 CN_Lemmas.Inst_Spec Inst <> modtype
+mod 802:811 <> Lemma_Defs
+mod 862:867 <> Proofs
+R901:910 CN_Lemmas.Inst_Spec Lemma_Defs <> mod
+R912:915 CN_Lemmas.Inst_Spec Inst <> mod
+prf 939:951 Proofs z_to_nat_eq_0
+R956:963 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R969:971 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R968:968 Coq.Numbers.BinNums <> Z ind
+binder 964:964 <> z:5
+R978:981 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R973:976 Coq.ZArith.BinInt <> ::Z_scope:x_'<='_x not
+R972:972 CN_Lemmas.Inst_Spec <> z:5 var
+R992:994 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R982:989 Coq.ZArith.BinInt Z to_nat def
+R991:991 CN_Lemmas.Inst_Spec <> z:5 var
+prf 1028:1046 Proofs arc_from_array_step
+R1051:1057 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R1067:1068 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 1058:1060 <> arr:6
+binder 1062:1062 <> i:7
+binder 1064:1066 <> len:8
+R1097:1101 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1069:1082 CN_Lemmas.Setup <> arc_from_array def
+R1084:1084 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1088:1089 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1091:1092 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1096:1096 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1085:1087 CN_Lemmas.Inst_Spec <> arr:6 var
+R1090:1090 CN_Lemmas.Inst_Spec <> i:7 var
+R1093:1095 CN_Lemmas.Inst_Spec <> len:8 var
+R1112:1116 Coq.ZArith.BinInt <> ::Z_scope:x_'<=?'_x not
+R1109:1111 CN_Lemmas.Inst_Spec <> len:8 var
+R1117:1117 CN_Lemmas.Inst_Spec <> i:7 var
+R1129:1132 Coq.Init.Datatypes <> true constr
+R1137:1138 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R1144:1148 Coq.Init.Datatypes <> false constr
+R1158:1161 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1153:1155 CN_Lemmas.Inst_Spec <> arr:6 var
+R1157:1157 CN_Lemmas.Inst_Spec <> i:7 var
+R1162:1175 CN_Lemmas.Setup <> arc_from_array def
+R1177:1177 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1181:1182 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1188:1189 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1193:1193 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1178:1180 CN_Lemmas.Inst_Spec <> arr:6 var
+R1184:1186 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R1183:1183 CN_Lemmas.Inst_Spec <> i:7 var
+R1190:1192 CN_Lemmas.Inst_Spec <> len:8 var
+R1234:1238 Coq.ZArith.BinInt <> ::Z_scope:x_'<=?'_x not
+R1234:1238 Coq.ZArith.BinInt <> ::Z_scope:x_'<=?'_x not
+R1292:1294 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1274:1281 Coq.ZArith.BinInt Z to_nat def
+R1287:1289 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R1292:1294 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1274:1281 Coq.ZArith.BinInt Z to_nat def
+R1287:1289 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R1383:1385 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1365:1372 Coq.ZArith.BinInt Z to_nat def
+R1378:1380 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R1386:1386 Coq.Init.Datatypes <> S constr
+R1389:1396 Coq.ZArith.BinInt Z to_nat def
+R1402:1405 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R1411:1411 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R1407:1409 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R1383:1385 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1365:1372 Coq.ZArith.BinInt Z to_nat def
+R1378:1380 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R1386:1386 Coq.Init.Datatypes <> S constr
+R1389:1396 Coq.ZArith.BinInt Z to_nat def
+R1402:1405 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R1411:1411 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R1407:1409 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+prf 1468:1476 Proofs if_casesI
+R1481:1487 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R1501:1505 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 1488:1488 <> b:9
+binder 1491:1491 <> P:10
+binder 1493:1493 <> Q:11
+R1506:1506 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1520:1526 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1515:1518 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1508:1510 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1507:1507 CN_Lemmas.Inst_Spec <> b:9 var
+R1511:1514 Coq.Init.Datatypes <> true constr
+R1519:1519 CN_Lemmas.Inst_Spec <> P:10 var
+R1527:1527 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1542:1548 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1537:1540 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1529:1531 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1528:1528 CN_Lemmas.Inst_Spec <> b:9 var
+R1532:1536 Coq.Init.Datatypes <> false constr
+R1541:1541 CN_Lemmas.Inst_Spec <> Q:11 var
+R1549:1551 Coq.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R1553:1558 Coq.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R1560:1565 Coq.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R1566:1566 CN_Lemmas.Inst_Spec <> Q:11 var
+R1559:1559 CN_Lemmas.Inst_Spec <> P:10 var
+R1552:1552 CN_Lemmas.Inst_Spec <> b:9 var
+sec 1610:1619 Proofs Lemma_Defs
+R1633:1642 CN_Lemmas.CN_Lib_Iris <> heapGS_gen class
+binder 1644:1645 <> Σ:12
+binder 1632:1645 <> heapGS_gen0:13
+R1749:1754 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R1764:1765 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R1767:1767 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R1755:1760 iris.base_logic.lib.iprop iProp_solution iPropI abbrev
+R1762:1763 CN_Lemmas.Inst_Spec <> Proofs.Lemma_Defs.Σ var
+not 1738:1738 Proofs.Lemma_Defs :::'⊢'_x
+prf 1777:1796 Proofs in_tree_tree_v_lemma
+R1800:1803 CN_Lemmas.Inst_Spec Proofs.Lemma_Defs :::'⊢'_x not
+R1804:1828 CN_Lemmas.Inst_Spec Lemma_Defs in_tree_tree_v_lemma_type def
+R1847:1871 CN_Lemmas.Inst_Spec Lemma_Defs in_tree_tree_v_lemma_type def
+R1979:1982 Coq.Init.Logic <> conj constr
+R1979:1982 Coq.Init.Logic <> conj constr
+R2008:2013 CN_Lemmas.Inst_Spec Inst tree_v def
+R2016:2027 CN_Lemmas.Setup <> tree_v def
+R2030:2042 CN_Lemmas.Inst_Spec Lemma_Defs.D tree_v_step def
+R2058:2076 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
+R2058:2076 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
+R2058:2076 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
+R2123:2135 Coq.ZArith.BinInt Z leb_antisym thm
+R2123:2135 Coq.ZArith.BinInt Z leb_antisym thm
+R2123:2135 Coq.ZArith.BinInt Z leb_antisym thm
+R2153:2156 Coq.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
+R2153:2156 Coq.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
+R2191:2207 CN_Lemmas.CN_Lib <> wrapI_idem thm
+R2191:2207 CN_Lemmas.CN_Lib <> wrapI_idem thm
+R2191:2207 CN_Lemmas.CN_Lib <> wrapI_idem thm
+R2565:2577 CN_Lemmas.Inst_Spec Inst nth_tree_list def
+R2580:2597 CN_Lemmas.Inst_Spec Inst array_to_tree_list def
+R2600:2618 CN_Lemmas.Setup <> array_to_list def
+R2633:2647 CN_Lemmas.Setup <> to_list_of_list thm
+R2633:2647 CN_Lemmas.Setup <> to_list_of_list thm
+R2633:2647 CN_Lemmas.Setup <> to_list_of_list thm
+R2699:2705 CN_Lemmas.Inst_Spec Inst in_tree def
+R2708:2720 CN_Lemmas.Setup <> in_tree def
+R2723:2736 CN_Lemmas.Inst_Spec Lemma_Defs.D in_tree_step def
+R2755:2773 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
+R2755:2773 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
+R2755:2773 CN_Lemmas.Inst_Spec Proofs arc_from_array_step thm
+R2808:2820 Coq.ZArith.BinInt Z leb_antisym thm
+R2808:2820 Coq.ZArith.BinInt Z leb_antisym thm
+R2808:2820 Coq.ZArith.BinInt Z leb_antisym thm
+R2840:2843 Coq.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
+R2840:2843 Coq.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
+R2880:2896 CN_Lemmas.CN_Lib <> wrapI_idem thm
+R2880:2896 CN_Lemmas.CN_Lib <> wrapI_idem thm
+R2880:2896 CN_Lemmas.CN_Lib <> wrapI_idem thm
+R3020:3028 CN_Lemmas.Inst_Spec Proofs if_casesI thm
+R3049:3049 Coq.Init.Logic <> I constr
+R3020:3028 CN_Lemmas.Inst_Spec Proofs if_casesI thm
+R3049:3049 Coq.Init.Logic <> I constr
+R3049:3049 Coq.Init.Logic <> I constr
+R3066:3083 CN_Lemmas.Setup <> nth_get_array_elts thm
+R3066:3083 CN_Lemmas.Setup <> nth_get_array_elts thm
+R3066:3083 CN_Lemmas.Setup <> nth_get_array_elts thm
+R3132:3141 CN_Lemmas.Inst_Spec Proofs.Lemma_Defs <> sec
+R3149:3154 CN_Lemmas.Inst_Spec Proofs <> mod
+R3173:3201 CN_Lemmas.Gen_Spec Lemma_Spec <> mod
+R3203:3206 CN_Lemmas.Inst_Spec Inst <> modtype
+mod 3165:3170 <> InstOK
+R3225:3253 CN_Lemmas.Gen_Spec Lemma_Defs <> modtype
+R3256:3259 CN_Lemmas.Inst_Spec Inst <> modtype
+mod 3220:3220 <> InstOK.L
+R3274:3279 CN_Lemmas.Inst_Spec Proofs <> modtype
+R3287:3292 CN_Lemmas.Inst_Spec InstOK <> mod
