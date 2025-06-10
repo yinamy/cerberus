@@ -1,0 +1,82 @@
+DIGEST 15ce3d5c3ebb374996a76600a785781d
+FCN_Lemmas.CN_Lib
+R8:11 Coq.Lists.List <> <> lib
+R29:34 Coq.ZArith.ZArith <> <> lib
+R36:39 Coq.Bool.Bool <> <> lib
+R57:59 Coq.micromega.Lia <> <> lib
+R70:75 Coq.NArith.NArith <> <> lib
+def 90:94 <> wrapI
+R106:106 Coq.Numbers.BinNums <> Z ind
+binder 97:102 <> minInt:1
+R119:119 Coq.Numbers.BinNums <> Z ind
+binder 110:115 <> maxInt:2
+binder 122:122 <> x:3
+R143:143 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R159:162 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R150:152 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R144:149 CN_Lemmas.CN_Lib <> maxInt:2 var
+R153:158 CN_Lemmas.CN_Lib <> minInt:1 var
+binder 133:137 <> delta:4
+R182:189 Coq.ZArith.BinInt Z modulo def
+R191:191 CN_Lemmas.CN_Lib <> x:3 var
+R193:197 CN_Lemmas.CN_Lib <> delta:4 var
+binder 177:177 <> r:5
+R210:214 Coq.ZArith.BinInt <> ::Z_scope:x_'<=?'_x not
+R209:209 CN_Lemmas.CN_Lib <> r:5 var
+R215:220 CN_Lemmas.CN_Lib <> maxInt:2 var
+R236:238 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R235:235 CN_Lemmas.CN_Lib <> r:5 var
+R239:243 CN_Lemmas.CN_Lib <> delta:4 var
+R228:228 CN_Lemmas.CN_Lib <> r:5 var
+prf 257:266 <> wrapI_idem
+R297:297 Coq.Numbers.BinNums <> Z ind
+binder 279:284 <> minInt:6
+binder 286:291 <> maxInt:7
+binder 293:293 <> x:8
+R328:333 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R310:313 Coq.ZArith.BinInt <> ::Z_scope:x_'<='_x_'<='_x not
+R315:318 Coq.ZArith.BinInt <> ::Z_scope:x_'<='_x_'<='_x not
+R304:309 CN_Lemmas.CN_Lib <> minInt:6 var
+R314:314 CN_Lemmas.CN_Lib <> x:8 var
+R314:314 CN_Lemmas.CN_Lib <> x:8 var
+R319:324 CN_Lemmas.CN_Lib <> maxInt:7 var
+R358:363 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R341:344 Coq.ZArith.BinInt <> ::Z_scope:x_'<='_x_'<'_x not
+R346:348 Coq.ZArith.BinInt <> ::Z_scope:x_'<='_x_'<'_x not
+R335:340 CN_Lemmas.CN_Lib <> minInt:6 var
+R349:354 CN_Lemmas.CN_Lib <> maxInt:7 var
+R385:387 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R364:368 CN_Lemmas.CN_Lib <> wrapI def
+R370:375 CN_Lemmas.CN_Lib <> minInt:6 var
+R377:382 CN_Lemmas.CN_Lib <> maxInt:7 var
+R384:384 CN_Lemmas.CN_Lib <> x:8 var
+R388:388 CN_Lemmas.CN_Lib <> x:8 var
+R433:437 CN_Lemmas.CN_Lib <> wrapI def
+R458:458 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R474:477 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R465:467 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R458:458 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R474:477 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R465:467 Coq.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R496:500 Coq.ZArith.BinInt <> ::Z_scope:x_'<=?'_x not
+R496:500 Coq.ZArith.BinInt <> ::Z_scope:x_'<=?'_x not
+R528:538 Coq.ZArith.BinInt Z mod_small thm
+R528:538 Coq.ZArith.BinInt Z mod_small thm
+R528:538 Coq.ZArith.BinInt Z mod_small thm
+R560:574 Coq.ZArith.Zbool <> Zle_imp_le_bool thm
+R560:574 Coq.ZArith.Zbool <> Zle_imp_le_bool thm
+R560:574 Coq.ZArith.Zbool <> Zle_imp_le_bool thm
+R614:641 Coq.ZArith.Znumtheory <> Zdivide_mod_minus thm
+R649:651 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R614:641 Coq.ZArith.Znumtheory <> Zdivide_mod_minus thm
+R649:651 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R614:641 Coq.ZArith.Znumtheory <> Zdivide_mod_minus thm
+R649:651 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R614:641 Coq.ZArith.Znumtheory <> Zdivide_mod_minus thm
+R649:651 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R614:641 Coq.ZArith.Znumtheory <> Zdivide_mod_minus thm
+R649:651 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R686:690 Coq.ZArith.BinInt <> ::Z_scope:x_'<=?'_x not
+R678:680 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R686:690 Coq.ZArith.BinInt <> ::Z_scope:x_'<=?'_x not
+R678:680 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not

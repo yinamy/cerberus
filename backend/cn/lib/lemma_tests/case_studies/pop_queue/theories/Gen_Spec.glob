@@ -1,0 +1,579 @@
+DIGEST 92f24cf987f279f9136b6d92b9cec306
+FCN_Lemmas.Gen_Spec
+R82:87 Coq.ZArith.ZArith <> <> lib
+R89:92 Coq.Bool.Bool <> <> lib
+R103:118 CN_Lemmas.CN_Lib <> <> lib
+R136:156 CN_Lemmas.CN_Lib_Iris <> <> lib
+mod 168:172 <> Types
+ind 192:195 Types List
+constr 213:215 Types Nil
+constr 230:233 Types Cons
+R219:222 CN_Lemmas.Gen_Spec <> List:1 ind
+R238:241 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R237:237 Coq.Numbers.BinNums <> Z ind
+R246:249 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R242:245 CN_Lemmas.Gen_Spec <> List:1 ind
+R250:253 CN_Lemmas.Gen_Spec <> List:1 ind
+scheme 192:195 Types List_rect
+scheme 192:195 Types List_ind
+scheme 192:195 Types List_rec
+scheme 192:195 Types List_sind
+R261:265 CN_Lemmas.Gen_Spec Types <> mod
+modtype 282:291 <> Parameters
+R303:307 CN_Lemmas.Gen_Spec Types <> mod
+ax 338:342 Parameters Alloc
+R346:346 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R352:356 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R348:350 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R347:347 Coq.Numbers.BinNums <> Z ind
+R351:351 Coq.Numbers.BinNums <> Z ind
+R369:378 CN_Lemmas.Gen_Spec Parameters <> modtype
+R400:409 CN_Lemmas.Gen_Spec Parameters <> mod
+mod 390:393 <> Defs
+R497:501 CN_Lemmas.Gen_Spec Types <> mod
+R503:503 CN_Lemmas.Gen_Spec P <> mod
+sec 559:562 Defs Defs
+R578:587 CN_Lemmas.CN_Lib_Iris <> heapGS_gen class
+binder 589:590 <> Σ:4
+binder 577:590 <> heapGS_gen0:5
+rec 604:609 Defs sllist
+proj 626:629 Defs head
+proj 640:643 Defs tail
+R633:633 Coq.Numbers.BinNums <> Z ind
+R647:649 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+def 671:682 Defs Owned_sllist
+R688:690 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 685:685 <> l:9
+R698:703 CN_Lemmas.Gen_Spec Defs sllist rec
+binder 694:694 <> v:10
+R708:712 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R714:715 CN_Lemmas.Gen_Spec <> Defs.Defs.Σ var
+R764:768 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R720:728 CN_Lemmas.CN_Lib_Iris <> Owned_int def
+R731:747 CN_Lemmas.CN_Lib_Iris <> shift def
+R749:749 CN_Lemmas.Gen_Spec <> l:9 var
+R759:762 CN_Lemmas.Gen_Spec Defs head proj
+R756:756 CN_Lemmas.Gen_Spec <> v:10 var
+R797:801 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R769:775 CN_Lemmas.CN_Lib_Iris <> padding def
+R778:787 CN_Lemmas.CN_Lib_Iris <> arrayshift def
+R789:789 CN_Lemmas.Gen_Spec <> l:9 var
+R802:810 CN_Lemmas.CN_Lib_Iris <> Owned_int def
+R813:829 CN_Lemmas.CN_Lib_Iris <> shift def
+R831:831 CN_Lemmas.Gen_Spec <> l:9 var
+R841:844 CN_Lemmas.Gen_Spec Defs tail proj
+R838:838 CN_Lemmas.Gen_Spec <> v:10 var
+rec 858:862 Defs queue
+proj 879:883 Defs front
+proj 896:899 Defs back
+R887:889 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+R903:905 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+def 927:937 Defs Owned_queue
+R943:945 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 940:940 <> l:14
+R953:957 CN_Lemmas.Gen_Spec Defs queue rec
+binder 949:949 <> v:15
+R962:966 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R968:969 CN_Lemmas.Gen_Spec <> Defs.Defs.Σ var
+R1019:1023 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R974:982 CN_Lemmas.CN_Lib_Iris <> Owned_int def
+R985:1001 CN_Lemmas.CN_Lib_Iris <> shift def
+R1003:1003 CN_Lemmas.Gen_Spec <> l:14 var
+R1013:1017 CN_Lemmas.Gen_Spec Defs front proj
+R1010:1010 CN_Lemmas.Gen_Spec <> v:15 var
+R1024:1032 CN_Lemmas.CN_Lib_Iris <> Owned_int def
+R1035:1051 CN_Lemmas.CN_Lib_Iris <> shift def
+R1053:1053 CN_Lemmas.Gen_Spec <> l:14 var
+R1063:1066 CN_Lemmas.Gen_Spec Defs back proj
+R1060:1060 CN_Lemmas.Gen_Spec <> v:15 var
+rec 1080:1089 Defs queue_cell
+proj 1106:1110 Defs first
+proj 1121:1124 Defs next
+R1114:1114 Coq.Numbers.BinNums <> Z ind
+R1128:1130 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+def 1152:1167 Defs Owned_queue_cell
+R1173:1175 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 1170:1170 <> l:19
+R1183:1192 CN_Lemmas.Gen_Spec Defs queue_cell rec
+binder 1179:1179 <> v:20
+R1197:1201 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R1203:1204 CN_Lemmas.Gen_Spec <> Defs.Defs.Σ var
+R1254:1258 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R1209:1217 CN_Lemmas.CN_Lib_Iris <> Owned_int def
+R1220:1236 CN_Lemmas.CN_Lib_Iris <> shift def
+R1238:1238 CN_Lemmas.Gen_Spec <> l:19 var
+R1248:1252 CN_Lemmas.Gen_Spec Defs first proj
+R1245:1245 CN_Lemmas.Gen_Spec <> v:20 var
+R1287:1291 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R1259:1265 CN_Lemmas.CN_Lib_Iris <> padding def
+R1268:1277 CN_Lemmas.CN_Lib_Iris <> arrayshift def
+R1279:1279 CN_Lemmas.Gen_Spec <> l:19 var
+R1292:1300 CN_Lemmas.CN_Lib_Iris <> Owned_int def
+R1303:1319 CN_Lemmas.CN_Lib_Iris <> shift def
+R1321:1321 CN_Lemmas.Gen_Spec <> l:19 var
+R1331:1334 CN_Lemmas.Gen_Spec Defs next proj
+R1328:1328 CN_Lemmas.Gen_Spec <> v:20 var
+def 1352:1353 Defs Hd
+R1360:1363 CN_Lemmas.Gen_Spec Types List ind
+binder 1356:1356 <> L:21
+R1380:1380 CN_Lemmas.Gen_Spec <> L:21 var
+R1392:1394 CN_Lemmas.Gen_Spec Types Nil constr
+R1407:1410 CN_Lemmas.Gen_Spec Types Cons constr
+def 1442:1443 Defs Tl
+R1450:1453 CN_Lemmas.Gen_Spec Types List ind
+binder 1446:1446 <> L:23
+R1470:1470 CN_Lemmas.Gen_Spec <> L:23 var
+R1482:1484 CN_Lemmas.Gen_Spec Types Nil constr
+R1491:1493 CN_Lemmas.Gen_Spec Types Nil constr
+R1499:1502 CN_Lemmas.Gen_Spec Types Cons constr
+def 1532:1535 Defs Snoc
+R1543:1546 CN_Lemmas.Gen_Spec Types List ind
+binder 1538:1539 <> Xs:25
+R1554:1554 Coq.Numbers.BinNums <> Z ind
+binder 1550:1550 <> Y:26
+R1571:1572 CN_Lemmas.Gen_Spec <> Xs:25 var
+R1584:1586 CN_Lemmas.Gen_Spec Types Nil constr
+R1593:1596 CN_Lemmas.Gen_Spec Types Cons constr
+R1598:1598 CN_Lemmas.Gen_Spec <> Y:26 var
+R1601:1603 CN_Lemmas.Gen_Spec Types Nil constr
+R1610:1613 CN_Lemmas.Gen_Spec Types Cons constr
+R1625:1628 CN_Lemmas.Gen_Spec Types Cons constr
+R1633:1636 CN_Lemmas.Gen_Spec <> Snoc:27 def
+R1641:1641 CN_Lemmas.Gen_Spec <> Y:26 var
+R1685:1688 CN_Lemmas.Gen_Spec Defs.Defs <> sec
+R1696:1699 CN_Lemmas.Gen_Spec Defs <> mod
+R1735:1744 CN_Lemmas.Gen_Spec Parameters <> mod
+mod 1711:1728 <> ResourcePredicates
+R1762:1765 CN_Lemmas.Gen_Spec Defs <> modtype
+R1767:1767 CN_Lemmas.Gen_Spec P <> modtype
+mod 1757:1757 <> ResourcePredicates.D
+R1780:1784 CN_Lemmas.Gen_Spec Types <> mod
+R1786:1786 CN_Lemmas.Gen_Spec P <> mod
+R1788:1788 CN_Lemmas.Gen_Spec ResourcePredicates.D <> mod
+sec 1867:1880 ResourcePredicates Iris_Pred_Defs
+R1896:1905 CN_Lemmas.CN_Lib_Iris <> heapGS_gen class
+binder 1907:1908 <> Σ:29
+binder 1895:1908 <> heapGS_gen0:30
+def 1924:1932 ResourcePredicates SLList_At
+R1939:1941 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 1935:1935 <> p:31
+R1952:1955 CN_Lemmas.Gen_Spec Types List ind
+binder 1946:1948 <> ret:32
+R1974:1978 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R1980:1981 CN_Lemmas.Gen_Spec <> ResourcePredicates.Iris_Pred_Defs.Σ var
+R1987:1987 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R2029:2035 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R2198:2198 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R2003:2009 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R1988:1992 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1998:2002 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1994:1996 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1993:1993 CN_Lemmas.Gen_Spec <> p:31 var
+R2010:2013 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2025:2028 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2017:2020 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2024:2024 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2014:2016 CN_Lemmas.Gen_Spec <> ret:32 var
+R2021:2023 CN_Lemmas.Gen_Spec Types Nil constr
+R2058:2062 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R2036:2040 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2053:2057 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2041:2047 Coq.Bool.Bool <> Is_true def
+R2049:2052 Coq.Init.Datatypes <> true constr
+R2079:2085 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R2063:2066 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2075:2078 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2067:2068 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2074:2074 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2070:2072 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2069:2069 CN_Lemmas.Gen_Spec <> p:31 var
+R2086:2090 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2101:2103 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2095:2100 CN_Lemmas.Gen_Spec ResourcePredicates sllist rec
+binder 2091:2091 <> H:34
+R2120:2125 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2104:2115 CN_Lemmas.Gen_Spec ResourcePredicates Owned_sllist def
+R2117:2117 CN_Lemmas.Gen_Spec <> p:31 var
+R2119:2119 CN_Lemmas.Gen_Spec <> H:34 var
+R2126:2130 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2139:2141 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2135:2138 CN_Lemmas.Gen_Spec Types List ind
+binder 2131:2131 <> T:35
+R2162:2166 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2142:2150 CN_Lemmas.Gen_Spec <> SLList_At:33 def
+R2161:2161 CN_Lemmas.Gen_Spec <> T:35 var
+R2155:2158 CN_Lemmas.Gen_Spec ResourcePredicates tail proj
+R2152:2152 CN_Lemmas.Gen_Spec <> H:34 var
+R2167:2170 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2194:2197 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2174:2177 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2193:2193 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2171:2173 CN_Lemmas.Gen_Spec <> ret:32 var
+R2178:2181 CN_Lemmas.Gen_Spec Types Cons constr
+R2186:2189 CN_Lemmas.Gen_Spec ResourcePredicates head proj
+R2183:2183 CN_Lemmas.Gen_Spec <> H:34 var
+R2192:2192 CN_Lemmas.Gen_Spec <> T:35 var
+def 2213:2220 ResourcePredicates QueueAux
+R2227:2229 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 2223:2223 <> f:36
+R2237:2239 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 2233:2233 <> b:37
+R2249:2252 CN_Lemmas.Gen_Spec Types List ind
+binder 2243:2245 <> ret:38
+R2271:2275 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R2277:2278 CN_Lemmas.Gen_Spec <> ResourcePredicates.Iris_Pred_Defs.Σ var
+R2284:2284 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R2326:2332 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R2588:2588 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R2300:2306 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R2285:2289 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2295:2299 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2291:2293 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2290:2290 CN_Lemmas.Gen_Spec <> f:36 var
+R2294:2294 CN_Lemmas.Gen_Spec <> b:37 var
+R2307:2310 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2322:2325 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2314:2317 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2321:2321 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2311:2313 CN_Lemmas.Gen_Spec <> ret:38 var
+R2318:2320 CN_Lemmas.Gen_Spec Types Nil constr
+R2355:2359 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R2333:2337 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2350:2354 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2338:2344 Coq.Bool.Bool <> Is_true def
+R2346:2349 Coq.Init.Datatypes <> true constr
+R2376:2382 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R2360:2363 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2372:2375 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2364:2365 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2371:2371 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2367:2369 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2366:2366 CN_Lemmas.Gen_Spec <> f:36 var
+R2370:2370 CN_Lemmas.Gen_Spec <> b:37 var
+R2383:2387 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2402:2404 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2392:2401 CN_Lemmas.Gen_Spec ResourcePredicates queue_cell rec
+binder 2388:2388 <> F:40
+R2425:2430 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2405:2420 CN_Lemmas.Gen_Spec ResourcePredicates Owned_queue_cell def
+R2422:2422 CN_Lemmas.Gen_Spec <> f:36 var
+R2424:2424 CN_Lemmas.Gen_Spec <> F:40 var
+R2457:2461 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2431:2435 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2452:2456 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2436:2438 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2451:2451 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2447:2449 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2442:2445 CN_Lemmas.Gen_Spec ResourcePredicates next proj
+R2439:2439 CN_Lemmas.Gen_Spec <> F:40 var
+R2509:2513 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2462:2466 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2504:2508 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2467:2467 Coq.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R2480:2486 Coq.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R2503:2503 Coq.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R2476:2478 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2471:2474 CN_Lemmas.Gen_Spec ResourcePredicates next proj
+R2468:2468 CN_Lemmas.Gen_Spec <> F:40 var
+R2479:2479 CN_Lemmas.Gen_Spec <> b:37 var
+R2487:2489 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2502:2502 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2498:2500 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2493:2496 CN_Lemmas.Gen_Spec ResourcePredicates next proj
+R2490:2490 CN_Lemmas.Gen_Spec <> F:40 var
+R2501:2501 CN_Lemmas.Gen_Spec <> b:37 var
+R2514:2518 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2527:2529 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2523:2526 CN_Lemmas.Gen_Spec Types List ind
+binder 2519:2519 <> B:41
+R2551:2555 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2530:2537 CN_Lemmas.Gen_Spec <> QueueAux:39 def
+R2550:2550 CN_Lemmas.Gen_Spec <> B:41 var
+R2548:2548 CN_Lemmas.Gen_Spec <> b:37 var
+R2542:2545 CN_Lemmas.Gen_Spec ResourcePredicates next proj
+R2539:2539 CN_Lemmas.Gen_Spec <> F:40 var
+R2556:2559 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2584:2587 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2563:2566 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2583:2583 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2560:2562 CN_Lemmas.Gen_Spec <> ret:38 var
+R2567:2570 CN_Lemmas.Gen_Spec Types Cons constr
+R2575:2579 CN_Lemmas.Gen_Spec ResourcePredicates first proj
+R2572:2572 CN_Lemmas.Gen_Spec <> F:40 var
+R2582:2582 CN_Lemmas.Gen_Spec <> B:41 var
+def 2603:2609 ResourcePredicates QueueFB
+R2620:2622 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 2612:2616 <> front:42
+R2633:2635 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 2626:2629 <> back:43
+R2645:2648 CN_Lemmas.Gen_Spec Types List ind
+binder 2639:2641 <> ret:44
+R2667:2671 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R2673:2674 CN_Lemmas.Gen_Spec <> ResourcePredicates.Iris_Pred_Defs.Σ var
+R2680:2680 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R2726:2732 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R2991:2991 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R2700:2706 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R2681:2685 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2695:2699 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2691:2693 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2686:2690 CN_Lemmas.Gen_Spec <> front:42 var
+R2707:2710 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2722:2725 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2714:2717 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2721:2721 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2711:2713 CN_Lemmas.Gen_Spec <> ret:44 var
+R2718:2720 CN_Lemmas.Gen_Spec Types Nil constr
+R2755:2759 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R2733:2737 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2750:2754 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2738:2744 Coq.Bool.Bool <> Is_true def
+R2746:2749 Coq.Init.Datatypes <> true constr
+R2780:2786 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R2760:2763 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2776:2779 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2764:2765 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2775:2775 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2771:2773 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2766:2770 CN_Lemmas.Gen_Spec <> front:42 var
+R2787:2791 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2806:2808 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2796:2805 CN_Lemmas.Gen_Spec ResourcePredicates queue_cell rec
+binder 2792:2792 <> B:46
+R2832:2837 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2809:2824 CN_Lemmas.Gen_Spec ResourcePredicates Owned_queue_cell def
+R2826:2829 CN_Lemmas.Gen_Spec <> back:43 var
+R2831:2831 CN_Lemmas.Gen_Spec <> B:46 var
+R2860:2864 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2838:2842 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2855:2859 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2851:2853 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2846:2849 CN_Lemmas.Gen_Spec ResourcePredicates next proj
+R2843:2843 CN_Lemmas.Gen_Spec <> B:46 var
+R2912:2916 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2865:2869 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2907:2911 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2870:2870 Coq.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R2883:2889 Coq.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R2906:2906 Coq.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R2876:2878 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2871:2875 CN_Lemmas.Gen_Spec <> front:42 var
+R2879:2882 CN_Lemmas.Gen_Spec <> back:43 var
+R2890:2892 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2905:2905 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2898:2900 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2893:2897 CN_Lemmas.Gen_Spec <> front:42 var
+R2901:2904 CN_Lemmas.Gen_Spec <> back:43 var
+R2917:2921 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2930:2932 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2926:2929 CN_Lemmas.Gen_Spec Types List ind
+binder 2922:2922 <> L:47
+R2954:2958 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2933:2940 CN_Lemmas.Gen_Spec ResourcePredicates QueueAux def
+R2942:2946 CN_Lemmas.Gen_Spec <> front:42 var
+R2948:2951 CN_Lemmas.Gen_Spec <> back:43 var
+R2953:2953 CN_Lemmas.Gen_Spec <> L:47 var
+R2959:2962 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2987:2990 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2966:2969 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2986:2986 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2963:2965 CN_Lemmas.Gen_Spec <> ret:44 var
+R2970:2973 CN_Lemmas.Gen_Spec ResourcePredicates Snoc def
+R2975:2975 CN_Lemmas.Gen_Spec <> L:47 var
+R2980:2984 CN_Lemmas.Gen_Spec ResourcePredicates first proj
+R2977:2977 CN_Lemmas.Gen_Spec <> B:46 var
+def 3006:3016 ResourcePredicates QueuePtr_At
+R3023:3025 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 3019:3019 <> q:48
+R3036:3039 CN_Lemmas.Gen_Spec Types List ind
+binder 3030:3032 <> ret:49
+R3058:3062 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R3064:3065 CN_Lemmas.Gen_Spec <> ResourcePredicates.Iris_Pred_Defs.Σ var
+R3094:3100 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R3072:3076 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3089:3093 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3077:3083 Coq.Bool.Bool <> Is_true def
+R3085:3088 Coq.Init.Datatypes <> true constr
+R3101:3105 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3115:3117 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3110:3114 CN_Lemmas.Gen_Spec ResourcePredicates queue rec
+binder 3106:3106 <> Q:51
+R3133:3138 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R3118:3128 CN_Lemmas.Gen_Spec ResourcePredicates Owned_queue def
+R3130:3130 CN_Lemmas.Gen_Spec <> q:48 var
+R3132:3132 CN_Lemmas.Gen_Spec <> Q:51 var
+R3234:3238 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R3139:3143 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3229:3233 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3144:3144 Coq.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R3179:3185 Coq.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R3228:3228 Coq.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R3145:3145 Coq.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3159:3165 Coq.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3178:3178 Coq.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3155:3157 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3149:3153 CN_Lemmas.Gen_Spec ResourcePredicates front proj
+R3146:3146 CN_Lemmas.Gen_Spec <> Q:51 var
+R3174:3176 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3169:3172 CN_Lemmas.Gen_Spec ResourcePredicates back proj
+R3166:3166 CN_Lemmas.Gen_Spec <> Q:51 var
+R3186:3186 Coq.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3204:3210 Coq.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3227:3227 Coq.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3187:3189 Coq.Init.Logic <> ::type_scope:'~'_x not
+R3203:3203 Coq.Init.Logic <> ::type_scope:'~'_x not
+R3199:3201 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3193:3197 CN_Lemmas.Gen_Spec ResourcePredicates front proj
+R3190:3190 CN_Lemmas.Gen_Spec <> Q:51 var
+R3211:3213 Coq.Init.Logic <> ::type_scope:'~'_x not
+R3226:3226 Coq.Init.Logic <> ::type_scope:'~'_x not
+R3222:3224 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3217:3220 CN_Lemmas.Gen_Spec ResourcePredicates back proj
+R3214:3214 CN_Lemmas.Gen_Spec <> Q:51 var
+R3239:3243 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3252:3254 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3248:3251 CN_Lemmas.Gen_Spec Types List ind
+binder 3244:3244 <> L:52
+R3283:3287 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R3255:3261 CN_Lemmas.Gen_Spec ResourcePredicates QueueFB def
+R3266:3270 CN_Lemmas.Gen_Spec ResourcePredicates front proj
+R3263:3263 CN_Lemmas.Gen_Spec <> Q:51 var
+R3276:3279 CN_Lemmas.Gen_Spec ResourcePredicates back proj
+R3273:3273 CN_Lemmas.Gen_Spec <> Q:51 var
+R3282:3282 CN_Lemmas.Gen_Spec <> L:52 var
+R3288:3291 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3299:3302 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3295:3297 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3292:3294 CN_Lemmas.Gen_Spec <> ret:49 var
+R3298:3298 CN_Lemmas.Gen_Spec <> L:52 var
+R3340:3353 CN_Lemmas.Gen_Spec ResourcePredicates.Iris_Pred_Defs <> sec
+R3360:3377 CN_Lemmas.Gen_Spec ResourcePredicates <> mod
+R3405:3414 CN_Lemmas.Gen_Spec Parameters <> mod
+mod 3389:3398 <> Lemma_Defs
+R3432:3435 CN_Lemmas.Gen_Spec Defs <> modtype
+R3437:3437 CN_Lemmas.Gen_Spec P <> modtype
+mod 3427:3427 <> Lemma_Defs.D
+R3455:3472 CN_Lemmas.Gen_Spec ResourcePredicates <> modtype
+R3474:3474 CN_Lemmas.Gen_Spec P <> modtype
+mod 3450:3450 <> Lemma_Defs.R
+R3487:3491 CN_Lemmas.Gen_Spec Types <> mod
+R3493:3493 CN_Lemmas.Gen_Spec Lemma_Defs.D <> mod
+R3495:3495 CN_Lemmas.Gen_Spec P <> mod
+R3497:3497 CN_Lemmas.Gen_Spec Lemma_Defs.R <> mod
+sec 3555:3568 Lemma_Defs Iris_Type_Defs
+R3584:3593 CN_Lemmas.CN_Lib_Iris <> heapGS_gen class
+binder 3595:3596 <> Σ:53
+binder 3583:3596 <> heapGS_gen0:54
+def 3614:3627 Lemma_Defs pop_lemma_type
+R3631:3635 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R3637:3638 CN_Lemmas.Gen_Spec <> Lemma_Defs.Iris_Type_Defs.Σ var
+R3647:3651 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R3663:3665 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R3660:3662 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 3652:3656 <> front:55
+R3666:3670 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R3681:3683 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R3678:3680 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 3671:3674 <> back:56
+R3684:3688 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R3694:3696 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R3693:3693 Coq.Numbers.BinNums <> Z ind
+binder 3689:3689 <> x:57
+R3697:3701 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R3710:3712 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R3706:3709 CN_Lemmas.Gen_Spec Types List ind
+binder 3702:3702 <> Q:58
+R3734:3739 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R3713:3720 CN_Lemmas.Gen_Spec Lemma_Defs QueueAux def
+R3722:3726 CN_Lemmas.Gen_Spec <> front:55 var
+R3728:3731 CN_Lemmas.Gen_Spec <> back:56 var
+R3733:3733 CN_Lemmas.Gen_Spec <> Q:58 var
+R3740:3744 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R3759:3761 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R3749:3758 CN_Lemmas.Gen_Spec Lemma_Defs queue_cell rec
+binder 3745:3745 <> B:59
+R3785:3791 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R3762:3777 CN_Lemmas.Gen_Spec Lemma_Defs Owned_queue_cell def
+R3779:3782 CN_Lemmas.Gen_Spec <> back:56 var
+R3784:3784 CN_Lemmas.Gen_Spec <> B:59 var
+R3792:3796 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3810:3812 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3806:3809 CN_Lemmas.Gen_Spec Types List ind
+binder 3797:3802 <> Q_post:60
+R3839:3843 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R3813:3820 CN_Lemmas.Gen_Spec Lemma_Defs QueueAux def
+R3822:3826 CN_Lemmas.Gen_Spec <> front:55 var
+R3828:3831 CN_Lemmas.Gen_Spec <> back:56 var
+R3833:3838 CN_Lemmas.Gen_Spec <> Q_post:60 var
+R3844:3848 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3868:3870 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3858:3867 CN_Lemmas.Gen_Spec Lemma_Defs queue_cell rec
+binder 3849:3854 <> B_post:61
+R3899:3904 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R3871:3886 CN_Lemmas.Gen_Spec Lemma_Defs Owned_queue_cell def
+R3888:3891 CN_Lemmas.Gen_Spec <> back:56 var
+R3893:3898 CN_Lemmas.Gen_Spec <> B_post:61 var
+R3925:3929 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R3905:3909 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3920:3924 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3911:3913 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3910:3910 CN_Lemmas.Gen_Spec <> Q:58 var
+R3914:3919 CN_Lemmas.Gen_Spec <> Q_post:60 var
+R3950:3955 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R4066:4066 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R3930:3934 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3945:3949 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3936:3938 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3935:3935 CN_Lemmas.Gen_Spec <> B:59 var
+R3939:3944 CN_Lemmas.Gen_Spec <> B_post:61 var
+R3966:3969 CN_Lemmas.Gen_Spec Lemma_Defs Snoc def
+R3972:3975 CN_Lemmas.Gen_Spec Types Cons constr
+R3977:3977 CN_Lemmas.Gen_Spec <> x:57 var
+R3979:3979 CN_Lemmas.Gen_Spec <> Q:58 var
+R3985:3989 CN_Lemmas.Gen_Spec Lemma_Defs first proj
+R3982:3982 CN_Lemmas.Gen_Spec <> B:59 var
+binder 3960:3960 <> L:62
+R4016:4020 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R3996:4000 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R4011:4015 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R4001:4001 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4006:4009 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4002:4003 CN_Lemmas.Gen_Spec Lemma_Defs Hd def
+R4005:4005 CN_Lemmas.Gen_Spec <> L:62 var
+R4010:4010 CN_Lemmas.Gen_Spec <> x:57 var
+R4058:4062 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R4021:4025 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R4053:4057 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R4026:4026 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4031:4035 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4052:4052 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4027:4028 CN_Lemmas.Gen_Spec Lemma_Defs Tl def
+R4030:4030 CN_Lemmas.Gen_Spec <> L:62 var
+R4036:4039 CN_Lemmas.Gen_Spec Lemma_Defs Snoc def
+R4041:4041 CN_Lemmas.Gen_Spec <> Q:58 var
+R4046:4050 CN_Lemmas.Gen_Spec Lemma_Defs first proj
+R4043:4043 CN_Lemmas.Gen_Spec <> B:59 var
+R4063:4065 iris.bi.interface <> ::bi_scope:'emp' not
+R4103:4116 CN_Lemmas.Gen_Spec Lemma_Defs.Iris_Type_Defs <> sec
+R4123:4132 CN_Lemmas.Gen_Spec Lemma_Defs <> mod
+R4165:4174 CN_Lemmas.Gen_Spec Parameters <> mod
+modtype 4149:4158 <> Lemma_Spec
+R4193:4202 CN_Lemmas.Gen_Spec Lemma_Defs <> modtype
+R4204:4204 CN_Lemmas.Gen_Spec P <> modtype
+mod 4188:4188 <> Lemma_Spec.L
+R4217:4217 CN_Lemmas.Gen_Spec Lemma_Spec.L <> mod
+sec 4256:4265 Lemma_Spec Lemma_Defs
+R4281:4290 CN_Lemmas.CN_Lib_Iris <> heapGS_gen class
+binder 4292:4293 <> Σ:63
+binder 4280:4293 <> heapGS_gen0:64
+R4326:4331 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R4341:4342 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R4344:4344 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R4332:4337 iris.base_logic.lib.iprop iProp_solution iPropI abbrev
+R4339:4340 CN_Lemmas.Gen_Spec <> Lemma_Spec.Lemma_Defs.Σ var
+not 4315:4315 Lemma_Spec.Lemma_Defs :::'⊢'_x
+ax 4360:4368 Lemma_Spec pop_lemma
+R4372:4375 CN_Lemmas.Gen_Spec Lemma_Spec.Lemma_Defs :::'⊢'_x not
+R4376:4389 CN_Lemmas.Gen_Spec Lemma_Spec pop_lemma_type def
+R4426:4435 CN_Lemmas.Gen_Spec Lemma_Spec.Lemma_Defs <> sec
+R4442:4451 CN_Lemmas.Gen_Spec Lemma_Spec <> modtype

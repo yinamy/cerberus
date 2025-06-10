@@ -50,6 +50,7 @@ let get_struct_xs struct_decls tag =
   (* the none case should be impossible *)
   | None -> [], []
 
+(* CN basetypes to Coq_IR *)
 let rec bt_to_coq_ir (gl: Global.t) (bt : BT.t) =
   match bt with
   | BaseTypes.Bool -> CI.Coq_Bool
@@ -245,10 +246,7 @@ let it_to_coq_ir global it b =
       CI.Coq_apply_prop (CI.Coq_sym name, List.map body_aux args)
     else
       CI.Coq_apply (CI.Coq_sym name, List.map body_aux args)
-  | IT.Good (ct, t2) when Option.is_some (Sctypes.is_struct_ctype ct) -> 
-      (match (Sctypes.is_struct_ctype ct) with
-        | Some s -> CI.Coq_good (CI.Coq_sym s, CI.Coq_Struct (CI.Coq_sym s, []), aux t2)
-        | None -> CI.Coq_unsupported "Unsupported good (why are we in the None case?)")
+  | IT.Good (_, t) -> CI.Coq_good(aux t)
   | IT.Representable (ct, t2) when Option.is_some (Sctypes.is_struct_ctype ct) ->
       (match (Sctypes.is_struct_ctype ct) with
       | Some s -> CI.Coq_representable (CI.Coq_sym s, CI.Coq_Struct (CI.Coq_sym s, []), aux t2)
@@ -280,13 +278,13 @@ let it_to_coq_ir global it b =
   | IT.Head _ -> CI.Coq_unsupported "Unsupported head"
   | IT.Tail _ -> CI.Coq_unsupported "Unsupported tail"
   | IT.Representable (_, _) -> CI.Coq_unsupported "Unsupported representable"
-  | IT.Good (_, t) -> CI.Coq_good_go_away(aux t)
   | IT.Aligned _ -> CI.Coq_unsupported "Unsupported aligned"
   | IT.MapConst (_, _) -> CI.Coq_unsupported "Unsupported map const"
   | IT.MapDef (_, _) -> CI.Coq_unsupported "Unsupported map def")
   in
   (f b it)
 
+(* unpacking LogicalConstraints *)  
 let lc_to_coq_ir (gl : Global.t) (t: LC.t) =
   match t with
   | LC.T t -> CI.Coq_pure (it_to_coq_ir gl t None)
@@ -294,6 +292,7 @@ let lc_to_coq_ir (gl : Global.t) (t: LC.t) =
       CI.Coq_forall (CI.Coq_sym sym, bt_to_coq_ir gl bt, 
                     CI.Coq_pure(it_to_coq_ir gl it None))
 
+(* Unpacking LogicalReturnTypes *)
 let rec lrt_to_coq_ir (gl : Global.t) (t: LRT.t) =
   match t with
   | LRT.Constraint (lc, _, t) ->
@@ -318,14 +317,25 @@ let rec lrt_to_coq_ir (gl : Global.t) (t: LRT.t) =
                               bt_to_coq_ir gl bt, 
                               CI.Iris_term (lrt_to_coq_ir gl t), 
                               it_to_coq_ir gl p.pointer None))
-          | PName p_nm ->  Coq_PName (CI.Coq_sym nm,
+          | PName p_nm ->  Coq_PName_LRT (CI.Coq_sym nm,
                               CI.Coq_sym p_nm, 
                               bt_to_coq_ir gl bt, 
                               (lrt_to_coq_ir gl t),
                               List.map (fun x -> it_to_coq_ir gl x None) p.iargs,
                               it_to_coq_ir gl p.pointer None))
-    | Q _ -> CI.Coq_unsupported "unsupported resource QPredicate")
-        
+    | Q q -> (match q.name with
+      | Owned _ -> CI.Coq_Each_LRT (CI.Coq_sym nm,
+                                    CI.Coq_sym (fst q.q), (* q name *)
+                                    bt_to_coq_ir gl (snd q.q), (* q value type *)
+                                    it_to_coq_ir gl q.pointer None, (* pointer *)
+                                    it_to_coq_ir gl q.step None,  (* step *)
+                                    it_to_coq_ir gl q.permission None, (* permission *)
+                                    lrt_to_coq_ir gl t)
+      | PName _ -> CI.Coq_unsupported "unsupported Qpred PName in LRT"
+      )
+    )
+
+(* Unpacking LogicalArgumentTypes that wrap IndexTerms (i.e. in resource predicates) *)
 let rec it_lat_to_coq_ir (gl : Global.t) (t : IT.t LAT.t) =
   match t with
   | LAT.Define ((sym, it), _, t) ->
@@ -350,16 +360,23 @@ let rec it_lat_to_coq_ir (gl : Global.t) (t : IT.t LAT.t) =
                               bt_to_coq_ir gl bt, 
                               CI.Iris_term (it_lat_to_coq_ir gl t), 
                               it_to_coq_ir gl p.pointer None))
-        | PName p_nm ->  Coq_PName (CI.Coq_sym nm,
+        | PName p_nm ->  Coq_PName_LAT (CI.Coq_sym nm,
                               CI.Coq_sym p_nm, 
                               bt_to_coq_ir gl bt, 
                               (it_lat_to_coq_ir gl t),
                               List.map (fun x -> it_to_coq_ir gl x None) p.iargs,
                               it_to_coq_ir gl p.pointer None))
-    | Q _ -> CI.Coq_unsupported "unsupported resource QPredicate")
+      (* Can iterated resources even appear here? *)
+      | Q q -> (match q.name with
+        | Owned _ -> 
+          CI.Coq_unsupported "unsupported Qpred Owned in LRT"
+        | PName _ -> CI.Coq_unsupported "unsupported Qpred PName in LRT"
+        )
+      )
 
+(* Unpacking LogicalArgumentTypes that wrap LogicalReturnTypes *)
 let rec lrtlat_to_coq_ir (gl : Global.t) t =
-  match t with
+  (match t with
   | LAT.Define ((sym, it), _, t) ->
     let d = lrtlat_to_coq_ir gl t in
     let l = it_to_coq_ir gl it None in
@@ -382,14 +399,30 @@ let rec lrtlat_to_coq_ir (gl : Global.t) t =
                               bt_to_coq_ir gl bt, 
                               CI.Iris_term (lrtlat_to_coq_ir gl t), 
                               it_to_coq_ir gl p.pointer None))
-        | PName p_nm -> Coq_PName (CI.Coq_sym nm,
+        | PName p_nm -> Coq_PName_LAT (CI.Coq_sym nm,
                               CI.Coq_sym p_nm, 
                               bt_to_coq_ir gl bt, 
                               (lrtlat_to_coq_ir gl t),
                               List.map (fun x -> it_to_coq_ir gl x None) p.iargs,
                               it_to_coq_ir gl p.pointer None))
-    | Q _ -> CI.Coq_unsupported "unsupported resource QPredicate")
+    | Q q -> (match q.name with
+      | Owned (_, init) -> (match init with
+        | Init -> CI.Coq_Each_LAT (CI.Coq_sym nm,
+                                  CI.Coq_sym (fst q.q), (* q name *)
+                                  bt_to_coq_ir gl (snd q.q), (* q value type *)
+                                  it_to_coq_ir gl q.pointer None, (* pointer *)
+                                  it_to_coq_ir gl q.step None,  (* step *)
+                                  it_to_coq_ir gl q.permission None, (* permission *)
+                                  lrtlat_to_coq_ir gl t)
+        | Uninit -> Coq_Block_LAT (CI.Coq_sym nm, 
+                            bt_to_coq_ir gl bt, 
+                            CI.Iris_term (lrtlat_to_coq_ir gl t), 
+                            it_to_coq_ir gl q.pointer None)) (* todo: Each stuff*)
+      | PName _ -> Coq_unsupported "unsupported Qpred PName in LRT"
+      
+    )))
 
+(* Main translation function for lemmas *)
 let rec lemmat_to_coq_ir (gl : Global.t) (ftyp : AT.lemmat) = 
   match ftyp with
   | AT.Computational ((sym, bt), _, t) ->
@@ -397,7 +430,7 @@ let rec lemmat_to_coq_ir (gl : Global.t) (ftyp : AT.lemmat) =
     CI.Coq_forall (CI.Coq_sym sym, bt_to_coq_ir gl bt, d)
   | AT.L t -> lrtlat_to_coq_ir gl t
 
-(* Logical functions to coq_ir *)
+(* Translating all functions for the global typing context *)
 let fun_to_coq_ir (gl : Global.t) nm =
   let open Definition.Function in
   let def = Sym.Map.find nm gl.logical_functions in
@@ -419,9 +452,6 @@ let fun_to_coq_ir (gl : Global.t) nm =
   | Def body -> 
       CI.Coq_fun_def 
         (CI.Coq_sym nm, 
-        (* disclaimer: no idea if this is right but it
-          stops the example from breaking because of
-          prop vs bool problems  *)
         CI.Coq_def (it_to_coq_ir gl body (Some (body, "logical fun def"))), 
         arg_tys, 
         bt_to_coq_ir gl def.return_bt)
@@ -446,7 +476,7 @@ let logical_funs_to_coq_ir (gl : Global.t) (funs : Sym.t list list) =
   (List.filter (fun x -> is_uninterp (List.hd x)) translated_funs, 
    List.filter (fun x -> not (is_uninterp (List.hd x))) translated_funs)
 
-(* translate resource predicates to coq_ir *)
+(* Translating all resource predicates for the global typing context *)
 
 let pred_to_coq_ir (gl : Global.t) (nm : Sym.t) =
   let open Definition.Predicate in
@@ -508,10 +538,10 @@ let cn_to_coq_ir (global : Global.t) (lemmata : (Sym.t * (Loc.t * AT.lemmat)) li
   (* 4. Translate the lemma statement *)
   let translate_lemmas ((sym : Sym.t), (_, lemmat)) = 
     let d = lemmat_to_coq_ir global lemmat in
-    CI.Coq_lemmata (CI.Coq_sym sym, d)
+    CI.Coq_lemma (CI.Coq_sym sym, d)
   in
   (* gives a list of pairs: (lemma name, translated lemma)*)
-  CI.Coq_everything(translated_dtypes, 
+  CI.Coq_gl(translated_dtypes, 
                     translated_logical_funs, 
                     translated_preds, 
                     List.map translate_lemmas lemmata)

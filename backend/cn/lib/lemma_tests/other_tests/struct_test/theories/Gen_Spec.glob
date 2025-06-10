@@ -1,0 +1,56 @@
+DIGEST 8980e50c39e19e36ce574dcd714cdf86
+FCN_Lemmas.Gen_Spec
+R82:87 Coq.ZArith.ZArith <> <> lib
+R89:92 Coq.Bool.Bool <> <> lib
+R103:118 CN_Lemmas.CN_Lib <> <> lib
+R136:156 CN_Lemmas.CN_Lib_Iris <> <> lib
+mod 168:172 <> Types
+sec 212:222 Types Struct_Defs
+R238:247 CN_Lemmas.CN_Lib_Iris <> heapGS_gen class
+binder 249:250 <> Σ:1
+binder 237:250 <> heapGS_gen0:2
+rec 264:268 Types point
+proj 285:285 Types x
+proj 296:296 Types y
+R289:289 Coq.Numbers.BinNums <> Z ind
+R300:300 Coq.Numbers.BinNums <> Z ind
+def 322:332 Types Owned_point
+R338:340 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 335:335 <> l:6
+R348:352 CN_Lemmas.Gen_Spec Types point rec
+binder 344:344 <> v:7
+R357:361 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R363:364 CN_Lemmas.Gen_Spec <> Types.Struct_Defs.Σ var
+R410:414 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R369:377 CN_Lemmas.CN_Lib_Iris <> Owned_int def
+R380:396 CN_Lemmas.CN_Lib_Iris <> shift def
+R398:398 CN_Lemmas.Gen_Spec <> l:6 var
+R408:408 CN_Lemmas.Gen_Spec Types x proj
+R405:405 CN_Lemmas.Gen_Spec <> v:7 var
+R443:447 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R415:421 CN_Lemmas.CN_Lib_Iris <> padding def
+R424:433 CN_Lemmas.CN_Lib_Iris <> arrayshift def
+R435:435 CN_Lemmas.Gen_Spec <> l:6 var
+R448:456 CN_Lemmas.CN_Lib_Iris <> Owned_int def
+R459:475 CN_Lemmas.CN_Lib_Iris <> shift def
+R477:477 CN_Lemmas.Gen_Spec <> l:6 var
+R487:487 CN_Lemmas.Gen_Spec Types y proj
+R484:484 CN_Lemmas.Gen_Spec <> v:7 var
+R525:535 CN_Lemmas.Gen_Spec Types.Struct_Defs <> sec
+R542:546 CN_Lemmas.Gen_Spec Types <> mod
+modtype 563:572 <> Parameters
+R584:588 CN_Lemmas.Gen_Spec Types <> mod
+R628:637 CN_Lemmas.Gen_Spec Parameters <> modtype
+R673:682 CN_Lemmas.Gen_Spec Parameters <> mod
+mod 649:666 <> ResourcePredicates
+R695:699 CN_Lemmas.Gen_Spec Types <> mod
+R701:701 CN_Lemmas.Gen_Spec P <> mod
+sec 741:754 ResourcePredicates Iris_Pred_Defs
+R770:779 CN_Lemmas.CN_Lib_Iris <> heapGS_gen class
+binder 781:782 <> Σ:8
+binder 769:782 <> heapGS_gen0:9
+def 800:804 ResourcePredicates Alloc
+R819:821 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R818:818 Coq.Numbers.BinNums <> Z ind
+R822:822 Coq.Numbers.BinNums <> Z ind
+binder 808:813 <> ret_ty:10

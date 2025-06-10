@@ -1,7 +1,7 @@
 module BT = BaseTypes
 module AT = ArgumentTypes
 
-(* idk where this stuff goes *)
+(* CN primitives *)
 
 type coq_sym = 
   | Coq_sym of Sym.t
@@ -9,10 +9,11 @@ type coq_sym =
 type coq_id =
   | Coq_id of Id.t
 
-(* basically just wrapping BaseTypes with a constructor *)
 type coq_sign =
   | Coq_Signed
   | Coq_Unsigned
+
+(* CN BaseTypes*)
 
 type coq_bt = 
   | Coq_Bool
@@ -32,7 +33,7 @@ type coq_bt =
   | Coq_Tuple of coq_bt list
   | Coq_Set of coq_bt  
 
-(* Terms that can appear in function definitions/lemmas *)
+(* CN IndexTerms *)
 
 type coq_pat = 
   | Coq_pSym of coq_sym
@@ -85,19 +86,17 @@ type coq_term =
   | Coq_eachI of (int * (coq_sym * coq_bt) * int) * coq_term
   | Coq_mapset of coq_term * coq_term * coq_term
   | Coq_mapget of coq_term * coq_term
-  (* the (int * int) gives the position of an element *)
+    (* the (int * int) gives the position of an element *)
   | Coq_recordmember of coq_term * coq_id * (int * int)
   | Coq_recordupdate of (coq_term * coq_id) * coq_term * (int * int)
   | Coq_record of coq_term list
   | Coq_structmember of coq_term * coq_id * (int * int)
   | Coq_structupdate of (coq_term * coq_id) * coq_term * (int * int)
   | Coq_cast of coq_bt * coq_term
-  (* name, list of argument types, list of arguments, return type*)
   | Coq_apply of coq_sym * coq_term list
   | Coq_apply_prop of coq_sym * coq_term list
-  | Coq_good of coq_sym * coq_bt * coq_term
-  (* todo: get rid of tis later *)
-  | Coq_good_go_away of coq_term
+  | Coq_good of coq_term
+    (*| Coq_good of coq_sym * coq_bt * coq_term*)
   | Coq_representable of coq_sym * coq_bt * coq_term
   | Coq_constructor of coq_sym * coq_term list
   | Coq_nthlist of coq_term * coq_term * coq_term
@@ -116,34 +115,14 @@ type coq_term =
   | Coq_Block_LRT of coq_sym * coq_bt * iris_term * coq_term
   | Coq_Owned_LAT of coq_sym * coq_bt * iris_term * coq_term * coq_term list
   | Coq_Block_LAT of coq_sym * coq_bt * iris_term * coq_term
-  | Coq_PName of coq_sym * coq_sym * coq_bt * coq_term * coq_term list * coq_term
+  | Coq_PName_LAT of coq_sym * coq_sym * coq_bt * coq_term * coq_term list * coq_term
+  | Coq_PName_LRT of coq_sym * coq_sym * coq_bt * coq_term * coq_term list * coq_term
+  | Coq_Each_LAT of coq_sym * coq_sym * coq_bt * coq_term * coq_term * coq_term * coq_term
+  | Coq_Each_LRT of coq_sym * coq_sym * coq_bt * coq_term * coq_term * coq_term * coq_term
   | Coq_pure of coq_term
 
 and iris_term = 
   | Iris_term of coq_term
-
-(* Logical constraints in Coq (todo do I need this?) *)  
-(*type coq_LC =
-  | Coq_Forall of coq_sym * coq_bt * coq_LC
-  | Coq_T of coq_IT
-
-(* Logical return types in Coq *)
-(*type coq_LRT =
-  | Coq_Define of coq_sym * coq_IT * coq_LRT
-  | Coq_Resource of coq_sym * (coq_Req * coq_bt) * coq_LRT
-  | Coq_Constraint of coq_LC * coq_LRT
-  | Coq_I*)
-
-(* Logical argument types in Coq *)  
-type coq_LAT =
-  | Coq_Define of coq_sym * coq_IT  * coq_LAT
-  | Coq_Resource of coq_sym * (coq_Req * coq_bt) * coq_LAT
-  | Coq_Constraint of coq_LC * coq_LAT
-  | Coq_I of coq_LAT
-
-type coq_AT =
-  | Coq_Computational of (coq_sym * coq_bt) * coq_AT
-  | Coq_L of coq_LAT *)
 
 (* CN datatypes *)
 (* note: this is different from Coq_Datatype in coq_term *)
@@ -181,20 +160,19 @@ type coq_resource_pred =
                         * coq_bt 
                         * coq_clause list
   | Coq_rpred_uninterp of coq_sym * coq_sym
-                        * (coq_sym * coq_bt) list 
+                        * (coq_sym * coq_bt) list
                         * coq_bt 
 
 (* CN lemmas *)
-type coq_lemmata = 
+type coq_lemma = 
 (* parameters: lemma name, lemma body *)
-  | Coq_lemmata of coq_sym * coq_term
-  (*| Coq_lemmata of coq_LAT*)
+  | Coq_lemma of coq_sym * coq_term
 
-(* CN global typing context *)
-type coq_everything =
-  | Coq_everything of (coq_dt list) list
-                    (* uninterpreted functions vs defined functions*)
+(* The entire CN global typing context, plus lemma statements *)
+type coq_gl =
+  | Coq_gl of (coq_dt list) list
+                    (* uninterpreted functions and defined functions*)
                     * ((coq_fun list) list * (coq_fun list) list)
                     * (coq_resource_pred list)  list
-                    * coq_lemmata list
+                    * coq_lemma list
   

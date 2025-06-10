@@ -1,0 +1,135 @@
+DIGEST f8bced9c3ab7372372d7aee1ca949220
+FCN_Lemmas.CN_Lib_Iris
+R15:20 Coq.ZArith.ZArith <> <> lib
+R22:25 Coq.Bool.Bool <> <> lib
+R27:29 Coq.micromega.Lia <> <> lib
+R67:75 iris.proofmode.proofmode <> <> lib
+R110:119 iris.bi.lib.fractional <> <> lib
+R162:169 iris.base_logic.lib.gen_heap <> <> lib
+abbrev 220:222 <> Ptr
+R227:227 Coq.Numbers.BinNums <> Z ind
+abbrev 239:241 <> Val
+R247:252 Coq.Init.Datatypes <> option ind
+R254:254 Coq.Numbers.BinNums <> Z ind
+rec 266:275 <> heapGS_gen
+proj 294:310 <> heapGS_gen_heapGS
+binder 277:278 <> Σ:1
+R315:324 iris.base_logic.lib.gen_heap <> gen_heapGS class
+R334:335 CN_Lemmas.CN_Lib_Iris <> Σ:1 var
+R330:332 CN_Lemmas.CN_Lib_Iris <> Val abbrev
+R326:328 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+abbrev 351:356 <> heapGS
+R362:371 CN_Lemmas.CN_Lib_Iris <> heapGS_gen class
+R399:406 iris.base_logic.lib.gen_heap <> pointsto def
+R411:418 iris.algebra.dfrac <> DfracOwn constr
+not 385:385 <> ::bi_scope:x_'↦'_x
+sec 461:471 <> CN_Lib_Iris
+R486:491 CN_Lemmas.CN_Lib_Iris <> heapGS abbrev
+binder 493:494 <> Σ:4
+binder 485:494 <> heapGS0:5
+def 546:550 <> Owned
+R556:558 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 553:553 <> l:6
+R566:566 Coq.Numbers.BinNums <> Z ind
+binder 562:562 <> v:7
+R571:575 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R577:578 CN_Lemmas.CN_Lib_Iris <> CN_Lib_Iris.Σ var
+R585:589 CN_Lemmas.CN_Lib_Iris <> ::bi_scope:x_'↦'_x not
+R584:584 CN_Lemmas.CN_Lib_Iris <> l:6 var
+R590:593 Coq.Init.Datatypes <> Some constr
+R595:595 CN_Lemmas.CN_Lib_Iris <> v:7 var
+def 612:616 <> Block
+R622:624 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 619:619 <> l:8
+R629:633 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R635:636 CN_Lemmas.CN_Lib_Iris <> CN_Lib_Iris.Σ var
+R643:647 CN_Lemmas.CN_Lib_Iris <> ::bi_scope:x_'↦'_x not
+R642:642 CN_Lemmas.CN_Lib_Iris <> l:8 var
+R648:651 Coq.Init.Datatypes <> None constr
+def 670:679 <> Owned_char
+R685:687 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 682:682 <> l:9
+R695:695 Coq.Numbers.BinNums <> Z ind
+binder 691:691 <> v:10
+R700:704 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R706:707 CN_Lemmas.CN_Lib_Iris <> CN_Lib_Iris.Σ var
+R712:716 CN_Lemmas.CN_Lib_Iris <> Owned def
+R718:718 CN_Lemmas.CN_Lib_Iris <> l:9 var
+R720:720 CN_Lemmas.CN_Lib_Iris <> v:10 var
+def 735:746 <> int_to_bytes
+R755:755 Coq.Numbers.BinNums <> Z ind
+binder 749:751 <> val:11
+R770:772 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R766:768 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R762:764 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R761:761 Coq.Numbers.BinNums <> Z ind
+R765:765 Coq.Numbers.BinNums <> Z ind
+R769:769 Coq.Numbers.BinNums <> Z ind
+R773:773 Coq.Numbers.BinNums <> Z ind
+def 799:807 <> Owned_int
+R813:815 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 810:810 <> l:12
+R823:823 Coq.Numbers.BinNums <> Z ind
+binder 819:819 <> v:13
+R828:832 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R834:835 CN_Lemmas.CN_Lib_Iris <> CN_Lib_Iris.Σ var
+R869:880 CN_Lemmas.CN_Lib_Iris <> int_to_bytes prfax
+R882:882 CN_Lemmas.CN_Lib_Iris <> v:13 var
+R848:848 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R851:852 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R855:856 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R859:860 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R863:863 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R900:906 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R890:894 CN_Lemmas.CN_Lib_Iris <> Owned def
+R896:896 CN_Lemmas.CN_Lib_Iris <> l:12 var
+R923:929 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R907:911 CN_Lemmas.CN_Lib_Iris <> Owned def
+R915:917 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R914:914 CN_Lemmas.CN_Lib_Iris <> l:12 var
+R946:952 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R930:934 CN_Lemmas.CN_Lib_Iris <> Owned def
+R938:940 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R937:937 CN_Lemmas.CN_Lib_Iris <> l:12 var
+R953:957 CN_Lemmas.CN_Lib_Iris <> Owned def
+R961:963 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R960:960 CN_Lemmas.CN_Lib_Iris <> l:12 var
+def 1000:1004 <> shift
+R1010:1012 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 1007:1007 <> l:14
+R1025:1025 Coq.Numbers.BinNums <> Z ind
+binder 1016:1021 <> offset:15
+R1036:1036 Coq.Numbers.BinNums <> Z ind
+binder 1029:1032 <> size:16
+R1045:1049 Coq.ZArith.BinInt Z add def
+R1051:1056 CN_Lemmas.CN_Lib_Iris <> offset:15 var
+R1058:1058 CN_Lemmas.CN_Lib_Iris <> l:14 var
+def 1088:1097 <> arrayshift
+R1103:1105 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 1100:1100 <> l:17
+R1115:1115 Coq.Numbers.BinNums <> Z ind
+binder 1109:1111 <> pos:18
+R1126:1126 Coq.Numbers.BinNums <> Z ind
+binder 1119:1122 <> size:19
+R1132:1136 Coq.ZArith.BinInt Z add def
+R1139:1143 Coq.ZArith.BinInt Z mul def
+R1145:1147 CN_Lemmas.CN_Lib_Iris <> pos:18 var
+R1149:1152 CN_Lemmas.CN_Lib_Iris <> size:19 var
+R1155:1155 CN_Lemmas.CN_Lib_Iris <> l:17 var
+def 1168:1174 <> padding
+R1181:1183 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 1177:1177 <> l:20
+R1191:1193 Coq.Init.Datatypes <> nat ind
+binder 1187:1187 <> n:21
+R1208:1208 CN_Lemmas.CN_Lib_Iris <> n:21 var
+R1226:1230 CN_Lemmas.CN_Lib_Iris <> ::bi_scope:x_'↦'_x not
+R1225:1225 CN_Lemmas.CN_Lib_Iris <> l:20 var
+R1231:1234 Coq.Init.Datatypes <> None constr
+R1243:1243 Coq.Init.Datatypes <> S constr
+R1259:1263 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R1252:1256 CN_Lemmas.CN_Lib_Iris <> Block def
+R1258:1258 CN_Lemmas.CN_Lib_Iris <> l:20 var
+R1264:1270 CN_Lemmas.CN_Lib_Iris <> padding:22 def
+R1274:1276 Coq.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R1273:1273 CN_Lemmas.CN_Lib_Iris <> l:20 var
+R1300:1310 CN_Lemmas.CN_Lib_Iris CN_Lib_Iris <> sec

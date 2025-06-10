@@ -1,0 +1,51 @@
+DIGEST 241276c7577699877ad28482129d58cb
+FCN_Lemmas.Inst_Spec
+R111:116 Coq.ZArith.ZArith <> <> lib
+R118:121 Coq.Bool.Bool <> <> lib
+R123:125 Coq.micromega.Lia <> <> lib
+R143:160 CN_Lemmas.Gen_Spec <> <> lib
+R178:198 CN_Lemmas.CN_Lib_Iris <> <> lib
+R208:231 CN_Lemmas.Gen_Spec Types <> mod
+R269:277 iris.proofmode.proofmode <> <> lib
+mod 290:293 <> Inst
+def 310:314 Inst Alloc
+R318:318 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R324:328 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R320:322 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R319:319 Coq.Numbers.BinNums <> Z ind
+R323:323 Coq.Numbers.BinNums <> Z ind
+binder 341:341 <> x:1
+R346:349 stdpp.base <> ::type_scope:'True' not
+R359:362 CN_Lemmas.Inst_Spec Inst <> mod
+R387:415 CN_Lemmas.Gen_Spec Lemma_Defs <> modtype
+R418:421 CN_Lemmas.Inst_Spec Inst <> modtype
+mod 373:382 <> Lemma_Defs
+mod 433:438 <> Proofs
+R472:481 CN_Lemmas.Inst_Spec Lemma_Defs <> mod
+R483:486 CN_Lemmas.Inst_Spec Inst <> mod
+sec 512:520 Proofs Iris_time
+R534:543 CN_Lemmas.CN_Lib_Iris <> heapGS_gen class
+binder 545:546 <> Σ:2
+binder 533:546 <> heapGS_gen0:3
+R576:581 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R591:592 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R594:594 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R582:587 iris.base_logic.lib.iprop iProp_solution iPropI abbrev
+R589:590 CN_Lemmas.Inst_Spec <> Proofs.Iris_time.Σ var
+not 565:565 Proofs.Iris_time :::'⊢'_x
+prf 604:612 Proofs pop_lemma
+R616:619 CN_Lemmas.Inst_Spec Proofs.Iris_time :::'⊢'_x not
+R620:633 CN_Lemmas.Inst_Spec Lemma_Defs pop_lemma_type def
+R726:728 CN_Lemmas.Gen_Spec Types Nil constr
+R726:728 CN_Lemmas.Gen_Spec Types Nil constr
+R961:964 CN_Lemmas.Gen_Spec Types Cons constr
+R961:964 CN_Lemmas.Gen_Spec Types Cons constr
+R1185:1193 CN_Lemmas.Inst_Spec Proofs.Iris_time <> sec
+R1200:1205 CN_Lemmas.Inst_Spec Proofs <> mod
+R1224:1252 CN_Lemmas.Gen_Spec Lemma_Spec <> mod
+R1254:1257 CN_Lemmas.Inst_Spec Inst <> modtype
+mod 1216:1221 <> InstOK
+R1276:1285 CN_Lemmas.Inst_Spec Lemma_Defs <> modtype
+mod 1271:1271 <> InstOK.L
+R1299:1304 CN_Lemmas.Inst_Spec Proofs <> modtype
+R1312:1317 CN_Lemmas.Inst_Spec InstOK <> mod

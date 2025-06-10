@@ -1,0 +1,527 @@
+DIGEST 0bedaeea52e9b23cd7f2396a6e9ff6e7
+FCN_Lemmas.Inst_Spec
+R111:116 Coq.ZArith.ZArith <> <> lib
+R118:121 Coq.Bool.Bool <> <> lib
+R123:125 Coq.micromega.Lia <> <> lib
+R143:160 CN_Lemmas.Gen_Spec <> <> lib
+R178:198 CN_Lemmas.CN_Lib_Iris <> <> lib
+R208:231 CN_Lemmas.Gen_Spec Types <> mod
+R269:277 iris.proofmode.proofmode <> <> lib
+R295:322 iris.base_logic.lib.gen_heap <> <> lib
+R340:366 Coq.Classes.RelationClasses <> <> lib
+mod 377:380 <> Inst
+def 397:401 Inst Alloc
+R405:405 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R411:415 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R407:409 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R406:406 Coq.Numbers.BinNums <> Z ind
+R410:410 Coq.Numbers.BinNums <> Z ind
+binder 428:428 <> x:1
+R433:436 stdpp.base <> ::type_scope:'True' not
+R446:449 CN_Lemmas.Inst_Spec Inst <> mod
+R474:502 CN_Lemmas.Gen_Spec Lemma_Defs <> modtype
+R505:508 CN_Lemmas.Inst_Spec Inst <> modtype
+mod 460:469 <> Lemma_Defs
+mod 520:525 <> Proofs
+R559:568 CN_Lemmas.Inst_Spec Lemma_Defs <> mod
+R570:573 CN_Lemmas.Inst_Spec Inst <> mod
+R606:628 CN_Lemmas.Gen_Spec Defs <> modtype
+R631:634 CN_Lemmas.Inst_Spec Inst <> modtype
+mod 598:601 <> Proofs.Defs
+R645:648 CN_Lemmas.Inst_Spec Proofs.Defs <> mod
+sec 660:668 Proofs Iris_time
+R682:691 CN_Lemmas.CN_Lib_Iris <> heapGS_gen class
+binder 693:694 <> Σ:2
+binder 681:694 <> heapGS_gen0:3
+R724:729 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R739:740 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R742:742 iris.bi.interface <> ::stdpp_scope:'(⊢@{'_x_'}'_x_')' not
+R730:735 iris.base_logic.lib.iprop iProp_solution iPropI abbrev
+R737:738 CN_Lemmas.Inst_Spec <> Proofs.Iris_time.Σ var
+not 713:713 Proofs.Iris_time :::'⊢'_x
+prf 753:765 Proofs queue_aux_nil
+R769:772 CN_Lemmas.Inst_Spec Proofs.Iris_time :::'⊢'_x not
+R773:777 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R796:800 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R782:784 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 778:778 <> f:4
+R792:795 CN_Lemmas.Gen_Spec Types List ind
+binder 788:788 <> L:5
+R817:822 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R801:810 CN_Lemmas.Inst_Spec Lemma_Defs.D QueueAux def
+R812:812 CN_Lemmas.Inst_Spec <> f:4 var
+R814:814 CN_Lemmas.Inst_Spec <> f:4 var
+R816:816 CN_Lemmas.Inst_Spec <> L:5 var
+R823:826 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R834:836 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R828:830 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R827:827 CN_Lemmas.Inst_Spec <> L:5 var
+R831:833 CN_Lemmas.Gen_Spec Types Nil constr
+R916:925 CN_Lemmas.Inst_Spec Lemma_Defs.D QueueAux def
+prf 1162:1176 Proofs queue_aux_nil_2
+R1180:1183 CN_Lemmas.Inst_Spec Proofs.Iris_time :::'⊢'_x not
+R1184:1188 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R1210:1212 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R1196:1198 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 1189:1189 <> f:6
+R1196:1198 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 1191:1192 <> f':7
+R1206:1209 CN_Lemmas.Gen_Spec Types List ind
+binder 1202:1202 <> L:8
+R1230:1235 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R1213:1222 CN_Lemmas.Inst_Spec Lemma_Defs.D QueueAux def
+R1224:1224 CN_Lemmas.Inst_Spec <> f:6 var
+R1226:1227 CN_Lemmas.Inst_Spec <> f':7 var
+R1229:1229 CN_Lemmas.Inst_Spec <> L:8 var
+R1236:1239 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1257:1259 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1247:1250 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1241:1243 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1240:1240 CN_Lemmas.Inst_Spec <> L:8 var
+R1244:1246 CN_Lemmas.Gen_Spec Types Nil constr
+R1252:1254 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1251:1251 CN_Lemmas.Inst_Spec <> f:6 var
+R1255:1256 CN_Lemmas.Inst_Spec <> f':7 var
+R1319:1328 CN_Lemmas.Inst_Spec Lemma_Defs.D QueueAux def
+prf 1633:1647 Proofs queue_aux_nil_3
+R1651:1654 CN_Lemmas.Inst_Spec Proofs.Iris_time :::'⊢'_x not
+R1655:1659 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R1670:1674 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R1667:1669 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 1660:1660 <> f:9
+R1667:1669 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 1662:1663 <> f':10
+R1687:1694 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R1675:1677 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1684:1686 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1679:1681 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1678:1678 CN_Lemmas.Inst_Spec <> f:9 var
+R1682:1683 CN_Lemmas.Inst_Spec <> f':10 var
+R1695:1704 CN_Lemmas.Inst_Spec Lemma_Defs.D QueueAux def
+R1706:1706 CN_Lemmas.Inst_Spec <> f:9 var
+R1708:1709 CN_Lemmas.Inst_Spec <> f':10 var
+R1711:1713 CN_Lemmas.Gen_Spec Types Nil constr
+prf 1778:1792 Proofs queue_aux_false
+R1796:1799 CN_Lemmas.Inst_Spec Proofs.Iris_time :::'⊢'_x not
+R1800:1804 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R1826:1828 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R1812:1814 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 1805:1805 <> f:11
+R1812:1814 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 1807:1808 <> f':12
+R1822:1825 CN_Lemmas.Gen_Spec Types List ind
+binder 1818:1818 <> L:13
+R1846:1851 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R1829:1838 CN_Lemmas.Inst_Spec Lemma_Defs.D QueueAux def
+R1840:1840 CN_Lemmas.Inst_Spec <> f:11 var
+R1842:1843 CN_Lemmas.Inst_Spec <> f':12 var
+R1845:1845 CN_Lemmas.Inst_Spec <> L:13 var
+R1852:1855 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1886:1889 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1863:1867 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1885:1885 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1857:1859 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1856:1856 CN_Lemmas.Inst_Spec <> L:13 var
+R1860:1862 CN_Lemmas.Gen_Spec Types Nil constr
+R1876:1879 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1869:1873 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R1868:1868 CN_Lemmas.Inst_Spec <> f:11 var
+R1874:1875 CN_Lemmas.Inst_Spec <> f':12 var
+R1880:1884 stdpp.base <> ::type_scope:'False' not
+R1949:1963 CN_Lemmas.Inst_Spec Proofs queue_aux_nil_2 prfax
+R1949:1963 CN_Lemmas.Inst_Spec Proofs queue_aux_nil_2 prfax
+prf 2098:2120 Proofs owned_queue_cell_unique
+R2124:2127 CN_Lemmas.Inst_Spec Proofs.Iris_time :::'⊢'_x not
+R2128:2132 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R2165:2169 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R2140:2142 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 2133:2133 <> f:14
+R2140:2142 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 2135:2136 <> f':15
+R2153:2164 CN_Lemmas.Inst_Spec Lemma_Defs.D queue_cell rec
+binder 2146:2146 <> C:16
+R2153:2164 CN_Lemmas.Inst_Spec Lemma_Defs.D queue_cell rec
+binder 2148:2149 <> C':17
+R2192:2197 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R2170:2187 CN_Lemmas.Inst_Spec Lemma_Defs.D Owned_queue_cell def
+R2189:2189 CN_Lemmas.Inst_Spec <> f:14 var
+R2191:2191 CN_Lemmas.Inst_Spec <> C:16 var
+R2222:2227 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R2198:2215 CN_Lemmas.Inst_Spec Lemma_Defs.D Owned_queue_cell def
+R2217:2218 CN_Lemmas.Inst_Spec <> f':15 var
+R2220:2221 CN_Lemmas.Inst_Spec <> C':17 var
+R2228:2231 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2240:2242 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2233:2237 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R2232:2232 CN_Lemmas.Inst_Spec <> f:14 var
+R2238:2239 CN_Lemmas.Inst_Spec <> f':15 var
+R2262:2279 CN_Lemmas.Inst_Spec Lemma_Defs.D Owned_queue_cell def
+R2330:2338 CN_Lemmas.CN_Lib_Iris <> Owned_int def
+R2353:2364 CN_Lemmas.CN_Lib_Iris <> int_to_bytes prfax
+R2367:2373 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R2353:2364 CN_Lemmas.CN_Lib_Iris <> int_to_bytes prfax
+R2367:2373 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R2418:2429 CN_Lemmas.CN_Lib_Iris <> int_to_bytes prfax
+R2432:2438 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R2418:2429 CN_Lemmas.CN_Lib_Iris <> int_to_bytes prfax
+R2432:2438 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R2549:2549 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2561:2566 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2574:2574 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2550:2560 iris.base_logic.lib.gen_heap <> pointsto_ne thm
+R2549:2549 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2561:2566 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2574:2574 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2550:2560 iris.base_logic.lib.gen_heap <> pointsto_ne thm
+prf 2589:2602 Proofs front_last_neq
+R2606:2609 CN_Lemmas.Inst_Spec Proofs.Iris_time :::'⊢'_x not
+R2610:2614 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R2674:2679 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R2626:2628 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 2615:2615 <> f:18
+R2626:2628 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 2617:2618 <> f':19
+R2626:2628 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 2620:2622 <> f'':20
+R2636:2647 CN_Lemmas.Inst_Spec Lemma_Defs.D queue_cell rec
+binder 2632:2632 <> c:21
+R2656:2660 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R2655:2655 CN_Lemmas.Inst_Spec <> f:18 var
+R2661:2662 CN_Lemmas.Inst_Spec <> f':19 var
+binder 2651:2651 <> H:22
+R2670:2673 CN_Lemmas.Gen_Spec Types List ind
+binder 2666:2666 <> L:23
+R2697:2702 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R2680:2689 CN_Lemmas.Inst_Spec Lemma_Defs.D QueueAux def
+R2691:2691 CN_Lemmas.Inst_Spec <> f:18 var
+R2693:2694 CN_Lemmas.Inst_Spec <> f':19 var
+R2696:2696 CN_Lemmas.Inst_Spec <> L:23 var
+R2727:2732 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R2703:2720 CN_Lemmas.Inst_Spec Lemma_Defs.D Owned_queue_cell def
+R2722:2724 CN_Lemmas.Inst_Spec <> f'':20 var
+R2726:2726 CN_Lemmas.Inst_Spec <> c:21 var
+R2733:2736 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2746:2748 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2738:2742 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R2737:2737 CN_Lemmas.Inst_Spec <> f:18 var
+R2743:2745 CN_Lemmas.Inst_Spec <> f'':20 var
+R2804:2813 CN_Lemmas.Inst_Spec Lemma_Defs.D QueueAux def
+R3268:3268 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3292:3295 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3297:3297 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3301:3301 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3303:3303 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3305:3310 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3318:3318 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3269:3291 CN_Lemmas.Inst_Spec Proofs owned_queue_cell_unique thm
+R3268:3268 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3292:3295 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3297:3297 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3301:3301 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3303:3303 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3305:3310 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3318:3318 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R3269:3291 CN_Lemmas.Inst_Spec Proofs owned_queue_cell_unique thm
+prf 3338:3350 Proofs QueueAux_Snoc
+R3378:3380 CN_Lemmas.CN_Lib_Iris <> Ptr abbrev
+binder 3353:3357 <> front:24
+binder 3359:3369 <> second_last:25
+binder 3371:3374 <> last:26
+R3403:3414 CN_Lemmas.Inst_Spec Lemma_Defs.D queue_cell rec
+binder 3384:3394 <> Second_last:27
+binder 3396:3399 <> Last:28
+R3421:3424 CN_Lemmas.Gen_Spec Types List ind
+binder 3417:3417 <> Q:29
+R3450:3452 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3432:3437 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R3439:3449 CN_Lemmas.Inst_Spec <> Second_last:27 var
+R3453:3456 CN_Lemmas.Inst_Spec <> last:26 var
+binder 3428:3428 <> H:30
+R3475:3479 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R3464:3474 CN_Lemmas.Inst_Spec <> second_last:25 var
+R3480:3483 CN_Lemmas.Inst_Spec <> last:26 var
+binder 3460:3461 <> H2:31
+R3496:3500 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R3491:3495 CN_Lemmas.Inst_Spec <> front:24 var
+R3501:3504 CN_Lemmas.Inst_Spec <> last:26 var
+binder 3487:3488 <> H3:32
+R3516:3520 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R3511:3515 CN_Lemmas.Inst_Spec <> front:24 var
+R3521:3531 CN_Lemmas.Inst_Spec <> second_last:25 var
+binder 3507:3508 <> H4:33
+R3560:3564 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R3542:3547 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R3549:3559 CN_Lemmas.Inst_Spec <> Second_last:27 var
+binder 3535:3539 <> HNext:34
+R3572:3575 CN_Lemmas.Inst_Spec Proofs.Iris_time :::'⊢'_x not
+R3606:3611 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R3576:3585 CN_Lemmas.Inst_Spec Lemma_Defs.D QueueAux def
+R3587:3591 CN_Lemmas.Inst_Spec <> front:24 var
+R3593:3603 CN_Lemmas.Inst_Spec <> second_last:25 var
+R3605:3605 CN_Lemmas.Inst_Spec <> Q:29 var
+R3654:3662 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R3612:3629 CN_Lemmas.Inst_Spec Lemma_Defs.D Owned_queue_cell def
+R3631:3641 CN_Lemmas.Inst_Spec <> second_last:25 var
+R3643:3653 CN_Lemmas.Inst_Spec <> Second_last:27 var
+R3691:3700 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R3663:3680 CN_Lemmas.Inst_Spec Lemma_Defs.D Owned_queue_cell def
+R3682:3685 CN_Lemmas.Inst_Spec <> last:26 var
+R3687:3690 CN_Lemmas.Inst_Spec <> Last:28 var
+R3755:3762 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R3701:3710 CN_Lemmas.Inst_Spec Lemma_Defs.D QueueAux def
+R3712:3716 CN_Lemmas.Inst_Spec <> front:24 var
+R3718:3721 CN_Lemmas.Inst_Spec <> last:26 var
+R3724:3729 CN_Lemmas.Inst_Spec Lemma_Defs.D Snoc def
+R3731:3731 CN_Lemmas.Inst_Spec <> Q:29 var
+R3734:3740 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R3742:3752 CN_Lemmas.Inst_Spec <> Second_last:27 var
+R3763:3766 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3787:3793 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3775:3786 CN_Lemmas.Inst_Spec Lemma_Defs.D queue_cell rec
+binder 3767:3771 <> Last2:35
+R3823:3832 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R3794:3811 CN_Lemmas.Inst_Spec Lemma_Defs.D Owned_queue_cell def
+R3813:3816 CN_Lemmas.Inst_Spec <> last:26 var
+R3818:3822 CN_Lemmas.Inst_Spec <> Last2:35 var
+R3910:3914 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R3833:3835 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3907:3909 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3866:3876 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3836:3841 CN_Lemmas.Inst_Spec Lemma_Defs.D Snoc def
+R3843:3843 CN_Lemmas.Inst_Spec <> Q:29 var
+R3846:3852 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R3854:3864 CN_Lemmas.Inst_Spec <> Second_last:27 var
+R3877:3882 CN_Lemmas.Inst_Spec Lemma_Defs.D Snoc def
+R3884:3884 CN_Lemmas.Inst_Spec <> Q:29 var
+R3887:3893 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R3895:3905 CN_Lemmas.Inst_Spec <> Second_last:27 var
+R3933:3937 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R3915:3917 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3930:3932 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3922:3924 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3918:3921 CN_Lemmas.Inst_Spec <> Last:28 var
+R3925:3929 CN_Lemmas.Inst_Spec <> Last2:35 var
+R3938:3940 iris.bi.interface <> ::bi_scope:'emp' not
+R4038:4052 CN_Lemmas.Inst_Spec Proofs queue_aux_false thm
+R4038:4052 CN_Lemmas.Inst_Spec Proofs queue_aux_false thm
+R4363:4365 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R4387:4389 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R4378:4382 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R4366:4371 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R4363:4365 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R4387:4389 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R4378:4382 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R4366:4371 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R4524:4524 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4539:4543 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4556:4557 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4569:4569 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4574:4574 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4579:4579 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4583:4588 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4597:4597 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4525:4538 CN_Lemmas.Inst_Spec Proofs front_last_neq prfax
+R4544:4549 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R4524:4524 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4539:4543 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4556:4557 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4569:4569 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4574:4574 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4579:4579 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4583:4588 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4597:4597 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R4525:4538 CN_Lemmas.Inst_Spec Proofs front_last_neq prfax
+R4544:4549 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R4659:4662 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R4652:4654 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4640:4645 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R4675:4679 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R4663:4668 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R4659:4662 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R4652:4654 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4640:4645 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R4675:4679 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R4663:4668 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R4978:4983 CN_Lemmas.Inst_Spec Lemma_Defs.D Snoc def
+R4988:4994 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R4978:4983 CN_Lemmas.Inst_Spec Lemma_Defs.D Snoc def
+R4988:4994 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R5051:5051 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5065:5069 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5082:5083 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5085:5090 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5096:5096 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5052:5064 CN_Lemmas.Inst_Spec Proofs queue_aux_nil prfax
+R5070:5075 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R5051:5051 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5065:5069 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5082:5083 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5085:5090 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5096:5096 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5052:5064 CN_Lemmas.Inst_Spec Proofs queue_aux_nil prfax
+R5070:5075 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R5370:5372 CN_Lemmas.Gen_Spec Types Nil constr
+R5370:5372 CN_Lemmas.Gen_Spec Types Nil constr
+R5394:5394 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R5410:5414 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R5433:5434 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R5439:5439 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R5441:5441 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R5395:5409 CN_Lemmas.Inst_Spec Proofs queue_aux_nil_3 prfax
+R5415:5420 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R5394:5394 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R5410:5414 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R5433:5434 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R5439:5439 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R5441:5441 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R5395:5409 CN_Lemmas.Inst_Spec Proofs queue_aux_nil_3 prfax
+R5415:5420 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R5591:5591 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5596:5600 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5613:5614 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5616:5616 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5620:5625 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5637:5637 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5601:5606 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R5591:5591 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5596:5600 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5613:5614 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5616:5616 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5620:5625 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5637:5637 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R5601:5606 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+prf 5940:5953 Proofs push_induction
+R5957:5960 CN_Lemmas.Inst_Spec Proofs.Iris_time :::'⊢'_x not
+R5961:5979 CN_Lemmas.Inst_Spec Lemma_Defs push_induction_type def
+R5991:6009 CN_Lemmas.Inst_Spec Lemma_Defs push_induction_type def
+R6165:6167 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6192:6194 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6186:6190 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R6168:6173 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R6165:6167 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6192:6194 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6186:6190 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R6168:6173 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R6289:6289 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6306:6311 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6322:6322 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6290:6305 CN_Lemmas.CN_Lib_Iris <> ptr_not_null_int thm
+R6289:6289 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6306:6311 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6322:6322 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6290:6305 CN_Lemmas.CN_Lib_Iris <> ptr_not_null_int thm
+R6410:6415 CN_Lemmas.Inst_Spec Lemma_Defs.D Snoc def
+R6420:6426 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R6410:6415 CN_Lemmas.Inst_Spec Lemma_Defs.D Snoc def
+R6420:6426 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R6463:6475 CN_Lemmas.Inst_Spec Proofs queue_aux_nil prfax
+R6463:6475 CN_Lemmas.Inst_Spec Proofs queue_aux_nil prfax
+R6531:6533 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6554:6556 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6545:6549 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R6531:6533 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6554:6556 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6545:6549 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R6585:6585 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6609:6612 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6624:6624 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6629:6629 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6641:6641 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6646:6651 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6659:6659 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6586:6608 CN_Lemmas.Inst_Spec Proofs owned_queue_cell_unique thm
+R6585:6585 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6609:6612 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6624:6624 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6629:6629 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6641:6641 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6646:6651 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6659:6659 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6586:6608 CN_Lemmas.Inst_Spec Proofs owned_queue_cell_unique thm
+R6733:6738 CN_Lemmas.Inst_Spec Lemma_Defs.D Snoc def
+R6754:6763 CN_Lemmas.Inst_Spec Lemma_Defs.D QueueAux def
+R7022:7024 CN_Lemmas.Gen_Spec Types Nil constr
+R7022:7024 CN_Lemmas.Gen_Spec Types Nil constr
+R7159:7161 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7186:7188 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7180:7184 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R7162:7167 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R7159:7161 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7186:7188 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7180:7184 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R7162:7167 CN_Lemmas.Inst_Spec Lemma_Defs.D next proj
+R7283:7283 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7300:7305 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7316:7316 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7284:7299 CN_Lemmas.CN_Lib_Iris <> ptr_not_null_int thm
+R7283:7283 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7300:7305 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7316:7316 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7284:7299 CN_Lemmas.CN_Lib_Iris <> ptr_not_null_int thm
+R7386:7391 CN_Lemmas.Inst_Spec Lemma_Defs.D Snoc def
+R7396:7402 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R7386:7391 CN_Lemmas.Inst_Spec Lemma_Defs.D Snoc def
+R7396:7402 CN_Lemmas.Inst_Spec Lemma_Defs.D first proj
+R7434:7436 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7457:7459 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7448:7452 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R7434:7436 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7457:7459 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7448:7452 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R7488:7488 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7512:7515 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7527:7527 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7532:7532 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7544:7544 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7549:7554 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7562:7562 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7489:7511 CN_Lemmas.Inst_Spec Proofs owned_queue_cell_unique thm
+R7488:7488 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7512:7515 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7527:7527 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7532:7532 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7544:7544 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7549:7554 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7562:7562 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7489:7511 CN_Lemmas.Inst_Spec Proofs owned_queue_cell_unique thm
+R7594:7596 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7611:7613 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7602:7606 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R7594:7596 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7611:7613 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7602:7606 Coq.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R7642:7642 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7657:7660 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7666:7666 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7678:7678 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7683:7683 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7688:7688 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7691:7696 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7704:7704 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7643:7656 CN_Lemmas.Inst_Spec Proofs front_last_neq prfax
+R7642:7642 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7657:7660 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7666:7666 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7678:7678 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7683:7683 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7688:7688 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7691:7696 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7704:7704 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7643:7656 CN_Lemmas.Inst_Spec Proofs front_last_neq prfax
+R7735:7735 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7749:7754 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7765:7765 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7736:7748 CN_Lemmas.Inst_Spec Proofs QueueAux_Snoc prfax
+R7735:7735 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7749:7754 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7765:7765 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7736:7748 CN_Lemmas.Inst_Spec Proofs QueueAux_Snoc prfax
+R7799:7807 CN_Lemmas.Inst_Spec Proofs.Iris_time <> sec
+R7814:7819 CN_Lemmas.Inst_Spec Proofs <> mod
+R7838:7866 CN_Lemmas.Gen_Spec Lemma_Spec <> mod
+R7868:7871 CN_Lemmas.Inst_Spec Inst <> modtype
+mod 7830:7835 <> InstOK
+R7890:7899 CN_Lemmas.Inst_Spec Lemma_Defs <> modtype
+mod 7885:7885 <> InstOK.L
+R7913:7918 CN_Lemmas.Inst_Spec Proofs <> modtype
+R7926:7931 CN_Lemmas.Inst_Spec InstOK <> mod
