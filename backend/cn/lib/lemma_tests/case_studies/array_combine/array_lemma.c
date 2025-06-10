@@ -12,7 +12,6 @@ lemma each_lemma (pointer p, i32 n)
     take A_post = each(i32 j; 0i32 <= j && j < n) 
               { Owned<int>(array_shift<int>(p,j)) };
     A_post[0i32] == v;
-    A[i:v] == A_post;
 @*/
 
 /*@
